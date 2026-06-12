@@ -6,7 +6,8 @@
   "scripts": {
     "dev": "vite --host 0.0.0.0 --port 2288 --strictPort",
     "dev:local": "vite --host 0.0.0.0 --port 2299 --strictPort",
-    "build": "tsc -b && vite build",
+    "build": "vite build",
+    "build:cf": "node scripts/deploy-skills.mjs && vite build",
     "preview": "vite preview --host 0.0.0.0 --port 2288 --strictPort",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
