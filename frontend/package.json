@@ -8,14 +8,15 @@
     "dev:local": "vite --host 0.0.0.0 --port 2299 --strictPort",
     "build": "vite build",
     "build:cf": "node scripts/deploy-skills.mjs && vite build",
-    "preview": "vite preview --host 0.0.0.0 --port 2288 --strictPort",
+    "preview": "npm run build && wrangler dev",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "install-hooks": "node scripts/install-hooks.mjs",
     "prepare": "node scripts/install-hooks.mjs",
     "harness": "node scripts/harness-check.mjs",
     "harness:staged": "node scripts/harness-check.mjs --staged",
-    "quality": "npm run lint && npm run typecheck && npm run harness && npm run build"
+    "quality": "npm run lint && npm run typecheck && npm run harness && npm run build",
+    "deploy": "npm run build && wrangler deploy"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
@@ -25,6 +26,7 @@
     "react-dom": "^19.1.0"
   },
   "devDependencies": {
+    "@cloudflare/vite-plugin": "^1.40.2",
     "@eslint/js": "^9.27.0",
     "@types/node": "^25.9.1",
     "@types/react": "^19.1.6",
@@ -36,6 +38,7 @@
     "globals": "^16.2.0",
     "typescript": "~5.8.3",
     "typescript-eslint": "^8.33.0",
-    "vite": "^6.3.5"
+    "vite": "^6.3.5",
+    "wrangler": "^4.100.0"
   }
 }
