@@ -19,7 +19,7 @@ import {
   Tag,
 } from "antd";
 import type { MenuProps } from "antd";
-import { useMemo, useState } from "react";
+import { useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import {
   projectFileTypeLabels,
   projectStatusLabels,
@@ -149,10 +149,17 @@ interface ProjectCardProps {
 }
 
 function ProjectCard({ project, onOpen, onDelete, onOpenFilePreview }: ProjectCardProps) {
+  const cardBodyRef = useRef<HTMLDivElement>(null);
+  function handleCardClick(event: ReactMouseEvent<HTMLElement>) {
+    const body = cardBodyRef.current;
+    if (body && body.contains(event.target as Node)) {
+      onOpen();
+    }
+  }
   return (
     <article
       className={styles.card}
-      onClick={onOpen}
+      onClick={handleCardClick}
       onKeyDown={(event) => {
         if (event.key === "Enter" || event.key === " ") {
           event.preventDefault();
@@ -162,20 +169,22 @@ function ProjectCard({ project, onOpen, onDelete, onOpenFilePreview }: ProjectCa
       role="button"
       tabIndex={0}
     >
-      <header className={styles.cardHeader}>
-        <h3 className={styles.cardTitle}>{project.name}</h3>
-        <ProjectActions onDelete={onDelete} />
-      </header>
-      <div className={styles.cardMeta}>
-        <Tag color={statusColors[project.status]}>
-          {projectStatusLabels[project.status]}
-        </Tag>
-        <span className={styles.cardMetaText}>
-          {project.customer} · {project.owner}
-        </span>
-        <span className={styles.cardMetaTime}>{project.updatedAt}</span>
+      <div ref={cardBodyRef} className={styles.cardBody}>
+        <header className={styles.cardHeader}>
+          <h3 className={styles.cardTitle}>{project.name}</h3>
+          <ProjectActions onDelete={onDelete} />
+        </header>
+        <div className={styles.cardMeta}>
+          <Tag color={statusColors[project.status]}>
+            {projectStatusLabels[project.status]}
+          </Tag>
+          <span className={styles.cardMetaText}>
+            {project.customer} · {project.owner}
+          </span>
+          <span className={styles.cardMetaTime}>{project.updatedAt}</span>
+        </div>
+        <p className={styles.cardSummary}>{project.summary}</p>
       </div>
-      <p className={styles.cardSummary}>{project.summary}</p>
       <footer className={styles.cardFooter}>
         <ProjectFilesPopover
           projectId={project.id}
