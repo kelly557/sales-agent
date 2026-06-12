@@ -1,0 +1,506 @@
+.page {
+  display: grid;
+  gap: 16px;
+  max-width: 1120px;
+}
+
+.welcomePage {
+  display: grid;
+  align-content: center;
+  justify-items: center;
+  gap: 32px;
+  width: min(820px, 100%);
+  margin: 0 auto;
+  padding: 80px 24px 40px;
+}
+
+.welcomeHeader {
+  display: grid;
+  justify-items: center;
+  gap: 12px;
+}
+
+.welcomeLogo {
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  background: #eef6ff;
+  color: #0f6bdc;
+  font-size: 24px;
+}
+
+.welcomeGreeting {
+  margin: 0;
+  color: var(--color-ink);
+  font-size: var(--font-size-lg);
+  font-weight: var(--font-weight-semibold);
+  text-align: center;
+}
+
+.welcomeComposer {
+  width: 100%;
+  padding: 16px 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgb(0 0 0 / 6%);
+}
+
+.welcomeInput :global(.ant-input),
+.welcomeInput :global(.ant-input:focus),
+.welcomeInput :global(.ant-input-focused) {
+  padding: 6px 0;
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  resize: none;
+  font-size: var(--font-size-md);
+  line-height: var(--line-height-body);
+}
+
+.welcomeInput :global(textarea) {
+  border: 0 !important;
+  background: transparent;
+  box-shadow: none;
+  resize: none;
+}
+
+.welcomeComposerBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.quickTasks {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.quickTaskAdd {
+  width: 28px;
+  height: 28px;
+  padding: 0;
+  border: 0;
+  border-radius: 14px;
+  color: var(--color-muted);
+}
+
+.quickTask {
+  height: 30px;
+  padding: 0 12px;
+  border-radius: 15px;
+  color: var(--color-ink);
+  font-weight: var(--font-weight-regular);
+}
+
+.quickTask:hover,
+.quickTask:focus-visible {
+  background: #f5f7fb;
+  color: var(--color-primary);
+}
+
+.quickTaskDisabled,
+.quickTaskDisabled:hover,
+.quickTaskDisabled:focus-visible {
+  background: transparent;
+  color: var(--color-muted);
+  opacity: 0.55;
+  cursor: not-allowed;
+}
+
+.composerActions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.composerActions :global(.ant-btn-circle) {
+  display: inline-grid;
+  place-items: center;
+}
+
+.quickTaskActive {
+  background: #eef6ff;
+  color: #0f6bdc;
+}
+
+.quickTaskActive:hover,
+.quickTaskActive:focus-visible {
+  background: #e1efff;
+  color: #0f6bdc;
+}
+
+.quickTaskClose {
+  font-size: 10px;
+  opacity: 0.6;
+}
+
+.composerSendText {
+  height: 32px;
+  padding: 0 18px;
+  border-radius: 16px;
+  font-weight: var(--font-weight-semibold);
+}
+
+.templateSuggestions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  width: 100%;
+  padding: 0 4px;
+}
+
+.templateTag {
+  height: 30px;
+  padding: 0 4px;
+  color: var(--color-muted);
+  font-weight: var(--font-weight-regular);
+}
+
+.templateTag:hover,
+.templateTag:focus-visible {
+  color: var(--color-primary);
+  background: transparent;
+}
+
+.templateTagRecommended {
+  color: var(--color-ink);
+  font-weight: var(--font-weight-semibold);
+}
+
+.pageCountList {
+  display: grid;
+  gap: 2px;
+  padding: 4px 0;
+}
+
+.pageCountRow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--color-ink);
+  text-align: left;
+  font-size: var(--font-size-md);
+  cursor: pointer;
+  transition: background 0.15s ease;
+}
+
+.pageCountRow:hover,
+.pageCountRow:focus-visible {
+  background: #f5f7fb;
+  outline: none;
+}
+
+.pageCountLabel {
+  font-weight: var(--font-weight-regular);
+}
+
+.pageCountCheck {
+  color: transparent;
+  font-size: var(--font-size-md);
+}
+
+.pageCountRow:first-child .pageCountCheck {
+  color: var(--color-primary);
+}
+
+.pageCountRow:hover .pageCountCheck {
+  color: var(--color-muted);
+}
+
+.assistantLayout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0;
+  min-height: calc(100vh - 112px);
+  margin: -24px -32px -36px;
+  background: #f5f5f7;
+}
+
+.assistantMain {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background: #ffffff;
+}
+
+.conversationSidebar {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  border-right: 1px solid var(--color-border);
+  background: #fbfbfd;
+  padding: 18px 14px;
+  gap: 14px;
+  overflow: auto;
+}
+
+.sidebarNewButton {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  width: 100%;
+  height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--color-border);
+  border-radius: 20px;
+  background: #ffffff;
+  color: var(--color-ink);
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-semibold);
+  cursor: pointer;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+
+.sidebarNewButton:hover,
+.sidebarNewButton:focus-visible {
+  border-color: var(--color-primary);
+  background: #f0f6ff;
+  color: var(--color-primary);
+  outline: none;
+}
+
+.sidebarHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 4px 6px 0;
+  color: var(--color-muted);
+  font-size: var(--font-size-xs);
+  font-weight: var(--font-weight-semibold);
+}
+
+.sidebarEmpty {
+  padding: 12px 6px;
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-body);
+}
+
+.sidebarList {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.conversationRow {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 6px 6px 10px;
+  border-radius: 8px;
+  color: var(--color-ink);
+  transition: background-color 120ms ease;
+}
+
+.conversationRow:hover,
+.conversationRow:focus-within {
+  background: #eef6ff;
+}
+
+.conversationRowActive,
+.conversationRowActive:hover,
+.conversationRowActive:focus-within {
+  background: #d8e9fb;
+}
+
+.conversationButton {
+  flex: 1;
+  min-width: 0;
+  padding: 4px 0;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font-size: var(--font-size-sm);
+  font-weight: var(--font-weight-regular);
+  text-align: left;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.conversationButton:focus-visible {
+  outline: none;
+}
+
+.conversationMenu {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--color-muted);
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity 120ms ease, background-color 120ms ease, color 120ms ease;
+}
+
+.conversationRow:hover .conversationMenu,
+.conversationRow:focus-within .conversationMenu,
+.conversationRowActive .conversationMenu {
+  opacity: 1;
+}
+
+.conversationMenu:hover,
+.conversationMenu:focus-visible {
+  background: #ffffff;
+  color: var(--color-primary);
+  outline: none;
+}
+
+.cardGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.card {
+  display: grid;
+  gap: 8px;
+  min-height: 136px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #ffffff;
+  color: var(--color-ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.card:hover,
+.card:focus-visible {
+  border-color: #91caff;
+  background: #f6fbff;
+  outline: none;
+}
+
+.cardIcon {
+  display: grid;
+  width: 34px;
+  height: 34px;
+  place-items: center;
+  border-radius: 8px;
+  background: #eef6ff;
+  color: var(--color-primary) !important;
+  font-size: var(--font-size-lg) !important;
+}
+
+.card strong {
+  font-size: var(--font-size-md);
+  font-weight: var(--font-weight-semibold);
+}
+
+.card span {
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+  line-height: var(--line-height-body);
+}
+
+.workArea {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 400px;
+  gap: 12px;
+}
+
+.promptPanel,
+.contextPanel {
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.panelTitle {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 10px;
+  color: var(--color-ink);
+  font-weight: var(--font-weight-semibold);
+}
+
+.panelTitle :global(.anticon) {
+  color: var(--color-primary);
+}
+
+.promptList :global(.ant-list-item) {
+  padding: 7px 0;
+  border-block-end: 0 !important;
+}
+
+.promptList button {
+  width: 100%;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--color-ink);
+  text-align: left;
+  cursor: pointer;
+}
+
+.promptList button:hover,
+.promptList button:focus-visible {
+  color: var(--color-primary);
+  outline: none;
+}
+
+.composer {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  gap: 12px;
+  align-items: end;
+  padding: 12px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fafafc;
+}
+
+.composerTools {
+  display: flex;
+  gap: 4px;
+  align-self: center;
+}
+
+.composer :global(.ant-input) {
+  border: 0;
+  background: transparent;
+  box-shadow: none;
+  resize: none;
+}
+
+@media (max-width: 900px) {
+  .cardGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 560px) {
+  .cardGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .composerTools {
+    justify-content: flex-start;
+  }
+}

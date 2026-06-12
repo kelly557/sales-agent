@@ -1,0 +1,120 @@
+# 依赖目录（最大的Token消耗源）
+node_modules/
+venv/
+.venv/
+.venv-*/
+.venv-image/
+vendor/
+.pnpm-store/
+.yarn/
+.npm/
+
+# 构建输出
+dist/
+build/
+.next/
+.out/
+.output/
+.astro/
+.turbo/
+.parcel-cache/
+
+# 版本控制
+.git/
+.svn/
+.hg/
+
+# 日志和临时文件
+*.log
+*.tmp
+.DS_Store
+Thumbs.db
+
+# 二进制文件
+*.db
+*.sqlite
+*.bin
+*.exe
+*.dll
+*.so
+*.dylib
+*.zip
+*.tar
+*.gz
+
+# IDE和配置文件
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# 文档和媒体
+*.pdf
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.webp
+*.mp4
+*.webm
+
+# 生成型办公交付物
+*.pptx
+*.docx
+*.xlsx
+
+# TypeScript / Vite 缓存
+*.tsbuildinfo
+.vite/
+frontend/.vite/
+frontend/.cache/
+
+# Python 测试与缓存
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# 本地测试输出
+test-logs/
+logs/
+server.log
+frontend/test-results/
+frontend/playwright-report/
+frontend/coverage/
+screenshots/
+videos/
+recordings/
+
+# 临时文本与调试产物
+temp_*
+debug-*
+*.bak
+
+# 生成文档
+server/generated-documents/
+
+# 数据库与本地数据
+prisma/dev.db
+
+# 本地环境变量与密钥
+.env
+.env.*
+*.pem
+*.key
+*.cert
+*.crt
+
+# 覆盖率与测试报告
+coverage/
+htmlcov/
+
+# 常见运行缓存
+.cache/
+.tmp/
+temp/
+
+# 上传或导出的本地产物
+uploads/
+downloads/
+export/
+exports/

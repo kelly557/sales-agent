@@ -1,0 +1,1056 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工程行业文档 Agent 产品方案 - 一页式信息图</title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --bg-grid: rgba(74, 91, 94, .055);
+      --panel: rgba(255, 255, 255, .9);
+      --panel-soft: #f2f6f5;
+      --ink: #344246;
+      --muted: #6e7d80;
+      --faint: #94a0a1;
+      --line: #cfd6d6;
+      --line-soft: #dfe4e2;
+      --teal: #1f9aae;
+      --teal-dark: #2f7f8e;
+      --blue: #2d7892;
+      --aqua: #86c8c7;
+      --orange: #f0ba58;
+      --red: #ef604d;
+      --green: #74b7a7;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #dadfdd;
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+    }
+
+    .stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      margin: 0 auto;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, var(--bg-grid) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(var(--bg-grid) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(180deg, #f7f7f4 0%, #eeeeea 100%);
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 0 31.7%, rgba(185, 191, 190, .68) 31.7% 31.78%, transparent 31.78% 68.2%, rgba(185, 191, 190, .68) 68.2% 68.28%, transparent 68.28%),
+        radial-gradient(circle at 50% 44%, rgba(31, 154, 174, .08), transparent 33%);
+      pointer-events: none;
+    }
+
+    .topbar {
+      position: absolute;
+      left: 40px;
+      top: 20px;
+      width: 1840px;
+      height: 74px;
+      display: grid;
+      grid-template-columns: 560px 1fr 360px;
+      align-items: center;
+      gap: 28px;
+      border-bottom: 1px solid #c9d0cf;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mark {
+      width: 50px;
+      height: 50px;
+      position: relative;
+      border: 2px solid var(--teal);
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .mark::before,
+    .mark::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+    }
+
+    .mark::before {
+      inset: 9px;
+      border: 1px dashed rgba(31, 154, 174, .46);
+    }
+
+    .mark::after {
+      inset: 17px;
+      background: var(--teal);
+    }
+
+    h1, h2, h3, p { margin: 0; }
+    .brand h1 {
+      font-size: 25px;
+      line-height: 1.1;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .brand p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      letter-spacing: .3px;
+    }
+
+    .top-title {
+      text-align: center;
+      color: var(--teal-dark);
+      font-size: 17px;
+      font-weight: 850;
+    }
+
+    .top-meta {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .pill {
+      padding: 8px 12px;
+      border: 1px solid #bfc8c6;
+      background: #fff;
+      color: var(--teal-dark);
+      font-weight: 800;
+    }
+
+    .column {
+      position: absolute;
+      top: 116px;
+      bottom: 32px;
+    }
+
+    .left { left: 40px; width: 520px; }
+    .center { left: 592px; width: 736px; }
+    .right { right: 40px; width: 520px; }
+
+    .panel {
+      position: relative;
+      margin-bottom: 10px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      overflow: hidden;
+    }
+
+    .panel::before,
+    .panel::after {
+      content: "";
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-color: #b8c4c2;
+      pointer-events: none;
+    }
+
+    .panel::before {
+      left: -1px;
+      top: -1px;
+      border-left: 2px solid;
+      border-top: 2px solid;
+    }
+
+    .panel::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 2px solid;
+      border-bottom: 2px solid;
+    }
+
+    .panel-head {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 15px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(250, 250, 248, .74);
+    }
+
+    .panel-head h2 {
+      color: var(--ink);
+      font-size: 15px;
+      line-height: 1;
+      font-weight: 850;
+      letter-spacing: 0;
+    }
+
+    .panel-head span {
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .6px;
+    }
+
+    .panel-body { padding: 8px 14px 9px; }
+
+    .position { height: 150px; }
+    .statement {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+
+    .radar {
+      width: 82px;
+      height: 82px;
+      position: relative;
+      border: 1px solid var(--teal);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, transparent 33%, rgba(31, 154, 174, .13) 34%, transparent 35%),
+        conic-gradient(from 12deg, #2f9fb0, #86c8c7 34%, #f0ba58 63%, #ef604d 82%, #2f9fb0);
+    }
+
+    .radar::before {
+      content: "Agent";
+      position: absolute;
+      inset: 16px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fff;
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .statement h3 {
+      margin-bottom: 5px;
+      font-size: 16px;
+      line-height: 1.18;
+      font-weight: 900;
+    }
+
+    .statement p {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.32;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 6px;
+      margin-top: 6px;
+    }
+
+    .value-grid div,
+    .role-card,
+    .capability,
+    .industry-row,
+    .scope-grid div,
+    .orbit,
+    .metric,
+    .flow-item,
+    .stack-layer,
+    .risk-row,
+    .phase,
+    .doc-card,
+    .admin-card,
+    .task-row {
+      border: 1px solid #d5dcda;
+      background: rgba(250, 250, 248, .76);
+    }
+
+    .value-grid div {
+      min-height: 22px;
+      display: grid;
+      place-items: center;
+      color: var(--teal-dark);
+      font-size: 10px;
+      font-weight: 850;
+    }
+
+    .roles { height: 170px; }
+    .role-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .role-card {
+      min-height: 55px;
+      padding: 7px 8px;
+    }
+
+    .role-card h3 {
+      margin-bottom: 4px;
+      color: var(--teal-dark);
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+
+    .role-card p {
+      color: var(--muted);
+      font-size: 9.6px;
+      line-height: 1.26;
+    }
+
+    .capabilities { height: 210px; }
+    .cap-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .capability {
+      min-height: 69px;
+      padding: 8px 9px;
+      position: relative;
+    }
+
+    .capability b {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--ink);
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 900;
+    }
+
+    .capability b::before {
+      content: "";
+      width: 9px;
+      height: 9px;
+      background: var(--teal);
+      display: inline-block;
+    }
+
+    .capability p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 9.8px;
+      line-height: 1.25;
+    }
+
+    .capability em {
+      position: absolute;
+      right: 9px;
+      bottom: 7px;
+      color: var(--red);
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 850;
+    }
+
+    .industry { height: 230px; }
+    .industry-row {
+      display: grid;
+      grid-template-columns: 76px 72px 1fr;
+      gap: 7px;
+      align-items: center;
+      min-height: 28px;
+      margin-bottom: 5px;
+      padding: 4px 6px;
+      color: var(--muted);
+      font-size: 8.7px;
+      line-height: 1.12;
+    }
+
+    .industry-row b {
+      color: var(--ink);
+      font-size: 10px;
+    }
+
+    .industry-row strong {
+      color: var(--red);
+      font-size: 9.2px;
+    }
+
+    .scope { height: 132px; }
+    .scope-grid {
+      display: grid;
+      grid-template-columns: 82px 1fr 1fr 1fr;
+      font-size: 8.7px;
+      line-height: 1.08;
+    }
+
+    .scope-grid div {
+      min-height: 20px;
+      padding: 3px 5px;
+      color: var(--muted);
+      margin: -1px 0 0 -1px;
+    }
+
+    .scope-grid .head {
+      color: var(--teal-dark);
+      background: #eef5f4;
+      font-weight: 900;
+    }
+
+    .scope-grid .key {
+      color: var(--ink);
+      font-weight: 900;
+    }
+
+    .core { height: 344px; }
+    .core .panel-body {
+      position: relative;
+      height: 310px;
+      padding: 0;
+      background: radial-gradient(circle at 50% 48%, rgba(134, 200, 199, .24), rgba(255, 255, 255, .55) 66%);
+    }
+
+    .lines {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .lines line {
+      stroke: rgba(47, 127, 142, .34);
+      stroke-width: 1.4;
+    }
+
+    .system-core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 128px;
+      height: 128px;
+      transform: translate(-50%, -50%);
+      z-index: 3;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--teal);
+      border-radius: 50%;
+      background: #fff;
+      box-shadow: 0 0 0 12px rgba(31, 154, 174, .06);
+      text-align: center;
+    }
+
+    .system-core b {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 15px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .system-core span {
+      display: block;
+      width: 92px;
+      color: var(--muted);
+      font-size: 8.8px;
+      line-height: 1.2;
+    }
+
+    .orbit,
+    .metric {
+      position: absolute;
+      z-index: 2;
+      width: 184px;
+      height: 51px;
+      padding: 7px 8px;
+    }
+
+    .orbit h3,
+    .metric b {
+      margin-bottom: 4px;
+      color: var(--teal-dark);
+      font-size: 11px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .orbit p,
+    .metric p {
+      color: var(--muted);
+      font-size: 8.8px;
+      line-height: 1.18;
+    }
+
+    .o1 { left: 24px; top: 28px; }
+    .o2 { right: 24px; top: 28px; }
+    .o3 { left: 24px; top: 94px; }
+    .o4 { right: 24px; top: 94px; }
+    .m1 { left: 24px; top: 184px; }
+    .m2 { right: 24px; top: 184px; }
+    .m3 { left: 24px; top: 250px; }
+    .m4 { right: 24px; top: 250px; }
+
+    .workflow { height: 200px; }
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+
+    .flow-item {
+      position: relative;
+      min-height: 67px;
+      padding: 6px 7px;
+    }
+
+    .flow-num {
+      width: 21px;
+      height: 21px;
+      display: grid;
+      place-items: center;
+      margin-bottom: 4px;
+      border: 1px solid var(--teal);
+      border-radius: 50%;
+      background: #fff;
+      color: var(--teal-dark);
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .flow-item h3 {
+      margin-bottom: 4px;
+      font-size: 11.4px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .flow-item p {
+      color: var(--muted);
+      font-size: 8.7px;
+      line-height: 1.18;
+    }
+
+    .architecture { height: 160px; }
+    .stack {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px 10px;
+    }
+
+    .stack-layer {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      min-height: 35px;
+      align-items: center;
+      gap: 8px;
+      padding: 5px 8px;
+    }
+
+    .stack-layer b {
+      color: var(--teal-dark);
+      font-size: 11px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+
+    .stack-layer span {
+      color: var(--muted);
+      font-size: 9.2px;
+      line-height: 1.18;
+    }
+
+    .risk { height: 188px; }
+    .risk-row {
+      display: grid;
+      grid-template-columns: 76px 1fr 58px;
+      min-height: 28px;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 5px;
+      padding: 4px 7px;
+      color: var(--muted);
+      font-size: 9.4px;
+      line-height: 1.16;
+    }
+
+    .risk-row b {
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 900;
+    }
+
+    .risk-row strong {
+      color: var(--red);
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .taskmap { height: 205px; }
+    .task-rows {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+
+    .task-row {
+      min-height: 32px;
+      display: grid;
+      grid-template-columns: 58px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 5px 7px;
+      color: var(--muted);
+      font-size: 9.1px;
+      line-height: 1.2;
+    }
+
+    .task-row b {
+      color: var(--teal-dark);
+      font-size: 10.5px;
+      font-weight: 900;
+    }
+
+    .mvp { height: 244px; }
+    .timeline {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 15%;
+      right: 15%;
+      top: 26px;
+      height: 1px;
+      background: #8fb6bd;
+    }
+
+    .phase {
+      position: relative;
+      min-height: 155px;
+      padding: 44px 9px 9px;
+    }
+
+    .dot {
+      position: absolute;
+      left: 50%;
+      top: 14px;
+      width: 25px;
+      height: 25px;
+      transform: translateX(-50%);
+      border: 1px solid var(--teal);
+      border-radius: 50%;
+      background: #fff;
+      z-index: 2;
+    }
+
+    .dot::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+
+    .phase h3 {
+      margin-bottom: 7px;
+      color: var(--teal-dark);
+      font-size: 12px;
+      line-height: 1.22;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .phase ul {
+      margin: 0;
+      padding-left: 14px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.42;
+    }
+
+    .deliver { height: 214px; }
+    .deliver-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 9px;
+    }
+
+    .doc-card {
+      min-height: 62px;
+      display: grid;
+      grid-template-columns: 38px 1fr;
+      align-items: center;
+      gap: 9px;
+      padding: 8px;
+    }
+
+    .doc-icon {
+      width: 36px;
+      height: 42px;
+      display: grid;
+      place-items: end center;
+      padding-bottom: 7px;
+      background: #eef3f3;
+      color: var(--teal-dark);
+      font-size: 9px;
+      font-weight: 900;
+      position: relative;
+    }
+
+    .doc-icon::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 0;
+      height: 0;
+      border-top: 12px solid #d5dedc;
+      border-left: 12px solid transparent;
+    }
+
+    .doc-card b {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+
+    .doc-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 9.6px;
+      line-height: 1.26;
+    }
+
+    .integration { height: 144px; }
+    .admin-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .admin-card {
+      min-height: 78px;
+      padding: 8px;
+    }
+
+    .admin-card b {
+      display: block;
+      margin-bottom: 7px;
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .admin-card span {
+      color: var(--muted);
+      font-size: 9.2px;
+      line-height: 1.24;
+    }
+
+    .foot {
+      position: absolute;
+      bottom: 8px;
+      color: #8a9698;
+      font-size: 10px;
+      letter-spacing: .8px;
+    }
+
+    .foot.left-note { left: 40px; }
+    .foot.right-note { right: 40px; }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="工程行业文档 Agent 产品方案一页式信息图">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>工程行业文档 Agent 产品方案</h1>
+          <p>AGENT NATIVE ENGINEERING DOCUMENT WORKBENCH · PRODUCT PLAN INFOGRAPHIC</p>
+        </div>
+      </div>
+      <div class="top-title">用“我的项目”进入任务，用“项目上下文”约束 Agent 执行</div>
+      <div class="top-meta">
+        <span>1920×1080 汇报画布</span>
+        <span class="pill">查找 · 生成 · 计算 · 审核</span>
+      </div>
+    </header>
+
+    <section class="column left">
+      <article class="panel position">
+        <div class="panel-head"><h2>01 产品定位</h2><span>POSITION</span></div>
+        <div class="panel-body">
+          <div class="statement">
+            <div class="radar"></div>
+            <div>
+              <h3>不是文档管理系统，而是工程文档任务 Agent</h3>
+              <p>以“我的项目”作为轻量项目入口，以“项目上下文”作为 Agent 执行任务时的资料范围和输出归属，连接既有资料源，围绕查找、生成、计算、审核组织任务。</p>
+            </div>
+          </div>
+          <div class="value-grid">
+            <div>我的项目</div>
+            <div>集成资料源</div>
+            <div>任务编排</div>
+            <div>项目上下文</div>
+            <div>人工复核</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel roles">
+        <div class="panel-head"><h2>02 用户与使用目标</h2><span>USERS</span></div>
+        <div class="panel-body">
+          <div class="role-list">
+            <div class="role-card">
+              <h3>一线工程技术人员</h3>
+              <p>写方案、指导书、技术说明，查标准与资料，减少模板套用和依据遗漏。</p>
+            </div>
+            <div class="role-card">
+              <h3>项目交付与资料人员</h3>
+              <p>检查资料缺口、整理交付包、追踪异常资料，减少交付前集中补件。</p>
+            </div>
+            <div class="role-card">
+              <h3>技术销售与方案人员</h3>
+              <p>把产品、设备、案例资料转化为客户可用的方案、PPT 和技术答复。</p>
+            </div>
+            <div class="role-card">
+              <h3>知识/标准/实施人员</h3>
+              <p>维护模板、规则、行业包、知识源、权限与集成，约束 Agent 输出质量。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel capabilities">
+        <div class="panel-head"><h2>03 四类核心能力</h2><span>CAPABILITIES</span></div>
+        <div class="panel-body">
+          <div class="cap-grid">
+            <div class="capability">
+              <b>查找</b>
+              <p>标准规范、设备资料、历史案例、项目资料定位；输出资料列表、引用依据和适用性说明。</p>
+              <em>依据在哪里</em>
+            </div>
+            <div class="capability">
+              <b>生成</b>
+              <p>工程方案、作业指导书、技术说明书、推广材料、交付报告；保留证据包。</p>
+              <em>如何成稿</em>
+            </div>
+            <div class="capability">
+              <b>计算</b>
+              <p>工程参数、材料用量、资料完整率、版本差异；输出过程说明、来源和异常提示。</p>
+              <em>数值是否合理</em>
+            </div>
+            <div class="capability">
+              <b>审核</b>
+              <p>技术符合性、资料缺口、设备资料完整性、变更影响；输出矩阵、风险与补件建议。</p>
+              <em>哪里有风险</em>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel industry">
+        <div class="panel-head"><h2>04 行业场景与行业包</h2><span>SCENARIOS</span></div>
+        <div class="panel-body">
+          <div class="industry-row"><b>第一梯队</b><strong>涂料 / 装备 / 电力设备 / 化工设备</strong><span>文档生成价值强，产品和设备资料相对可结构化，销售与交付均有需求。</span></div>
+          <div class="industry-row"><b>第二梯队</b><strong>能源 / 电力 / 轨交 / 化工</strong><span>交付资料和合规审核价值高，但行业门槛、规则复杂度和实施深度更高。</span></div>
+          <div class="industry-row"><b>第三梯队</b><strong>建筑 / 基建 / 水利 / 矿山</strong><span>资料量大、任务高频，但现场资料更脏，流程依赖和客户集成要求更重。</span></div>
+          <div class="industry-row"><b>行业包内容</b><strong>术语 / 对象 / 文档类型 / 规则</strong><span>行业术语、工程对象、文档类型、默认模板、默认规则和 Agent 工作流。</span></div>
+          <div class="industry-row"><b>典型对象</b><strong>设备 / 材料 / 图纸 / 报告</strong><span>底材、涂层体系、BOM、P&ID、定值单、接口文件、检验批、验收资料。</span></div>
+        </div>
+      </article>
+
+      <article class="panel scope">
+        <div class="panel-head"><h2>05 产品边界</h2><span>BOUNDARY</span></div>
+        <div class="panel-body">
+          <div class="scope-grid">
+            <div class="head">类型</div><div class="head">明确要做</div><div class="head">明确不做</div><div class="head">控制口径</div>
+            <div class="key">入口</div><div>我的项目轻量入口</div><div>项目进度/成本/采购</div><div>按系统权限呈现</div>
+            <div class="key">执行</div><div>项目上下文约束任务</div><div>OA/合同/通用网盘</div><div>资料范围与输出归属</div>
+            <div class="key">输出</div><div>可追溯可复核交付物</div><div>无法溯源的工程事实</div><div>审计与人工确认</div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="column center">
+      <article class="panel core">
+        <div class="panel-head"><h2>06 核心机制：我的项目 + 项目上下文 + Agent 任务引擎</h2><span>CORE MODEL</span></div>
+        <div class="panel-body">
+          <svg class="lines" viewBox="0 0 736 316" preserveAspectRatio="none" aria-hidden="true">
+            <line x1="368" y1="158" x2="208" y2="54"></line>
+            <line x1="368" y1="158" x2="528" y2="54"></line>
+            <line x1="368" y1="158" x2="208" y2="120"></line>
+            <line x1="368" y1="158" x2="528" y2="120"></line>
+            <line x1="368" y1="158" x2="208" y2="210"></line>
+            <line x1="368" y1="158" x2="528" y2="210"></line>
+            <line x1="368" y1="158" x2="208" y2="276"></line>
+            <line x1="368" y1="158" x2="528" y2="276"></line>
+          </svg>
+          <div class="orbit o1">
+            <h3>我的项目</h3>
+            <p>最近访问、我参与的、我创建的、已收藏、全部项目按权限呈现。</p>
+          </div>
+          <div class="orbit o2">
+            <h3>轻量集成中心</h3>
+            <p>企业微信/飞书/钉钉、API 查询、文件源、输出回写和 Office/WPS 导出。</p>
+          </div>
+          <div class="orbit o3">
+            <h3>项目上下文</h3>
+            <p>当前项目、行业场景、工程对象、资料范围、输出归属和权限约束。</p>
+          </div>
+          <div class="orbit o4">
+            <h3>配置中心</h3>
+            <p>模板、行业包、规则、知识源、集成配置、用户权限和分层覆盖。</p>
+          </div>
+          <div class="system-core">
+            <div>
+              <b>Agent 任务引擎</b>
+              <span>规划步骤、检索证据、调用工具、生成结果、标记风险。</span>
+            </div>
+          </div>
+          <div class="metric m1"><b>任务输入</b><p>输入任务、上传资料，选择我的项目、行业、模板和输出格式。</p></div>
+          <div class="metric m2"><b>执行过程</b><p>引用项目资料、知识库、API 查询结果和本地上传文件。</p></div>
+          <div class="metric m3"><b>人工确认</b><p>风险、缺失、冲突、低置信内容进入人工复核队列。</p></div>
+          <div class="metric m4"><b>交付沉淀</b><p>导出 Word/PPT/PDF/Excel，进入我的交付物并沉淀案例与规则。</p></div>
+        </div>
+      </article>
+
+      <article class="panel workflow">
+        <div class="panel-head"><h2>07 端到端任务执行流程</h2><span>WORKFLOW</span></div>
+        <div class="panel-body">
+          <div class="flow-grid">
+            <div class="flow-item"><div class="flow-num">01</div><h3>进入首页</h3><p>选择“我的项目”中的项目，或创建轻量项目后输入任务。</p></div>
+            <div class="flow-item"><div class="flow-num">02</div><h3>形成上下文</h3><p>确认当前项目、行业场景、工程对象、资料范围和输出归属。</p></div>
+            <div class="flow-item"><div class="flow-num">03</div><h3>解析资料</h3><p>识别文件类型、编号、版本、签章、表格字段和关键参数。</p></div>
+            <div class="flow-item"><div class="flow-num">04</div><h3>执行任务</h3><p>查找依据、生成正文、计算参数、形成审查矩阵。</p></div>
+            <div class="flow-item"><div class="flow-num">05</div><h3>提示缺失</h3><p>发现缺少条件或资料时追问用户并回到资料选择。</p></div>
+            <div class="flow-item"><div class="flow-num">06</div><h3>审阅确认</h3><p>人工查看引用、风险、缺口和需确认项，必要时重跑。</p></div>
+            <div class="flow-item"><div class="flow-num">07</div><h3>导出回写</h3><p>输出可编辑交付物，推送消息或通过 API 回写外部系统。</p></div>
+            <div class="flow-item"><div class="flow-num">08</div><h3>资产沉淀</h3><p>将结果沉淀为项目资产、案例、模板、术语或规则。</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel architecture">
+        <div class="panel-head"><h2>08 产品主结构与信息架构</h2><span>IA</span></div>
+        <div class="panel-body">
+          <div class="stack">
+            <div class="stack-layer"><b>Agent 首页</b><span>新任务、最近任务、我的项目入口、四类能力卡片和底部任务输入框。</span></div>
+            <div class="stack-layer"><b>我的项目</b><span>最近访问、我参与的、我创建的、已收藏、全部项目按权限展示。</span></div>
+            <div class="stack-layer"><b>任务执行页</b><span>三栏结构：任务上下文、Agent 执行过程、结果与风险。</span></div>
+            <div class="stack-layer"><b>行业场景</b><span>术语库、对象模型、文档类型、默认模板、默认规则和工作流。</span></div>
+            <div class="stack-layer"><b>集成中心</b><span>P0 消息协同、API 查询、文件源；P1 输出回写和 Office/WPS 导出。</span></div>
+            <div class="stack-layer"><b>配置中心</b><span>模板、行业包、规则、知识源、集成配置、用户与权限。</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel risk">
+        <div class="panel-head"><h2>09 可追溯生成与治理约束</h2><span>TRACEABILITY</span></div>
+        <div class="panel-body">
+          <div class="risk-row"><b>事实内容</b><span>必须来自资料库、标准、产品资料、历史文档或人工确认。</span><strong>必须</strong></div>
+          <div class="risk-row"><b>表达内容</b><span>允许 Agent 重组、润色、扩写，但需保留依据与风险标记。</span><strong>可生成</strong></div>
+          <div class="risk-row"><b>规则层级</b><span>平台规则、企业规则、行业规则、项目规则、任务规则分层覆盖。</span><strong>可配置</strong></div>
+          <div class="risk-row"><b>版本审计</b><span>记录资料版本、API 调用、生成时间、人工修改和导出版本。</span><strong>闭环</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="column right">
+      <article class="panel taskmap">
+        <div class="panel-head"><h2>10 核心任务清单</h2><span>TASK MAP</span></div>
+        <div class="panel-body">
+          <div class="task-rows">
+            <div class="task-row"><b>规范查找</b><span>标准条款、引用依据、适用性说明。</span></div>
+            <div class="task-row"><b>资料定位</b><span>我的项目、文件源、版本、来源链接。</span></div>
+            <div class="task-row"><b>方案生成</b><span>Word/PDF 初稿与引用证据包。</span></div>
+            <div class="task-row"><b>指导书</b><span>作业对象、工艺、材料、安全要求。</span></div>
+            <div class="task-row"><b>推广材料</b><span>PPT/PDF、话术、案例和证据。</span></div>
+            <div class="task-row"><b>API 查询</b><span>产品参数、标准条款、设备台账、BOM。</span></div>
+            <div class="task-row"><b>完整率</b><span>完整率、缺口数量、异常统计。</span></div>
+            <div class="task-row"><b>符合性</b><span>审查矩阵、风险项、引用页码。</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel mvp">
+        <div class="panel-head"><h2>11 落地路线</h2><span>ROADMAP</span></div>
+        <div class="panel-body">
+          <div class="timeline">
+            <div class="phase">
+              <div class="dot"></div>
+              <h3>阶段 1：可用任务闭环</h3>
+              <ul>
+                <li>Agent 首页与我的项目</li>
+                <li>方案/指导书生成</li>
+                <li>标准与资料引用</li>
+                <li>Word/PDF 导出</li>
+              </ul>
+            </div>
+            <div class="phase">
+              <div class="dot"></div>
+              <h3>阶段 2：交付与审核</h3>
+              <ul>
+                <li>资料缺口审核</li>
+                <li>设备资料完整性</li>
+                <li>审查矩阵导出</li>
+                <li>消息推送/API 回写</li>
+              </ul>
+            </div>
+            <div class="phase">
+              <div class="dot"></div>
+              <h3>阶段 3：行业化扩展</h3>
+              <ul>
+                <li>配置中心分层覆盖</li>
+                <li>规则与模板运营</li>
+                <li>变更影响审核</li>
+                <li>案例沉淀复用</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel deliver">
+        <div class="panel-head"><h2>12 交付物与输出格式</h2><span>DELIVERABLES</span></div>
+        <div class="panel-body">
+          <div class="deliver-grid">
+            <div class="doc-card"><div class="doc-icon">DOC</div><div><b>方案 / 指导书 / 报告</b><span>可编辑正文、章节结构、依据引用、需确认项。</span></div></div>
+            <div class="doc-card"><div class="doc-icon">PPT</div><div><b>解决方案 / 推广材料</b><span>客户场景、产品资料、案例、优势与证据包。</span></div></div>
+            <div class="doc-card"><div class="doc-icon">XLS</div><div><b>计算表 / 审核矩阵</b><span>参数来源、计算过程、风险等级、引用页码。</span></div></div>
+            <div class="doc-card"><div class="doc-icon">ZIP</div><div><b>交付包 / 补件清单</b><span>目录结构、缺失资料、异常资料和补件建议。</span></div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel integration">
+        <div class="panel-head"><h2>13 集成与后台运营</h2><span>ADMIN</span></div>
+        <div class="panel-body">
+          <div class="admin-grid">
+            <div class="admin-card"><b>轻量集成</b><span>P0 消息协同、API 查询、文件源；P1 输出回写和 Office 导出。</span></div>
+            <div class="admin-card"><b>任务级调用</b><span>任务页只暴露资料源/API，隐藏复杂配置并保留调用记录。</span></div>
+            <div class="admin-card"><b>分层配置</b><span>平台默认、企业自定义、项目覆盖、任务临时选择。</span></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="foot left-note">SOURCE: engineering-document-agent-product-plan.md</div>
+    <div class="foot right-note">VISUAL STANDARD: infographic-product-design-playbook.md · LIGHT HIGH-DENSITY INFOGRAPHIC</div>
+  </main>
+</body>
+</html>

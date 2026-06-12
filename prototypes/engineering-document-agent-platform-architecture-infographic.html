@@ -1,0 +1,1121 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 销售助手架构图</title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --panel: rgba(255, 255, 255, .9);
+      --soft: #eef4f3;
+      --ink: #344246;
+      --muted: #6e7d80;
+      --faint: #8c999b;
+      --line: #cbd5d4;
+      --line-soft: #dfe6e4;
+      --teal: #1f9aae;
+      --teal-dark: #2f7f8e;
+      --blue: #2d7892;
+      --aqua: #86c8c7;
+      --orange: #f0ba58;
+      --red: #ef604d;
+      --green: #74b7a7;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #d9dedc;
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .stage {
+      position: relative;
+      width: 1920px;
+      height: 1350px;
+      margin: 0 auto;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(74, 91, 94, .055) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(rgba(74, 91, 94, .045) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(180deg, #f7f7f4 0%, #eeeeea 100%);
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 0 33.2%, rgba(185, 191, 190, .44) 33.2% 33.25%, transparent 33.25% 66.55%, rgba(185, 191, 190, .44) 66.55% 66.6%, transparent 66.6%),
+        radial-gradient(circle at 47% 31%, rgba(31, 154, 174, .12), transparent 31%),
+        radial-gradient(circle at 12% 84%, rgba(240, 186, 88, .1), transparent 19%),
+        radial-gradient(circle at 88% 86%, rgba(239, 96, 77, .07), transparent 22%);
+      pointer-events: none;
+    }
+
+    .topbar {
+      position: absolute;
+      left: 44px;
+      top: 24px;
+      width: 1832px;
+      height: 88px;
+      display: grid;
+      grid-template-columns: 640px 1fr 380px;
+      gap: 26px;
+      align-items: center;
+      border-bottom: 1px solid #c9d0cf;
+    }
+
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .mark {
+      width: 56px;
+      height: 56px;
+      border: 2px solid var(--teal);
+      border-radius: 50%;
+      background: #fff;
+      position: relative;
+    }
+    .mark::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(31, 154, 174, .48);
+      border-radius: 50%;
+    }
+    .mark::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 50%;
+      background: conic-gradient(from 20deg, var(--teal), var(--aqua), #fff 0 33%, var(--orange), var(--red), var(--teal));
+    }
+    .brand h1 {
+      font-size: 30px;
+      line-height: 1.1;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .brand p {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.28;
+    }
+    .top-title {
+      color: var(--teal-dark);
+      font-size: 20px;
+      line-height: 1.42;
+      text-align: center;
+      font-weight: 850;
+    }
+    .top-meta {
+      justify-self: end;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+      white-space: nowrap;
+    }
+    .pill {
+      padding: 8px 12px;
+      border: 1px solid #bfc8c6;
+      background: #fff;
+      color: var(--teal-dark);
+      font-weight: 850;
+    }
+
+    .canvas {
+      position: absolute;
+      left: 44px;
+      top: 132px;
+      width: 1832px;
+      height: 1188px;
+    }
+
+    .architecture {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1832px;
+      height: 706px;
+    }
+
+    .left-map {
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 1338px;
+      height: 706px;
+    }
+
+    .layer {
+      position: absolute;
+      left: 0;
+      width: 1218px;
+      border: 1px solid var(--line);
+      background: var(--panel);
+      z-index: 2;
+    }
+    .l1 { top: 0; height: 104px; }
+    .l2 { top: 132px; height: 90px; }
+    .l3 { top: 250px; height: 132px; border-color: rgba(31, 154, 174, .58); }
+    .l4 { top: 406px; height: 94px; border-color: rgba(31, 154, 174, .5); }
+    .l5 { top: 524px; height: 84px; }
+    .l6 { top: 632px; height: 74px; }
+
+    .layer-head {
+      height: 32px;
+      display: grid;
+      grid-template-columns: 240px 1fr 160px;
+      align-items: center;
+      gap: 12px;
+      padding: 0 12px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(250, 250, 248, .76);
+    }
+    .layer-head b {
+      color: var(--teal-dark);
+      font-size: 14px;
+      font-weight: 900;
+    }
+    .layer-head span {
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1;
+    }
+    .layer-head em {
+      color: var(--faint);
+      text-align: right;
+      font-size: 10px;
+      font-style: normal;
+      font-weight: 850;
+    }
+
+    .layer-body { padding: 8px 12px; }
+    .industry-row {
+      display: grid;
+      grid-template-columns: repeat(10, 1fr);
+      gap: 6px;
+      margin-bottom: 7px;
+    }
+    .tag {
+      min-height: 20px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--line-soft);
+      background: #fff;
+      color: #46575b;
+      font-size: 10px;
+      font-weight: 800;
+      text-align: center;
+    }
+    .channels {
+      display: grid;
+      grid-template-columns: 1fr 1fr 2.2fr;
+      gap: 8px;
+    }
+    .channel {
+      border: 1px solid #d5dcda;
+      background: var(--soft);
+      padding: 5px 10px;
+      font-size: 12px;
+      line-height: 1.2;
+      font-weight: 850;
+    }
+    .channel span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 9px;
+      font-weight: 600;
+    }
+
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .cap-card {
+      min-height: 52px;
+      border: 1px solid #d5dcda;
+      background: #fff;
+      padding: 7px 9px 7px 12px;
+      position: relative;
+    }
+    .cap-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--aqua);
+    }
+    .cap-card b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+    .cap-card p {
+      color: var(--muted);
+      font-size: 9.6px;
+      line-height: 1.35;
+    }
+
+    .brain {
+      display: grid;
+      grid-template-columns: 1.05fr 1fr 1.82fr;
+      gap: 10px;
+      height: 94px;
+    }
+    .brain-card,
+    .unify-card,
+    .skill-card,
+    .repo-card,
+    .source-card,
+    .panel,
+    .table-card {
+      border: 1px solid #d5dcda;
+      background: #fff;
+    }
+    .brain-card { padding: 8px; }
+    .brain-card.hermes {
+      border-color: rgba(31, 154, 174, .56);
+      background: linear-gradient(135deg, #fff, rgba(238, 249, 248, .9));
+    }
+    .brain-card b,
+    .unify-card b,
+    .skill-card b,
+    .repo-card b,
+    .source-card b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--teal-dark);
+      font-size: 12px;
+      line-height: 1.12;
+      font-weight: 900;
+    }
+    .brain-card p,
+    .unify-card p,
+    .skill-card p,
+    .repo-card p,
+    .source-card p {
+      color: var(--muted);
+      font-size: 9.3px;
+      line-height: 1.35;
+    }
+    .unify-grid {
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 7px;
+    }
+    .unify-card {
+      min-height: 46px;
+      padding: 6px 8px;
+      border-color: rgba(31, 154, 174, .38);
+      background: #fff;
+      position: relative;
+    }
+    .unify-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--teal);
+    }
+    .unify-card:nth-child(2)::before { background: var(--blue); }
+    .unify-card:nth-child(3)::before { background: var(--orange); }
+    .unify-card:nth-child(4)::before { background: var(--green); }
+    .unify-card:nth-child(5)::before { background: var(--aqua); }
+    .unify-card:nth-child(6)::before { background: var(--red); }
+    .unify-card b { margin-bottom: 3px; font-size: 9.5px; }
+    .unify-card p { font-size: 7.7px; line-height: 1.22; }
+    .route {
+      margin-top: 6px;
+      display: grid;
+      grid-template-columns: 1fr 34px 1fr;
+      align-items: center;
+      gap: 5px;
+      color: var(--ink);
+      font-size: 10px;
+      font-weight: 850;
+    }
+    .arrow-box {
+      color: var(--teal);
+      text-align: center;
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .skill-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+    }
+    .skill-card { min-height: 39px; padding: 6px 7px; }
+    .skill-card b { margin-bottom: 4px; font-size: 10.2px; }
+    .skill-card p { font-size: 8.45px; }
+
+    .repo-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+    .repo-card { min-height: 44px; padding: 6px 8px; }
+    .repo-card.hermes {
+      border-color: rgba(31, 154, 174, .48);
+      background: rgba(238, 249, 248, .84);
+    }
+    .repo-card b { margin-bottom: 4px; font-size: 10px; }
+    .repo-card p { font-size: 7.8px; line-height: 1.24; }
+
+    .source-grid {
+      display: grid;
+      grid-template-columns: 1.05fr 1.25fr .95fr;
+      gap: 8px;
+    }
+    .source-card { min-height: 42px; padding: 5px 9px; }
+    .source-card b { color: var(--ink); font-size: 10.5px; }
+    .source-card p { font-size: 7.75px; line-height: 1.2; }
+    .source-card strong {
+      color: var(--teal-dark);
+      font-size: 9px;
+      font-weight: 900;
+    }
+
+    .governance {
+      position: absolute;
+      right: 0;
+      top: 238px;
+      width: 100px;
+      height: 474px;
+      border: 1px solid rgba(47, 127, 142, .5);
+      background: rgba(255, 255, 255, .8);
+      z-index: 4;
+    }
+    .governance b {
+      position: absolute;
+      left: 20px;
+      top: 34px;
+      width: 60px;
+      color: var(--teal-dark);
+      font-size: 19px;
+      line-height: 1.34;
+      text-align: center;
+      font-weight: 900;
+    }
+    .governance p {
+      position: absolute;
+      left: 13px;
+      right: 13px;
+      bottom: 22px;
+      color: var(--muted);
+      font-size: 9.5px;
+      line-height: 1.36;
+      text-align: center;
+    }
+
+    .flow-svg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .flow-svg path,
+    .flow-svg line {
+      fill: none;
+      stroke: rgba(47, 127, 142, .43);
+      stroke-width: 2;
+    }
+    .flow-svg .up { stroke: rgba(31, 154, 174, .52); }
+    .flow-svg .down { stroke: rgba(240, 186, 88, .64); }
+    .flow-svg text {
+      fill: var(--muted);
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .ribbon {
+      position: absolute;
+      left: 0;
+      right: 120px;
+      height: 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border: 1px solid #d8e0de;
+      background: rgba(250, 250, 248, .8);
+      color: var(--muted);
+      font-size: 10px;
+      font-weight: 850;
+      letter-spacing: 0;
+      z-index: 3;
+    }
+    .ribbon i {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-style: normal;
+    }
+    .ribbon span {
+      color: var(--teal-dark);
+    }
+    .r1 { top: 108px; }
+    .r2 { top: 226px; }
+    .r3 { top: 386px; }
+    .r4 { top: 504px; }
+    .r5 { top: 612px; }
+
+    .right-column {
+      position: absolute;
+      right: 0;
+      top: 0;
+      width: 494px;
+      height: 706px;
+      display: grid;
+      grid-template-rows: 230px 274px 1fr;
+      gap: 10px;
+    }
+    .panel {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .88);
+    }
+    .panel::before,
+    .panel::after,
+    .table-card::before,
+    .table-card::after {
+      content: "";
+      position: absolute;
+      width: 26px;
+      height: 26px;
+      border-color: #b8c4c2;
+      pointer-events: none;
+    }
+    .panel::before,
+    .table-card::before {
+      left: -1px;
+      top: -1px;
+      border-left: 2px solid;
+      border-top: 2px solid;
+    }
+    .panel::after,
+    .table-card::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 2px solid;
+      border-bottom: 2px solid;
+    }
+    .panel-head {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 13px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(250, 250, 248, .75);
+    }
+    .panel-head h2 {
+      color: var(--ink);
+      font-size: 14px;
+      font-weight: 850;
+    }
+    .panel-head span {
+      color: var(--teal);
+      font-size: 9px;
+      font-weight: 900;
+    }
+    .panel-body { padding: 9px 12px; }
+    .mini-table { display: grid; gap: 0; }
+    .mini-row {
+      display: grid;
+      grid-template-columns: 108px 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 6px 0;
+      border-bottom: 1px solid #edf0ef;
+    }
+    .mini-row:last-child { border-bottom: 0; }
+    .mini-row b {
+      color: var(--teal-dark);
+      font-size: 10.2px;
+      line-height: 1.25;
+      font-weight: 900;
+    }
+    .mini-row span {
+      color: var(--muted);
+      font-size: 8.8px;
+      line-height: 1.34;
+    }
+
+    .data-section {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 1832px;
+      height: 462px;
+      display: grid;
+      grid-template-columns: 1fr;
+    }
+    .table-card {
+      position: relative;
+      overflow: hidden;
+      background: rgba(255, 255, 255, .9);
+    }
+    .table-title {
+      height: 38px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(250, 250, 248, .78);
+    }
+    .table-title b {
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 900;
+    }
+    .table-title span {
+      color: var(--teal);
+      font-size: 9px;
+      font-weight: 900;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    th,
+    td {
+      border-right: 1px solid #edf0ef;
+      border-bottom: 1px solid #edf0ef;
+      vertical-align: top;
+      text-align: left;
+    }
+    th {
+      height: 26px;
+      padding: 5px 8px;
+      color: var(--teal-dark);
+      background: rgba(238, 244, 243, .78);
+      font-size: 10px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+    td {
+      padding: 4px 8px;
+      color: var(--muted);
+      font-size: 8.8px;
+      line-height: 1.22;
+    }
+    td:first-child {
+      color: var(--ink);
+      font-weight: 850;
+    }
+    .ability-table th:first-child,
+    .ability-table td:first-child { width: 128px; }
+    .source-table th:first-child,
+    .source-table td:first-child { width: 86px; }
+    .source-table th:last-child,
+    .source-table td:last-child { width: 126px; }
+
+    .tree-wrap {
+      display: grid;
+      grid-template-columns: 280px 1fr 430px;
+      gap: 12px;
+      padding: 12px;
+      height: calc(100% - 38px);
+    }
+    .tree-col {
+      border: 1px solid #e2e8e6;
+      background: #fff;
+      overflow: hidden;
+    }
+    .tree-col-head {
+      height: 30px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      border-bottom: 1px solid #edf0ef;
+      background: rgba(238, 244, 243, .72);
+      color: var(--teal-dark);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .tree-col-body {
+      padding: 7px 9px;
+      height: calc(100% - 30px);
+      overflow: hidden;
+    }
+    .tree-list {
+      display: grid;
+      gap: 4px;
+    }
+    .tree-item {
+      border: 1px solid #e6ecea;
+      background: #fff;
+      padding: 5px 7px;
+      font-size: 8.4px;
+      line-height: 1.18;
+      color: var(--muted);
+    }
+    .tree-item b {
+      display: inline;
+      margin-right: 4px;
+      color: var(--ink);
+      font-size: 9.2px;
+      font-weight: 900;
+    }
+    .tree-chain {
+      display: grid;
+      gap: 10px;
+      height: 100%;
+    }
+    .chain-row {
+      display: grid;
+      grid-template-columns: 1fr 30px 1fr;
+      gap: 8px;
+      align-items: center;
+    }
+    .chain-arrow {
+      text-align: center;
+      color: var(--teal);
+      font-size: 18px;
+      font-weight: 900;
+    }
+    .chain-node {
+      border: 1px solid #d8e0de;
+      background: rgba(255,255,255,.96);
+      padding: 8px 10px;
+      font-size: 9.2px;
+      line-height: 1.26;
+      color: var(--muted);
+      min-height: 58px;
+    }
+    .chain-node b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--teal-dark);
+      font-size: 10.6px;
+      font-weight: 900;
+    }
+    .source-stack {
+      display: grid;
+      gap: 8px;
+    }
+    .source-group {
+      border: 1px solid #e6ecea;
+      background: #fff;
+      padding: 8px 10px;
+    }
+    .source-group b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--ink);
+      font-size: 10.6px;
+      line-height: 1.2;
+      font-weight: 900;
+    }
+    .source-group p {
+      color: var(--muted);
+      font-size: 9px;
+      line-height: 1.34;
+    }
+
+    .access-wrap {
+      display: grid;
+      grid-template-columns: 492px 1fr 522px;
+      gap: 12px;
+      padding: 12px;
+      height: calc(100% - 38px);
+    }
+    .access-col,
+    .mapping-col,
+    .contract-col {
+      border: 1px solid #e2e8e6;
+      background: #fff;
+      overflow: hidden;
+      min-height: 0;
+    }
+    .access-head {
+      height: 30px;
+      padding: 0 10px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 1px solid #edf0ef;
+      background: rgba(238, 244, 243, .72);
+      color: var(--teal-dark);
+      font-size: 11px;
+      font-weight: 900;
+    }
+    .access-head span {
+      color: var(--faint);
+      font-size: 8.5px;
+      font-weight: 850;
+    }
+    .access-body {
+      padding: 8px 9px;
+      height: calc(100% - 30px);
+      overflow: hidden;
+    }
+    .access-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 7px;
+    }
+    .access-card {
+      min-height: 64px;
+      border: 1px solid #e6ecea;
+      background: #fff;
+      padding: 7px 8px;
+      position: relative;
+    }
+    .access-card::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      width: 4px;
+      height: 100%;
+      background: var(--green);
+    }
+    .access-card:nth-child(2)::before { background: var(--teal); }
+    .access-card:nth-child(3)::before { background: var(--orange); }
+    .access-card:nth-child(4)::before { background: var(--blue); }
+    .access-card:nth-child(5)::before { background: var(--red); }
+    .access-card:nth-child(6)::before { background: var(--aqua); }
+    .access-card b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--ink);
+      font-size: 10.2px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+    .access-card p {
+      color: var(--muted);
+      font-size: 8.55px;
+      line-height: 1.28;
+    }
+    .pipeline {
+      margin-top: 8px;
+      display: grid;
+      grid-template-columns: 1fr 22px 1fr 22px 1fr;
+      align-items: stretch;
+      gap: 5px;
+    }
+    .pipe-node {
+      border: 1px solid #d8e0de;
+      background: rgba(238, 249, 248, .72);
+      padding: 6px 7px;
+      color: var(--muted);
+      font-size: 8.45px;
+      line-height: 1.23;
+    }
+    .pipe-node b {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--teal-dark);
+      font-size: 9.6px;
+      font-weight: 900;
+    }
+    .pipe-arrow {
+      display: grid;
+      place-items: center;
+      color: var(--teal);
+      font-size: 16px;
+      font-weight: 900;
+    }
+    .contract-list {
+      display: grid;
+      gap: 5px;
+    }
+    .contract-item {
+      border: 1px solid #e6ecea;
+      background: #fff;
+      padding: 6px 8px;
+      display: grid;
+      grid-template-columns: 92px 1fr;
+      gap: 8px;
+      min-height: 43px;
+    }
+    .contract-item b {
+      color: var(--ink);
+      font-size: 9.6px;
+      line-height: 1.24;
+      font-weight: 900;
+    }
+    .contract-item span {
+      color: var(--muted);
+      font-size: 8.35px;
+      line-height: 1.27;
+    }
+    .mapping-table th,
+    .mapping-table td {
+      padding: 4px 6px;
+      font-size: 8.2px;
+      line-height: 1.2;
+    }
+    .mapping-table th:first-child,
+    .mapping-table td:first-child { width: 72px; }
+    .mapping-table th:nth-child(2),
+    .mapping-table td:nth-child(2) { width: 132px; }
+    .mapping-table th:nth-child(3),
+    .mapping-table td:nth-child(3) { width: 126px; }
+    .mapping-table th:last-child,
+    .mapping-table td:last-child { width: 156px; }
+    .mapping-table td code,
+    .contract-item code,
+    .pipe-node code {
+      color: var(--teal-dark);
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 8.1px;
+      font-weight: 850;
+    }
+
+    .foot {
+      position: absolute;
+      bottom: 6px;
+      color: #8a9698;
+      font-size: 10px;
+      letter-spacing: .5px;
+    }
+    .left-foot { left: 44px; }
+    .right-foot { right: 44px; }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="AI 销售助手架构图">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>AI 销售助手架构图</h1>
+          <p>CHANNEL · CAPABILITY · AGENT ORCHESTRATION · KNOWLEDGE ASSET · ENTERPRISE INTEGRATION</p>
+        </div>
+      </div>
+      <div class="top-title"></div>
+      <div class="top-meta">
+        <span class="pill">Hermes · 客户记忆 · 数据流 · 治理</span>
+      </div>
+    </header>
+
+    <section class="canvas">
+      <section class="architecture" aria-label="平台分层架构">
+        <section class="left-map">
+          <svg class="flow-svg" viewBox="0 0 1338 760" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="rgba(47,127,142,.62)"></path>
+              </marker>
+              <marker id="arrow-gold" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="rgba(240,186,88,.76)"></path>
+              </marker>
+            </defs>
+            <path class="up" d="M300 104 V118" marker-end="url(#arrow)"></path>
+            <path d="M840 118 V104" marker-end="url(#arrow)"></path>
+            <path d="M604 218 V230" marker-end="url(#arrow)"></path>
+            <path d="M604 368 V382" marker-end="url(#arrow)"></path>
+            <path class="down" d="M760 486 V502" marker-end="url(#arrow-gold)"></path>
+            <path class="up" d="M420 604 V590" marker-end="url(#arrow)"></path>
+            <path class="down" d="M934 600 V616" marker-end="url(#arrow-gold)"></path>
+            <line x1="1218" y1="326" x2="1238" y2="326"></line>
+            <line x1="1218" y1="440" x2="1238" y2="440"></line>
+            <line x1="1218" y1="556" x2="1238" y2="556"></line>
+            <line x1="1218" y1="666" x2="1238" y2="666"></line>
+            <text x="626" y="380">取数、清洗、归一</text>
+            <text x="782" y="502">规则校验 / 证据回传</text>
+          </svg>
+
+          <article class="layer l1">
+            <div class="layer-head"><b>行业表现 & 交互层</b><span>覆盖工程行业与多入口触达</span><em>TOUCHPOINT</em></div>
+            <div class="layer-body">
+              <div class="industry-row">
+                <div class="tag">建筑</div><div class="tag">基建</div><div class="tag">装备制造</div><div class="tag">能源</div><div class="tag">电力</div>
+                <div class="tag">轨交</div><div class="tag">化工</div><div class="tag">矿山</div><div class="tag">水利</div><div class="tag">工业涂料</div>
+              </div>
+              <div class="channels">
+                <div class="channel">Web 端入口<span>项目、任务、管理</span></div>
+                <div class="channel">小程序端<span>轻量上传、现场补充、移动确认</span></div>
+                <div class="channel">企业微信<span>待确认通知、合规提醒、交付物链接分享</span></div>
+              </div>
+            </div>
+          </article>
+          <div class="ribbon r1"><i><span>输入</span>客户需求 / 临时文件 / 现场照片</i><i><span>输出</span>可信的交付结果</i></div>
+
+          <article class="layer l2">
+            <div class="layer-head"><b>应用能力层</b><span>面向场景的作业集群</span><em>CAPABILITY</em></div>
+            <div class="layer-body">
+              <div class="cap-grid">
+                <div class="cap-card"><b>营销与方案交付</b><p>定制方案 PPT 生成、产品资料问答、典型案例查询。</p></div>
+                <div class="cap-card"><b>工程设计与技术交付</b><p>作业指导书生成、适用性判断、工程参数计算、材料用量估算。</p></div>
+                <div class="cap-card"><b>合规与质量审核</b><p>技术符合性审核、内容合规审核、风险提示。</p></div>
+                <div class="cap-card"><b>资产复用与检索</b><p>历史案例检索、专家经验 FAQ、项目复用片段召回。</p></div>
+              </div>
+            </div>
+          </article>
+          <div class="ribbon r2"><i><span>路由</span>意图识别</i><i><span>Hermes</span>客户偏好 / 项目记忆 / 历史交付</i></div>
+
+          <article class="layer l3">
+            <div class="layer-head"><b>Agent 编排与 Hermes 学习层</b><span>任务执行与客户理解中枢</span><em>ORCHESTRATION</em></div>
+            <div class="layer-body">
+              <div class="brain">
+                <div class="brain-card hermes">
+                  <b>Hermes 客户记忆</b>
+                  <p>沉淀客户偏好、项目背景、常用模板、表达风格和历史交付反馈。</p>
+                  <div class="route"><span>使用记录</span><span class="arrow-box">→</span><span>个性化推荐</span></div>
+                </div>
+                <div class="brain-card">
+                  <b>任务规划引擎</b>
+                  <p>将工程作业标准、审批流程、资料补齐逻辑配置为 Agent 执行链路。</p>
+                  <div class="route"><span>流程模板</span><span class="arrow-box">→</span><span>执行约束</span></div>
+                </div>
+                <div class="skill-grid">
+                  <div class="skill-card"><b>文档生成 Skill</b><p>PPT / Word 渲染引擎，组装章节、页面和引用。</p></div>
+                  <div class="skill-card"><b>计算 Skill</b><p>算量公式、单位换算、假设条件、公式版本和结果解释。</p></div>
+                  <div class="skill-card"><b>审核 Skill</b><p>法规审核、风险提示、符合性矩阵输出。</p></div>
+                  <div class="skill-card"><b>检索 Skill</b><p>向量与关键词混合检索，召回标准、案例和产品资料。</p></div>
+                </div>
+              </div>
+            </div>
+          </article>
+          <div class="ribbon r3"><i><span>请求</span>Agent 带着项目、客户、行业、权限上下文取数</i><i><span>返回</span>统一字段 / 来源证据 / 权限结果 / 数据新鲜度</i></div>
+
+          <article class="layer l4">
+            <div class="layer-head"><b>数据获取、清洗与统一层</b><span>把不同系统和文件转成 Agent 可直接使用的数据</span><em>DATA ACCESS</em></div>
+            <div class="layer-body">
+              <div class="unify-grid">
+                <div class="unify-card"><b>业务库查询</b><p>读取 CRM、ERP、项目系统的客户、产品、项目和节点数据。</p></div>
+                <div class="unify-card"><b>系统工具调用</b><p>调用网盘、BIM、PDM、审批、标准库等企业系统能力。</p></div>
+                <div class="unify-card"><b>实时接口校验</b><p>确认库存、状态、认证有效期、审批结果等动态信息。</p></div>
+                <div class="unify-card"><b>文档解析</b><p>抽取手册、图纸、报告、照片中的章节、表格、页码和文件证据。</p></div>
+                <div class="unify-card"><b>知识检索召回</b><p>从标准、案例、FAQ、历史方案中召回相关片段。</p></div>
+                <div class="unify-card"><b>权限与证据过滤</b><p>按项目、角色、文件权限过滤，并保留来源和置信度。</p></div>
+              </div>
+            </div>
+          </article>
+          <div class="ribbon r4"><i><span>加工</span>字段归一 / 单位换算 / 枚举标准化 / 口径校验</i><i><span>追溯</span>来源文件 / 系统记录 / 标准条款 / 人工确认</i></div>
+
+          <article class="layer l5">
+            <div class="layer-head"><b>知识、规则与客户记忆层</b><span>工程知识资产与 Hermes 用户资产</span><em>KNOWLEDGE</em></div>
+            <div class="layer-body">
+              <div class="repo-grid">
+                <div class="repo-card"><b>标准规范库</b><p>国家标准、行业标准、企业标准、工况标准条款。</p></div>
+                <div class="repo-card"><b>动态规则库</b><p>技术审核规则、风险控制规则、法务合规规则。</p></div>
+                <div class="repo-card"><b>产品主数据库</b><p>产品型号、核心技术参数、检测报告、认证范围、替代关系。</p></div>
+                <div class="repo-card"><b>行业案例库</b><p>历史方案、技术答复、专家经验 FAQ、历史项目复用片段。</p></div>
+                <div class="repo-card hermes"><b>Hermes 用户画像库</b><p>客户偏好、项目记忆、常用模板、修改习惯、交付反馈和复用标签。</p></div>
+              </div>
+            </div>
+          </article>
+          <div class="ribbon r5"><i><span>同步</span>ETL / 向量化 / 规则同步</i><i><span>存储</span>S3 / 企业网盘</i></div>
+
+          <article class="layer l6">
+            <div class="layer-head"><b>数据源与外部系统对接层</b><span>企业 IT 基础设施底座</span><em>INTEGRATION</em></div>
+            <div class="layer-body">
+              <div class="source-grid">
+                <div class="source-card"><b>结构化业务系统</b><p><strong>CRM / 销售系统</strong>：客户、商机、项目背景、关注点。<br><strong>ERP / 产品库 / 项目系统</strong>：产品主数据、状态、替代关系、交付节点。</p></div>
+                <div class="source-card"><b>非结构化内容资产</b><p><strong>企业网盘 / 知识库 / 产品资料库</strong>：历史材料、FAQ、技术答复、手册、参数表、认证报告。<br><strong>规则 / 法务 / 模板系统</strong>：合规制度、品牌样式。</p></div>
+                <div class="source-card"><b>存储与物理底座</b><p><strong>对象存储 S3 / 企业网盘</strong>：原始文件、生成文件、过程证据包、导出成果。<br><strong>本地上传入口</strong>：临时文件、客户资料、需求说明、现场照片。</p></div>
+              </div>
+            </div>
+          </article>
+
+          <aside class="governance">
+            <b>统一权限与 SSO 安全管控</b>
+            <p>用户、组织、角色、项目权限与文件权限贯穿 Agent 执行、客户记忆访问、对象存储和交付分享。</p>
+          </aside>
+        </section>
+
+        <aside class="right-column">
+          <article class="panel">
+            <div class="panel-head"><h2>能力所需数据资源</h2><span>CAPABILITY × DATA</span></div>
+            <div class="panel-body mini-table">
+              <div class="mini-row"><b>问答查询</b><span>产品主数据、参数、检测认证、适用范围、工况条件、标准条款、历史案例、客户关注点、权限数据。</span></div>
+              <div class="mini-row"><b>解决方案PPT / 指导书</b><span>项目资料、客户需求、产品设备资料、工艺资料、安全要求、模板、品牌素材、客户偏好。</span></div>
+              <div class="mini-row"><b>计算</b><span>工程输入参数、面积、损耗率、施工方式、环境条件、公式规则、单位换算、假设条件、公式版本。</span></div>
+              <div class="mini-row"><b>审核</b><span>技术要求、提交资料、标准条款、认证范围、法务合规规则。</span></div>
+              <div class="mini-row"><b>案例检索</b><span>行业、项目类型、工况、客户类型、使用产品、结果、图片、可公开级别、相似度字段。</span></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head"><h2>需要对接的系统资源</h2><span>SYSTEM LANDSCAPE</span></div>
+            <div class="panel-body mini-table">
+              <div class="mini-row"><b>产品侧</b><span>产品资料库、ERP、产品数据库：产品手册、参数表、型号、类别、状态、替代关系、认证报告。</span></div>
+              <div class="mini-row"><b>项目侧</b><span>项目管理系统、企业网盘、项目档案库：项目文件、规格书、图纸、背景资料、历史项目成果。</span></div>
+              <div class="mini-row"><b>知识规则侧</b><span>企业知识库、标准库、规则配置中心、法务制度库、法规库：标准条款、FAQ、专家经验、审核规则。</span></div>
+              <div class="mini-row"><b>品牌协同侧</b><span>模板管理系统、市场部资料库、品牌资产库、企业微信：模板、组件、品牌话术、通知和链接分享。</span></div>
+              <div class="mini-row"><b>底座侧</b><span>SSO、对象存储、企业网盘：用户角色、项目权限、文件权限、原始文件、生成文件。</span></div>
+            </div>
+          </article>
+
+          <article class="panel">
+            <div class="panel-head"><h2>落地边界与控制点</h2><span>CONTROL POINTS</span></div>
+            <div class="panel-body mini-table">
+              <div class="mini-row"><b>来源可信</b><span>生成内容保留资料来源、标准条款、产品参数来源、公式版本和人工确认记录。</span></div>
+              <div class="mini-row"><b>权限隔离</b><span>按项目、文件、组织角色控制知识访问，交付链接只暴露授权范围。</span></div>
+              <div class="mini-row"><b>动态规则</b><span>技术审核、风险控制、法务合规规则可配置、可同步、可回溯。</span></div>
+              <div class="mini-row"><b>学习边界</b><span>客户偏好、项目记忆和反馈记录按权限隔离，支持人工修正和停用。</span></div>
+            </div>
+          </article>
+        </aside>
+      </section>
+
+      <section class="data-section" aria-label="数据资源树">
+        <article class="table-card">
+          <div class="table-title"><b>三、Agent 数据获取链路 × 统一接口字段 × 行业映射口径</b><span>DATA ACCESS · CANONICAL CONTRACT · INDUSTRY MAPPING</span></div>
+          <div class="access-wrap">
+            <div class="access-col">
+              <div class="access-head">Agent 如何获取数据<span>SQL / MCP / API / FILE / VECTOR</span></div>
+              <div class="access-body">
+                <div class="access-grid">
+                  <div class="access-card"><b>SQL 业务库查询</b><p>通过只读视图或数据集市读取 CRM、ERP、项目系统。按 <code>tenant_id</code>、组织、项目权限过滤，输出结构化字段与来源表版本。</p></div>
+                  <div class="access-card"><b>MCP 工具调用</b><p>把标准库、网盘、PDM、BIM、审批系统封装成可审计工具。Agent 传入项目、产品、行业上下文，MCP 返回字段化结果与证据链接。</p></div>
+                  <div class="access-card"><b>API 实时接口</b><p>面向价格、库存、状态、认证有效期、审批结果等动态信息。每次生成前按 TTL 校验，避免使用过期参数。</p></div>
+                  <div class="access-card"><b>文档解析与对象存储</b><p>上传文件、历史方案、图纸、照片、报告进入 S3 / 企业网盘，抽取章节、表格、图片、页码、文件哈希，形成 <code>source_refs</code>。</p></div>
+                  <div class="access-card"><b>向量 / 关键词检索</b><p>对标准条款、案例、FAQ、产品手册做混合召回。返回片段、相似度、公开级别、引用页码，供问答、审核和生成使用。</p></div>
+                  <div class="access-card"><b>Hermes 记忆读取</b><p>从任务记录、反馈记录、客户画像取偏好、常用模板、历史修改口径。只作为个性化上下文，不覆盖强规则和主数据。</p></div>
+                </div>
+              </div>
+            </div>
+          
+            <div class="contract-col">
+              <div class="access-head">链路</div>
+              <div class="access-body">
+                <div class="pipeline">
+                  <div class="pipe-node"><b>1. 意图与权限</b>识别任务、行业、项目、客户，校验 <code>permission_scope</code>。</div>
+                  <div class="pipe-arrow">→</div>
+                  <div class="pipe-node"><b>2. 连接器编排</b>SQL / MCP / API / 文档解析 / 检索并行取数。</div>
+                  <div class="pipe-arrow">→</div>
+                  <div class="pipe-node"><b>3. 字段归一</b>映射到统一接口、保留业务口径、来源和置信度。</div>
+                </div>
+                <div class="pipeline">
+                  <div class="pipe-node"><b>4. 规则校验</b>单位、枚举、认证范围、标准条款、公式版本校验。</div>
+                  <div class="pipe-arrow">→</div>
+                  <div class="pipe-node"><b>5. Agent 执行</b>生成、计算、检索、审核按统一字段消费数据。</div>
+                  <div class="pipe-arrow">→</div>
+                  <div class="pipe-node"><b>6. 回写与学习</b>结果、人工修正、反馈写回任务记录与 Hermes。</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </article>
+      </section>
+    </section>
+
+    <div class="foot left-foot">ENGINEERING DOCUMENT AGENT · PLATFORM ARCHITECTURE · DATA RESOURCE INTEGRATION</div>
+    <div class="foot right-foot">High-end HTML infographic · 1920 × 1350</div>
+  </main>
+</body>
+</html>

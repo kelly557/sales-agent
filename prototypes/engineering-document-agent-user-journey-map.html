@@ -1,0 +1,626 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 销售助手核心用户旅程地图</title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --paper: rgba(255,255,255,.88);
+      --paper-strong: #fff;
+      --ink: #344246;
+      --muted: #6e7d80;
+      --line: #cfd6d6;
+      --line-soft: #e1e6e4;
+      --teal: #1f9aae;
+      --teal-dark: #2f7f8e;
+      --aqua: #86c8c7;
+      --orange: #f0ba58;
+      --red: #ef604d;
+      --green: #74b7a7;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #dadfdd;
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+    }
+    h1, h2, h3, p { margin: 0; }
+
+    .stage {
+      position: relative;
+      width: 1920px;
+      height: 1720px;
+      margin: 0 auto;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(74,91,94,.05) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(rgba(74,91,94,.04) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(180deg, #f8f8f4 0%, #eeeeea 100%);
+    }
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 0 33.3%, rgba(185,191,190,.38) 33.3% 33.36%, transparent 33.36% 66.6%, rgba(185,191,190,.38) 66.6% 66.66%, transparent 66.66%),
+        radial-gradient(circle at 18% 24%, rgba(31,154,174,.12), transparent 24%),
+        radial-gradient(circle at 85% 77%, rgba(240,186,88,.12), transparent 22%);
+      pointer-events: none;
+    }
+
+    .topbar {
+      position: absolute;
+      left: 44px;
+      top: 24px;
+      width: 1832px;
+      height: 92px;
+      display: grid;
+      grid-template-columns: 500px 1fr 450px;
+      align-items: center;
+      gap: 30px;
+      border-bottom: 1px solid #c9d0cf;
+    }
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .mark {
+      width: 56px;
+      height: 56px;
+      position: relative;
+      border: 2px solid var(--teal);
+      border-radius: 50%;
+      background: var(--paper-strong);
+    }
+    .mark::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(31,154,174,.48);
+      border-radius: 50%;
+    }
+    .mark::after {
+      content: "";
+      position: absolute;
+      inset: 19px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+    .brand h1 {
+      font-size: 31px;
+      line-height: 1.08;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+    .brand p {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.25;
+    }
+    .top-title {
+      color: var(--teal-dark);
+      font-size: 20px;
+      line-height: 1.42;
+      font-weight: 850;
+      text-align: center;
+    }
+    .meta {
+      justify-self: end;
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+    .meta span {
+      padding: 7px 10px;
+      border: 1px solid #bfc8c6;
+      background: #fff;
+      color: var(--teal-dark);
+      font-size: 11px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .canvas {
+      position: absolute;
+      left: 44px;
+      top: 138px;
+      width: 1832px;
+      height: 1552px;
+      display: grid;
+      grid-template-rows: 184px 1118px 208px;
+      gap: 12px;
+    }
+
+    .hero {
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.08fr 1.42fr .86fr;
+      gap: 14px;
+      padding: 16px 18px;
+      background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(242,246,245,.84));
+      border: 1px solid rgba(207,214,214,.65);
+      border-radius: 18px;
+      box-shadow: 0 22px 58px rgba(43,64,68,.10);
+      overflow: hidden;
+    }
+    .hero::after {
+      content: "";
+      position: absolute;
+      right: 34px;
+      top: 28px;
+      width: 240px;
+      height: 120px;
+      border-top: 2px solid rgba(31,154,174,.18);
+      border-right: 2px solid rgba(31,154,174,.18);
+      pointer-events: none;
+    }
+    .hero h2 {
+      color: var(--ink);
+      font-size: 26px;
+      line-height: 1.16;
+      font-weight: 950;
+    }
+    .hero p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 14px;
+      line-height: 1.45;
+    }
+    .search-shell {
+      align-self: center;
+      padding: 14px;
+      border: 1px solid rgba(31,154,174,.22);
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 18px 44px rgba(43,64,68,.08);
+    }
+    .search-label {
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 900;
+      letter-spacing: .5px;
+    }
+    .search-input {
+      margin-top: 10px;
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      padding: 0 16px;
+      color: var(--ink);
+      border: 1px solid rgba(207,214,214,.7);
+      border-radius: 12px;
+      background: rgba(247,247,244,.72);
+      font-size: 17px;
+      font-weight: 850;
+    }
+    .quick-row {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      margin-top: 10px;
+    }
+    .quick-row span {
+      padding: 7px 6px;
+      text-align: center;
+      color: var(--teal-dark);
+      background: rgba(242,246,245,.9);
+      border: 1px solid rgba(217,225,223,.72);
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 850;
+    }
+    .setup-note {
+      align-self: stretch;
+      display: grid;
+      align-content: center;
+      gap: 10px;
+      padding: 14px 16px;
+      border-left: 4px solid var(--orange);
+      border-radius: 14px;
+      background: rgba(255,248,235,.72);
+    }
+    .setup-note b {
+      color: var(--ink);
+      font-size: 15px;
+      font-weight: 950;
+    }
+    .setup-note span {
+      color: var(--muted);
+      font-size: 12.5px;
+      line-height: 1.45;
+    }
+    .hermes-chip {
+      display: inline-block;
+      margin-top: 10px;
+      padding: 6px 9px;
+      border: 1px solid rgba(31,154,174,.32);
+      border-radius: 999px;
+      background: rgba(238,249,248,.88);
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 950;
+    }
+
+    .journey {
+      position: relative;
+      background: rgba(255,255,255,.68);
+      border: 1px solid rgba(207,214,214,.62);
+      border-radius: 18px;
+      box-shadow: 0 22px 58px rgba(43,64,68,.09);
+      overflow: hidden;
+    }
+    .section-head {
+      height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 18px;
+      border-bottom: 1px solid rgba(225,230,228,.7);
+      background: rgba(250,250,248,.78);
+    }
+    .section-head h2 {
+      font-size: 17px;
+      font-weight: 950;
+    }
+    .section-head span {
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .8px;
+    }
+    .path {
+      position: absolute;
+      left: 40px;
+      right: 40px;
+      top: 126px;
+      height: 4px;
+      display: none;
+    }
+    .journey-body {
+      height: calc(100% - 42px);
+      padding: 20px 30px 22px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      grid-template-rows: repeat(2, minmax(0, 1fr));
+      gap: 18px;
+      position: relative;
+      z-index: 1;
+    }
+    .moment {
+      min-width: 0;
+      display: grid;
+      grid-template-rows: auto auto 1fr auto auto auto auto;
+      gap: 8px;
+      padding: 15px;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,.96), rgba(250,252,251,.88));
+      box-shadow: 0 20px 42px rgba(43,64,68,.10);
+    }
+    .moment-head {
+      position: relative;
+      padding-left: 4px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .dot {
+      width: 26px;
+      height: 26px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--teal-dark);
+      border-radius: 50%;
+      font-size: 12px;
+      font-weight: 950;
+      box-shadow: 0 0 0 6px rgba(31,154,174,.12);
+      flex: 0 0 auto;
+    }
+    .moment h3 {
+      color: var(--teal-dark);
+      font-size: 19px;
+      line-height: 1.15;
+      font-weight: 950;
+    }
+    .story {
+      padding: 9px 11px;
+      background: rgba(247,247,244,.8);
+      border-radius: 12px;
+    }
+    .story b,
+    .lane b {
+      display: block;
+      margin-bottom: 3px;
+      color: var(--ink);
+      font-size: 11.5px;
+      font-weight: 950;
+    }
+    .story p,
+    .lane p,
+    .lane li {
+      color: var(--muted);
+      font-size: 10.4px;
+      line-height: 1.28;
+    }
+    .lane {
+      padding: 8px 10px;
+      background: rgba(242,246,245,.78);
+      border-left: 0;
+      border-radius: 12px;
+    }
+    .lane.agent {
+      background: rgba(255,255,255,.9);
+      box-shadow: inset 0 0 0 1px rgba(31,154,174,.20);
+    }
+    .lane.agent b { color: var(--teal-dark); }
+    .lane.hermes {
+      background: rgba(238,249,248,.9);
+      box-shadow: inset 0 0 0 1px rgba(31,154,174,.32);
+    }
+    .lane.hermes b { color: var(--teal-dark); }
+    .lane.output {
+      background: rgba(255,248,235,.76);
+      box-shadow: inset 0 0 0 1px rgba(240,186,88,.25);
+    }
+    .lane.confirm {
+      background: rgba(255,248,245,.72);
+      box-shadow: inset 0 0 0 1px rgba(239,96,77,.20);
+    }
+    .lane ul {
+      margin: 0;
+      padding-left: 14px;
+    }
+
+    .bottom {
+      display: grid;
+      grid-template-columns: 1.18fr 1fr .9fr;
+      gap: 12px;
+    }
+    .insight,
+    .loop,
+    .service {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.82);
+      overflow: hidden;
+    }
+    .insight-body {
+      padding: 12px 14px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 8px;
+    }
+    .insight-item {
+      min-height: 58px;
+      padding: 9px 11px;
+      background: linear-gradient(135deg, #fff, rgba(242,246,245,.78));
+      border-left: 4px solid var(--teal);
+    }
+    .insight-item b,
+    .service-item b {
+      display: block;
+      color: var(--teal-dark);
+      font-size: 13px;
+      line-height: 1.18;
+      font-weight: 950;
+    }
+    .insight-item span,
+    .service-item span {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10.4px;
+      line-height: 1.24;
+    }
+    .loop-body {
+      padding: 13px 16px;
+      height: calc(100% - 42px);
+      display: grid;
+      grid-template-rows: 36px 1fr 36px;
+      gap: 8px;
+      align-items: center;
+    }
+    .loop-start,
+    .loop-end {
+      display: grid;
+      place-items: center;
+      color: var(--teal-dark);
+      background: #fff;
+      border: 1px solid rgba(31,154,174,.36);
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .loop-mid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .loop-mid div {
+      min-height: 64px;
+      padding: 8px 7px;
+      display: grid;
+      align-content: center;
+      text-align: center;
+      background: rgba(242,246,245,.82);
+      border-top: 3px solid var(--aqua);
+    }
+    .loop-mid b {
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .loop-mid span {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 10.4px;
+      line-height: 1.28;
+    }
+    .service-body {
+      padding: 7px 13px;
+      display: grid;
+      gap: 3px;
+    }
+    .service-item {
+      min-height: 34px;
+      padding-left: 10px;
+      border-left: 4px solid var(--orange);
+    }
+    .service-item:nth-child(2) { border-left-color: var(--teal); }
+    .service-item:nth-child(3) { border-left-color: var(--green); }
+    .service-item:nth-child(4) { border-left-color: var(--red); }
+
+    @media (max-width: 2200px) {
+      .stage { transform-origin: top left; }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark"></div>
+        <div>
+          <h1>核心用户旅程地图</h1>
+          <p>AI Presales Solution Assistant · User Journey Map</p>
+        </div>
+      </div>
+      <div class="meta">
+        <span>问答查询</span>
+        <span>方案生成</span>
+        <span>客户记忆</span>
+        <span>交付沉淀</span>
+      </div>
+    </header>
+
+    <section class="canvas">
+      <section class="hero">
+        <div>
+          <h2>前期准备</h2>
+          <p>行业包、知识库、模板、规则和权限属于企业初始化与持续运营内容。用户登录后直接提问、上传资料、点击任务入口，Agent 在后台识别任务上下文，并调用 Hermes 客户记忆。</p>
+          <span class="hermes-chip">Hermes：记住客户偏好、项目背景、常用模板和历史修改，让下一次交付更贴近客户。</span>
+        </div>
+        <div class="search-shell">
+          <div class="search-label">首页入口</div>
+          <div class="search-input">帮我查这个项目适用哪些标准。</div>
+          <div class="quick-row">
+            <span>问答查询</span>
+            <span>方案生成</span>
+            <span>技术说明</span>
+            <span>用量计算</span>
+            <span>文档审核</span>
+          </div>
+        </div>
+        <div class="setup-note">
+          <b>后台准备</b>
+          <span>企业资料入库、行业场景包、模板、公式、审核规则、合规词库、权限和输出格式由实施与运营服务预先配置；Hermes 持续沉淀客户偏好。</span>
+        </div>
+      </section>
+
+      <section class="journey">
+        <div class="section-head"><h2>核心旅程：用户操作、Agent 执行与 Hermes 学习点</h2><span>USER JOURNEY</span></div>
+        <div class="path"></div>
+        <div class="journey-body">
+          <article class="moment">
+            <header class="moment-head"><div class="dot">1</div><h3>发起需求</h3></header>
+            <div class="story"><b>用户操作</b><p>在 AI 输入框直接问，或点击方案生成、计算、审核等入口；可以拖拽上传客户资料。</p></div>
+            <div class="lane agent"><b>Agent 执行</b><ul><li>识别身份、角色、项目权限和可访问资料范围</li><li>判断任务意图：搜索 / 生成 / 计算 / 审核</li><li>解析客户、行业、交付物类型和紧急程度</li><li>拆解执行步骤，预估所需资料、工具和确认点</li><li>形成任务摘要并追问缺失信息</li></ul></div>
+            <div class="lane"><b>产品交互</b><p>首页不暴露复杂配置；用自然语言、快捷入口、历史任务继续和最近资料引用降低启动成本。</p></div>
+            <div class="lane output"><b>输出结果</b><p>生成任务卡片，包含任务类型、交付物类型、预计章节、资料范围、缺失信息和执行进度入口。</p></div>
+            <div class="lane confirm"><b>确认动作</b><p>用户确认交付目标、客户对象、输出格式、资料使用范围和关键约束。</p></div>
+            <div class="lane hermes"><b>Hermes 学习</b><p>记录用户常问问题、客户类型、项目阶段和默认交付目标，下次自动带入。</p></div>
+          </article>
+
+          <article class="moment">
+            <header class="moment-head"><div class="dot">2</div><h3>搜索依据</h3></header>
+            <div class="story"><b>用户操作</b><p>查询标准、产品参数、项目资料、历史案例，继续追问或筛选结果。</p></div>
+            <div class="lane agent"><b>Agent 执行</b><ul><li>识别问题里的工程对象、产品型号和适用场景</li><li>同时执行语义检索、关键词检索和权限过滤</li><li>按标准、产品、项目、案例多源召回资料</li><li>抽取条款、参数、页码、版本和相似案例</li><li>合并重复来源，生成带出处的适用性答案</li></ul></div>
+            <div class="lane"><b>产品交互</b><p>结果按标准、产品、项目、案例分类；展示文件、页码、条款和原文定位。</p></div>
+            <div class="lane output"><b>输出结果</b><p>输出依据清单、条款摘要、原文定位、适用说明、相似案例和可加入方案的引用片段。</p></div>
+            <div class="lane confirm"><b>确认动作</b><p>用户确认资料版本、适用边界、引用是否纳入交付物，以及是否继续追问或生成。</p></div>
+            <div class="lane hermes"><b>Hermes 学习</b><p>沉淀客户关注的标准、产品型号和案例类型，后续推荐更贴近真实需求。</p></div>
+          </article>
+
+          <article class="moment">
+            <header class="moment-head"><div class="dot">3</div><h3>补齐上下文</h3></header>
+            <div class="story"><b>用户操作</b><p>上传客户需求、项目文件或产品资料，补充现场条件、交付对象和格式。</p></div>
+            <div class="lane agent"><b>Agent 执行</b><ul><li>解析上传文件、表格、图片和客户需求说明</li><li>抽取工程对象、现场条件、限制条件和关键参数</li><li>识别缺失字段、冲突信息和需要人工确认的假设</li><li>关联已检索依据、客户历史和项目资料</li><li>生成可编辑项目上下文和资料范围清单</li></ul></div>
+            <div class="lane"><b>产品交互</b><p>显示文件解析状态、缺失字段追问、任务摘要预览和可编辑上下文。</p></div>
+            <div class="lane output"><b>输出结果</b><p>输出结构化需求表、项目条件、客户关注点、资料清单、待补字段和可编辑任务摘要。</p></div>
+            <div class="lane confirm"><b>确认动作</b><p>用户确认假设条件、关键参数、资料范围、客户口径和是否允许使用历史案例。</p></div>
+            <div class="lane hermes"><b>Hermes 学习</b><p>把客户需求、现场条件、交付对象和口径偏好转为可复用项目记忆。</p></div>
+          </article>
+
+          <article class="moment">
+            <header class="moment-head"><div class="dot">4</div><h3>生成 / 计算</h3></header>
+            <div class="story"><b>用户操作</b><p>选择生成 PPT、Word、报告或发起用量计算，确认大纲和关键参数。</p></div>
+            <div class="lane agent"><b>Agent 执行</b><ul><li>按客户类型、场景和交付物匹配模板与章节结构</li><li>规划 PPT / Word 页面，分配标题、正文、表格和案例位</li><li>调用公式、材料表、单位换算和计算规则</li><li>将依据、产品参数、案例和计算结果写入对应章节</li><li>执行引用完整性、参数一致性和格式自检</li></ul></div>
+            <div class="lane"><b>产品交互</b><p>大纲预览、参数表单、计算过程展开、生成进度、分章节刷新。</p></div>
+            <div class="lane output"><b>输出结果</b><p>生成解决方案 PPT 初稿：项目背景、需求分析、产品推荐、技术方案、案例、实施计划、报价/用量附表；章节和文案可编辑。</p></div>
+            <div class="lane confirm"><b>确认动作</b><p>用户确认大纲结构、推荐产品、关键参数、公式口径、案例使用和最终导出格式。</p></div>
+            <div class="lane hermes"><b>Hermes 学习</b><p>学习用户采纳的大纲、模板、措辞和参数口径，让后续初稿更接近可交付版本。</p></div>
+          </article>
+
+          <article class="moment">
+            <header class="moment-head"><div class="dot">5</div><h3>审核</h3></header>
+            <div class="story"><b>用户操作</b><p>选中段落要求改写、补依据、压缩或外发前发起审核。</p></div>
+            <div class="lane agent"><b>Agent 执行</b><ul><li>定位用户选中段落、所属章节和原始依据</li><li>保持技术含义，生成多种改写或压缩版本</li><li>检查新增表述是否有来源、参数或认证支撑</li><li>识别技术冲突、合规风险、引用缺口和广宣风险</li><li>按风险等级输出建议、替代措辞和处理优先级</li></ul></div>
+            <div class="lane"><b>产品交互</b><p>侧边 AI 助手、局部重写、版本对比、风险高亮、一键采纳建议。</p></div>
+            <div class="lane output"><b>输出结果</b><p>输出可采纳修订稿、风险清单、依据缺口、审核报告和修改前后对比，支持逐条处理。</p></div>
+            <div class="lane confirm"><b>确认动作</b><p>专家确认高风险结论、认证边界、外发措辞、引用依据和是否允许一键替换。</p></div>
+            <div class="lane hermes"><b>Hermes 学习</b><p>记录用户最终采纳的修改风格、风险处理方式和外发措辞偏好。</p></div>
+          </article>
+
+          <article class="moment">
+            <header class="moment-head"><div class="dot">6</div><h3>交付沉淀</h3></header>
+            <div class="story"><b>用户操作</b><p>处理未确认项，锁定最终版，导出 Office / PDF / Excel 或回写系统。</p></div>
+            <div class="lane agent"><b>Agent 执行</b><ul><li>汇总未确认参数、风险项和待复核结论</li><li>执行导出前检查：来源、格式、附件和权限</li><li>保存版本、依据链、计算过程和审核记录</li><li>生成归档标签、复用摘要和客户反馈字段</li><li>推荐沉淀为模板、案例、FAQ 或知识片段</li></ul></div>
+            <div class="lane"><b>产品交互</b><p>导出前检查、角色化确认、最终版锁定、归档提醒、复用标签。</p></div>
+            <div class="lane output"><b>输出结果</b><p>输出正式 PPT / Word / PDF / Excel、证据包、版本记录、确认记录和可复用案例标签。</p></div>
+            <div class="lane confirm"><b>确认动作</b><p>用户锁定最终版；管理员确认是否入库为模板、案例、FAQ 或客户偏好资产。</p></div>
+            <div class="lane hermes"><b>Hermes 学习</b><p>沉淀最终交付件、客户反馈和复用标签，形成下一次任务的推荐依据。</p></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="bottom">
+        <div class="insight">
+          <div class="section-head"><h2>产品功能亮点</h2><span>HIGHLIGHTS</span></div>
+          <div class="insight-body">
+            <div class="insight-item"><b>登录即用</b><span>用户不选择行业包、不配置规则，直接从问答或任务入口开始。</span></div>
+            <div class="insight-item"><b>问答与任务打通</b><span>搜索到的依据可以进入生成、计算和审核，不停留在一次性回答。</span></div>
+            <div class="insight-item"><b>越用越懂客户</b><span>沉淀客户偏好、项目背景、模板选择和历史修改记录。</span></div>
+            <div class="insight-item"><b>全流程可追溯</b><span>段落、参数、结论和风险建议都能回到来源、规则和人工确认。</span></div>
+          </div>
+        </div>
+
+        <div class="loop">
+          <div class="section-head"><h2>Agent 执行与学习闭环</h2><span>AGENT LOOP</span></div>
+          <div class="loop-body">
+            <div class="loop-start">用户自然语言需求 / 快捷任务入口</div>
+            <div class="loop-mid">
+              <div><b>理解</b><span>意图、角色、权限、工程对象</span></div>
+              <div><b>检索</b><span>标准、产品、项目、案例</span></div>
+              <div><b>编排</b><span>模板、公式、参数、审核规则</span></div>
+              <div><b>学习</b><span>客户偏好、修改、反馈</span></div>
+            </div>
+            <div class="loop-end">可交付、可审核、可追溯的文档成果</div>
+          </div>
+        </div>
+
+        <div class="service">
+          <div class="section-head"><h2>服务支持</h2><span>SERVICE</span></div>
+          <div class="service-body">
+            <div class="service-item"><b>Hermes 初始化</b><span>客户画像、项目标签、常用模板、表达风格和反馈字段配置。</span></div>
+            <div class="service-item"><b>知识运营</b><span>资料清洗入库、标准更新、产品资料结构化和案例标签维护。</span></div>
+            <div class="service-item"><b>规则共创</b><span>计算公式、审核规则、合规词库和技术红线持续校准。</span></div>
+            <div class="service-item"><b>闭环复盘</b><span>用户培训、典型任务配置、使用数据、确认记录和交付质量持续优化。</span></div>
+          </div>
+        </div>
+      </section>
+    </section>
+  </main>
+</body>
+</html>

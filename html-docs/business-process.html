@@ -1,0 +1,417 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>业务流程图</title>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      securityLevel: "loose",
+      flowchart: { curve: "basis", nodeSpacing: 42, rankSpacing: 52 },
+      themeVariables: {
+        fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        primaryColor: "#eef6ff",
+        primaryTextColor: "#12314d",
+        primaryBorderColor: "#79a9da",
+        lineColor: "#6d8298",
+        secondaryColor: "#f5f7fb",
+        tertiaryColor: "#fff7ed",
+        edgeLabelBackground: "#ffffff",
+        textColor: "#23384d"
+      }
+    });
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">A</div>
+        <div><strong>工程文档 Agent</strong><span>设计文档库</span></div>
+      </a>
+      <nav class="doc-nav"><a class="doc-link" href="product-plan.html"><span>工程行业文档 Agent 产品方案</span><small>面向工程行业的 Agent Native 文档任务产品设计。</small></a><a class="doc-link" href="research-notes.html"><span>行业调研与场景分析</span><small>行业痛点、适合场景、典型输入输出和案例。</small></a><a class="doc-link active" href="business-process.html"><span>业务流程图</span><small>从我的项目、项目上下文、资料集成、任务执行、人工审阅到交付沉淀的端到端流程。</small></a><a class="doc-link" href="custom-solution-ppt.html"><span>定制方案生成（PPT）详细流程</span><small>定制方案 PPT 的输入输出、数据、知识库、模板、规则、流程与异常处理。</small></a><a class="doc-link" href="product-data-qa.html"><span>产品资料查询（问答）详细流程</span><small>产品资料问答的输入输出、数据、知识库、规则、权限、流程与成功标准。</small></a></nav>
+      <div class="toc-card"><div class="toc-title">本页目录</div><a class="toc-l1" href="#工程文档-agent-业务流程图">工程文档 Agent 业务流程图</a><a class="toc-l2" href="#1-总体业务流程">1. 总体业务流程</a><a class="toc-l2" href="#2-我的项目与项目上下文准备流程">2. 我的项目与项目上下文准备流程</a><a class="toc-l2" href="#3-查找类业务流程">3. 查找类业务流程</a><a class="toc-l2" href="#4-生成类业务流程">4. 生成类业务流程</a><a class="toc-l2" href="#5-计算类业务流程">5. 计算类业务流程</a><a class="toc-l2" href="#6-审核类业务流程">6. 审核类业务流程</a><a class="toc-l2" href="#7-集成与回写流程">7. 集成与回写流程</a><a class="toc-l2" href="#8-人工审阅与追溯流程">8. 人工审阅与追溯流程</a><a class="toc-l2" href="#9-交付与沉淀流程">9. 交付与沉淀流程</a></div>
+    </aside>
+    <main class="content">
+      <header class="hero">
+        <div class="eyebrow">Design Docs</div>
+        <h1>业务流程图</h1>
+        <p>从我的项目、项目上下文、资料集成、任务执行、人工审阅到交付沉淀的端到端流程。</p>
+      </header>
+      <article class="article"><h1 id="工程文档-agent-业务流程图">工程文档 Agent 业务流程图</h1>
+<p>本文档基于 <code>engineering-document-agent-product-plan.md</code> 梳理业务流程，重点描述产品从我的项目、项目上下文、资料集成、任务执行、人工审阅到交付沉淀的端到端流程。</p>
+<h2 id="1-总体业务流程">1. 总体业务流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;用户进入 Agent 首页&quot;] --&gt; B{&quot;是否已有可用项目&quot;}
+    B --&gt;|&quot;是&quot;| C[&quot;从我的项目选择项目&quot;]
+    B --&gt;|&quot;否&quot;| D[&quot;创建轻量项目&quot;]
+    D --&gt; C
+
+    C --&gt; E[&quot;形成项目上下文&quot;]
+    E --&gt; F[&quot;选择行业场景包&quot;]
+    F --&gt; G[&quot;选择任务能力&quot;]
+
+    G --&gt; G1[&quot;查找&quot;]
+    G --&gt; G2[&quot;生成&quot;]
+    G --&gt; G3[&quot;计算&quot;]
+    G --&gt; G4[&quot;审核&quot;]
+
+    G1 --&gt; H[&quot;选择或输入任务&quot;]
+    G2 --&gt; H
+    G3 --&gt; H
+    G4 --&gt; H
+
+    H --&gt; I[&quot;选择资料来源&quot;]
+    I --&gt; I1[&quot;项目资料&quot;]
+    I --&gt; I2[&quot;集成资料源&quot;]
+    I --&gt; I3[&quot;本地上传&quot;]
+    I --&gt; I4[&quot;知识库/标准库&quot;]
+
+    I1 --&gt; J[&quot;文档解析与工程对象识别&quot;]
+    I2 --&gt; J
+    I3 --&gt; J
+    I4 --&gt; J
+
+    J --&gt; K[&quot;Agent 执行任务&quot;]
+    K --&gt; L{&quot;是否缺少关键信息&quot;}
+    L --&gt;|&quot;是&quot;| M[&quot;追问用户/请求补充资料&quot;]
+    M --&gt; I
+    L --&gt;|&quot;否&quot;| N[&quot;生成中间结果&quot;]
+
+    N --&gt; O[&quot;风险、缺失、引用来源标记&quot;]
+    O --&gt; P[&quot;人工审阅与确认&quot;]
+    P --&gt; Q{&quot;是否通过确认&quot;}
+    Q --&gt;|&quot;否&quot;| R[&quot;修改条件/调整资料/重新执行&quot;]
+    R --&gt; K
+    Q --&gt;|&quot;是&quot;| S[&quot;生成正式交付物&quot;]
+
+    S --&gt; T{&quot;交付方式&quot;}
+    T --&gt;|&quot;导出&quot;| U[&quot;导出 Word/PPT/PDF/Excel&quot;]
+    T --&gt;|&quot;回写&quot;| V[&quot;回写到集成系统&quot;]
+    T --&gt;|&quot;归档&quot;| W[&quot;沉淀到项目&quot;]
+
+    U --&gt; X[&quot;任务完成&quot;]
+    V --&gt; X
+    W --&gt; X
+
+    X --&gt; Y[&quot;沉淀为项目资产/案例/模板/规则&quot;]</pre></div>
+<h2 id="2-我的项目与项目上下文准备流程">2. 我的项目与项目上下文准备流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;进入我的项目&quot;] --&gt; B{&quot;是否创建新项目&quot;}
+    B --&gt;|&quot;否&quot;| C[&quot;选择已有项目&quot;]
+    B --&gt;|&quot;是&quot;| D[&quot;创建轻量项目&quot;]
+    D --&gt; E[&quot;填写项目基本信息&quot;]
+    C --&gt; F[&quot;确认资料范围&quot;]
+    E --&gt; F
+    E --&gt; E1[&quot;项目名称&quot;]
+    E --&gt; E2[&quot;行业&quot;]
+    E --&gt; E3[&quot;工程类型&quot;]
+    E --&gt; E4[&quot;项目阶段&quot;]
+    E --&gt; E5[&quot;客户/场景&quot;]
+
+    E1 --&gt; G[&quot;选择行业场景包&quot;]
+    E2 --&gt; G
+    E3 --&gt; G
+    E4 --&gt; G
+    E5 --&gt; G
+
+    F --&gt; H[&quot;引用项目资料来源&quot;]
+    G --&gt; H
+    H --&gt; H1[&quot;本地上传&quot;]
+    H --&gt; H2[&quot;文档库/网盘&quot;]
+    H --&gt; H3[&quot;项目系统&quot;]
+    H --&gt; H4[&quot;标准规范库&quot;]
+    H --&gt; H5[&quot;产品/设备资料库&quot;]
+
+    H1 --&gt; I[&quot;资料索引&quot;]
+    H2 --&gt; I
+    H3 --&gt; I
+    H4 --&gt; I
+    H5 --&gt; I
+
+    I --&gt; J[&quot;识别工程对象&quot;]
+    J --&gt; J1[&quot;专业/系统&quot;]
+    J --&gt; J2[&quot;设备/材料/产品&quot;]
+    J --&gt; J3[&quot;工艺/工程部位&quot;]
+    J --&gt; J4[&quot;图纸/文件/报告&quot;]
+
+    J1 --&gt; K[&quot;形成项目上下文&quot;]
+    J2 --&gt; K
+    J3 --&gt; K
+    J4 --&gt; K
+
+    K --&gt; L[&quot;用于 Agent 任务&quot;]</pre></div>
+<h2 id="3-查找类业务流程">3. 查找类业务流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;用户选择查找&quot;] --&gt; B{&quot;查找对象&quot;}
+    B --&gt; B1[&quot;标准规范&quot;]
+    B --&gt; B2[&quot;设备/产品资料&quot;]
+    B --&gt; B3[&quot;项目资料&quot;]
+    B --&gt; B4[&quot;历史案例&quot;]
+    B --&gt; B5[&quot;相似方案&quot;]
+
+    B1 --&gt; C[&quot;输入关键词/工程条件&quot;]
+    B2 --&gt; C
+    B3 --&gt; C
+    B4 --&gt; C
+    B5 --&gt; C
+
+    C --&gt; D[&quot;限定查找范围&quot;]
+    D --&gt; D1[&quot;当前项目上下文&quot;]
+    D --&gt; D2[&quot;企业知识库&quot;]
+    D --&gt; D3[&quot;行业场景包&quot;]
+    D --&gt; D4[&quot;集成资料源&quot;]
+
+    D1 --&gt; E[&quot;检索与语义匹配&quot;]
+    D2 --&gt; E
+    D3 --&gt; E
+    D4 --&gt; E
+
+    E --&gt; F[&quot;工程对象关联&quot;]
+    F --&gt; G[&quot;生成查找结果&quot;]
+    G --&gt; G1[&quot;相关资料列表&quot;]
+    G --&gt; G2[&quot;引用位置&quot;]
+    G --&gt; G3[&quot;适用性说明&quot;]
+    G --&gt; G4[&quot;相似案例&quot;]
+
+    G1 --&gt; H[&quot;用户选择引用到任务&quot;]
+    G2 --&gt; H
+    G3 --&gt; H
+    G4 --&gt; H</pre></div>
+<h2 id="4-生成类业务流程">4. 生成类业务流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;用户选择生成&quot;] --&gt; B{&quot;生成类型&quot;}
+    B --&gt; B1[&quot;工程方案&quot;]
+    B --&gt; B2[&quot;作业指导书&quot;]
+    B --&gt; B3[&quot;技术说明书&quot;]
+    B --&gt; B4[&quot;推广材料&quot;]
+    B --&gt; B5[&quot;交付报告&quot;]
+
+    B1 --&gt; C[&quot;选择项目和行业场景包&quot;]
+    B2 --&gt; C
+    B3 --&gt; C
+    B4 --&gt; C
+    B5 --&gt; C
+
+    C --&gt; D[&quot;选择模板和输出格式&quot;]
+    D --&gt; D1[&quot;Word&quot;]
+    D --&gt; D2[&quot;PPT&quot;]
+    D --&gt; D3[&quot;PDF&quot;]
+    D --&gt; D4[&quot;Excel&quot;]
+
+    D1 --&gt; E[&quot;引用资料和知识源&quot;]
+    D2 --&gt; E
+    D3 --&gt; E
+    D4 --&gt; E
+
+    E --&gt; F[&quot;Agent 查找依据&quot;]
+    F --&gt; G{&quot;信息是否完整&quot;}
+    G --&gt;|&quot;否&quot;| H[&quot;追问缺失条件&quot;]
+    H --&gt; E
+    G --&gt;|&quot;是&quot;| I[&quot;生成大纲&quot;]
+
+    I --&gt; J[&quot;用户确认大纲&quot;]
+    J --&gt; K[&quot;生成正文&quot;]
+    K --&gt; L[&quot;插入引用来源和风险提示&quot;]
+    L --&gt; M[&quot;生成可编辑交付物&quot;]
+    M --&gt; N[&quot;人工审阅&quot;]
+    N --&gt; O{&quot;是否需要修改&quot;}
+    O --&gt;|&quot;是&quot;| P[&quot;调整要求后重新生成&quot;]
+    P --&gt; K
+    O --&gt;|&quot;否&quot;| Q[&quot;导出/回写/沉淀&quot;]</pre></div>
+<h2 id="5-计算类业务流程">5. 计算类业务流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;用户选择计算&quot;] --&gt; B{&quot;计算类型&quot;}
+    B --&gt; B1[&quot;工程参数计算&quot;]
+    B --&gt; B2[&quot;材料用量估算&quot;]
+    B --&gt; B3[&quot;资料完整率计算&quot;]
+    B --&gt; B4[&quot;版本差异统计&quot;]
+    B --&gt; B5[&quot;设备参数对比&quot;]
+
+    B1 --&gt; C[&quot;收集输入参数&quot;]
+    B2 --&gt; C
+    B3 --&gt; C
+    B4 --&gt; C
+    B5 --&gt; C
+
+    C --&gt; D[&quot;确认参数来源&quot;]
+    D --&gt; D1[&quot;项目资料&quot;]
+    D --&gt; D2[&quot;产品/设备资料&quot;]
+    D --&gt; D3[&quot;标准规范&quot;]
+    D --&gt; D4[&quot;用户手动输入&quot;]
+
+    D1 --&gt; E[&quot;校验参数完整性&quot;]
+    D2 --&gt; E
+    D3 --&gt; E
+    D4 --&gt; E
+
+    E --&gt; F{&quot;是否缺少参数&quot;}
+    F --&gt;|&quot;是&quot;| G[&quot;提示补充参数或采用假设&quot;]
+    G --&gt; H[&quot;用户确认假设&quot;]
+    H --&gt; I[&quot;执行计算&quot;]
+    F --&gt;|&quot;否&quot;| I
+
+    I --&gt; J[&quot;生成计算结果&quot;]
+    J --&gt; J1[&quot;结果值&quot;]
+    J --&gt; J2[&quot;计算过程&quot;]
+    J --&gt; J3[&quot;参数来源&quot;]
+    J --&gt; J4[&quot;异常提示&quot;]
+
+    J1 --&gt; K[&quot;人工确认&quot;]
+    J2 --&gt; K
+    J3 --&gt; K
+    J4 --&gt; K
+
+    K --&gt; L[&quot;引用到生成/审核任务或导出&quot;]</pre></div>
+<h2 id="6-审核类业务流程">6. 审核类业务流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;用户选择审核&quot;] --&gt; B{&quot;审核类型&quot;}
+    B --&gt; B1[&quot;技术符合性审核&quot;]
+    B --&gt; B2[&quot;资料缺口审核&quot;]
+    B --&gt; B3[&quot;设备资料完整性审核&quot;]
+    B --&gt; B4[&quot;变更影响审核&quot;]
+    B --&gt; B5[&quot;版本/签章/编号异常审核&quot;]
+
+    B1 --&gt; C[&quot;选择审核依据&quot;]
+    B2 --&gt; C
+    B3 --&gt; C
+    B4 --&gt; C
+    B5 --&gt; C
+
+    C --&gt; C1[&quot;标准规范&quot;]
+    C --&gt; C2[&quot;技术要求&quot;]
+    C --&gt; C3[&quot;资料目录规则&quot;]
+    C --&gt; C4[&quot;企业模板&quot;]
+    C --&gt; C5[&quot;行业场景包规则&quot;]
+
+    C1 --&gt; D[&quot;选择待审核资料&quot;]
+    C2 --&gt; D
+    C3 --&gt; D
+    C4 --&gt; D
+    C5 --&gt; D
+
+    D --&gt; E[&quot;文档解析与条款抽取&quot;]
+    E --&gt; F[&quot;规则匹配与比对&quot;]
+    F --&gt; G[&quot;生成审核结果&quot;]
+
+    G --&gt; G1[&quot;符合&quot;]
+    G --&gt; G2[&quot;不符合&quot;]
+    G --&gt; G3[&quot;需人工确认&quot;]
+    G --&gt; G4[&quot;缺失资料&quot;]
+    G --&gt; G5[&quot;风险项&quot;]
+
+    G1 --&gt; H[&quot;生成审核矩阵/缺口清单&quot;]
+    G2 --&gt; H
+    G3 --&gt; H
+    G4 --&gt; H
+    G5 --&gt; H
+
+    H --&gt; I[&quot;人工复核&quot;]
+    I --&gt; J{&quot;是否确认&quot;}
+    J --&gt;|&quot;否&quot;| K[&quot;调整规则/补充资料/重新审核&quot;]
+    K --&gt; F
+    J --&gt;|&quot;是&quot;| L[&quot;导出审核报告或补件建议&quot;]</pre></div>
+<h2 id="7-集成与回写流程">7. 集成与回写流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;管理员预配置连接器&quot;] --&gt; A1[&quot;企业微信/飞书/钉钉&quot;]
+    A --&gt; A2[&quot;API 查询&quot;]
+    A --&gt; A3[&quot;文件源&quot;]
+    A --&gt; A4[&quot;输出回写&quot;]
+    A --&gt; A5[&quot;Office/WPS 导出&quot;]
+
+    A1 --&gt; B[&quot;权限与字段映射&quot;]
+    A2 --&gt; B
+    A3 --&gt; B
+    A4 --&gt; B
+    A5 --&gt; B
+
+    B --&gt; C[&quot;任务执行页展示可引用资料源/API&quot;]
+    C --&gt; D{&quot;用户选择集成能力&quot;}
+    D --&gt;|&quot;查询&quot;| E[&quot;调用 API 获取结构化数据&quot;]
+    D --&gt;|&quot;引用&quot;| F[&quot;读取文件源/知识源&quot;]
+    D --&gt;|&quot;通知&quot;| G[&quot;推送企业微信/飞书/钉钉&quot;]
+    D --&gt;|&quot;回写&quot;| H[&quot;回写到网盘/API/邮件&quot;]
+
+    E --&gt; I[&quot;Agent 执行任务&quot;]
+    F --&gt; I
+    I --&gt; J[&quot;生成结果&quot;]
+    J --&gt; K{&quot;结果处理方式&quot;}
+
+    K --&gt;|&quot;导出&quot;| L[&quot;下载 Word/PPT/PDF/Excel&quot;]
+    K --&gt;|&quot;通知&quot;| G
+    K --&gt;|&quot;回写&quot;| H
+    K --&gt;|&quot;沉淀&quot;| M[&quot;保存到项目&quot;]
+
+    G --&gt; N[&quot;保留任务记录和引用来源&quot;]
+    H --&gt; N
+    L --&gt; N
+    M --&gt; N</pre></div>
+<h2 id="8-人工审阅与追溯流程">8. 人工审阅与追溯流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;Agent 生成中间结果&quot;] --&gt; B[&quot;系统标记风险和引用&quot;]
+    B --&gt; C[&quot;进入人工审阅&quot;]
+
+    C --&gt; D{&quot;审阅对象&quot;}
+    D --&gt; D1[&quot;事实内容&quot;]
+    D --&gt; D2[&quot;表达内容&quot;]
+    D --&gt; D3[&quot;计算结果&quot;]
+    D --&gt; D4[&quot;审核判断&quot;]
+    D --&gt; D5[&quot;缺失信息&quot;]
+
+    D1 --&gt; E[&quot;查看来源依据&quot;]
+    D2 --&gt; F[&quot;直接修改表达&quot;]
+    D3 --&gt; G[&quot;检查参数和公式&quot;]
+    D4 --&gt; H[&quot;确认符合/不符合/需补充&quot;]
+    D5 --&gt; I[&quot;补充资料或确认缺失&quot;]
+
+    E --&gt; J[&quot;确认或驳回&quot;]
+    F --&gt; J
+    G --&gt; J
+    H --&gt; J
+    I --&gt; J
+
+    J --&gt; K{&quot;是否通过&quot;}
+    K --&gt;|&quot;否&quot;| L[&quot;返回 Agent 重新执行&quot;]
+    L --&gt; A
+    K --&gt;|&quot;是&quot;| M[&quot;生成正式交付物&quot;]
+
+    M --&gt; N[&quot;保存审阅记录&quot;]
+    N --&gt; O[&quot;形成可追溯证据链&quot;]</pre></div>
+<h2 id="9-交付与沉淀流程">9. 交付与沉淀流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;正式交付物生成&quot;] --&gt; B{&quot;交付物类型&quot;}
+    B --&gt; B1[&quot;方案/指导书&quot;]
+    B --&gt; B2[&quot;PPT/PDF&quot;]
+    B --&gt; B3[&quot;审核报告&quot;]
+    B --&gt; B4[&quot;缺口清单&quot;]
+    B --&gt; B5[&quot;设备档案&quot;]
+    B --&gt; B6[&quot;交付包目录&quot;]
+
+    B1 --&gt; C[&quot;导出或回写&quot;]
+    B2 --&gt; C
+    B3 --&gt; C
+    B4 --&gt; C
+    B5 --&gt; C
+    B6 --&gt; C
+
+    C --&gt; D[&quot;保存到项目&quot;]
+    D --&gt; E[&quot;记录引用来源&quot;]
+    E --&gt; F[&quot;记录人工确认&quot;]
+    F --&gt; G[&quot;记录版本和生成时间&quot;]
+
+    G --&gt; H{&quot;是否可复用&quot;}
+    H --&gt;|&quot;是&quot;| I[&quot;沉淀为案例/模板/规则&quot;]
+    H --&gt;|&quot;否&quot;| J[&quot;仅保留项目资产&quot;]
+
+    I --&gt; K[&quot;进入知识底座待审核&quot;]
+    K --&gt; L[&quot;专家确认后发布&quot;]
+    J --&gt; M[&quot;任务关闭&quot;]
+    L --&gt; M</pre></div></article>
+    </main>
+  </div>
+</body>
+</html>

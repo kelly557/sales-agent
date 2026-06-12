@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AI Native 工程文档 Agent 平台</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0;font-family:Inter,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif}
+body{background:#e9edf2;color:#1f2937;overflow:auto}
+.canvas{width:4200px;height:3650px;background:#eef2f6;position:relative;padding:24px}
+.topbar{height:120px;background:#fff;border:1px solid #cfd6df;border-radius:8px;padding:18px 24px;display:flex;align-items:flex-start;justify-content:space-between;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.brand{width:280px}
+.brand h1{font-size:28px;color:#113a63;font-weight:700}
+.brand p{font-size:13px;color:#667085;line-height:1.5;margin-top:8px}
+.goal-area{flex:1;padding:0 24px}
+.goal-input{height:56px;border:1px solid #b7c3d0;background:#f7f9fb;border-radius:8px;padding:16px;font-size:16px;color:#475467;display:flex;align-items:center}
+.quick-row{display:flex;gap:12px;margin-top:14px}
+.btn{padding:10px 16px;border-radius:6px;border:1px solid #c6d0db;background:#fff;font-size:13px;color:#344054}
+.btn.primary{background:#103d69;color:#fff;border-color:#103d69}
+.btn.green{background:#0f7b53;color:#fff;border-color:#0f7b53}
+.status{width:360px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.metric{background:#f8fafc;border:1px solid #d6dde5;border-radius:8px;padding:14px}
+.metric .num{font-size:22px;font-weight:700;color:#103d69}
+.metric .label{font-size:12px;color:#667085;margin-top:6px}
+.section-title{font-size:22px;font-weight:700;color:#113a63;margin-bottom:14px}
+.section-sub{font-size:13px;color:#667085;margin-bottom:18px}
+.capability{position:absolute;left:24px;top:165px;width:4150px;height:520px;background:#fff;border:1px solid #d0d7e0;border-radius:8px;padding:22px}
+.cap-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-gap:18px;margin-top:18px}
+.cap-card{background:#f8fafc;border:1px solid #d9e1ea;border-radius:8px;padding:16px;height:190px;position:relative}
+.cap-card h3{font-size:16px;color:#123e69;margin-bottom:10px}
+.cap-card ul{padding-left:18px;font-size:12px;color:#475467;line-height:1.6}
+.cap-state{position:absolute;bottom:12px;left:16px;right:16px;background:#eef5fb;border:1px solid #bfd2e4;border-radius:6px;padding:8px;font-size:12px;color:#134b77}
+.agent-core{position:absolute;left:1670px;top:130px;width:760px;height:250px;background:#103d69;color:#fff;border-radius:8px;padding:20px;border:1px solid #0b2c4a;box-shadow:0 4px 10px rgba(0,0,0,.08)}
+.agent-core h2{font-size:26px;margin-bottom:10px}
+.agent-core p{font-size:14px;line-height:1.7;color:#d9e7f4}
+.agent-core .running{margin-top:18px;background:#0f4f84;padding:12px;border-radius:6px;font-size:13px}
+.flow{position:absolute;left:24px;top:720px;width:820px;height:980px;background:#fff;border:1px solid #d0d7e0;border-radius:8px;padding:20px}
+.flow-col{display:flex;flex-direction:column;gap:14px;margin-top:16px}
+.node{background:#f7fafc;border:1px solid #d7dee8;border-left:6px solid #0f4f84;border-radius:8px;padding:14px;font-size:13px;line-height:1.6;position:relative}
+.node.parallel{border-left-color:#0f7b53;background:#f2fbf6}
+.node.warn{border-left-color:#dc6803;background:#fff7ed}
+.compare{margin-top:22px;background:#f8fafc;border:1px solid #d7dee8;border-radius:8px;padding:14px}
+.compare-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:12px}
+.compare-card{border:1px solid #d8dee7;border-radius:8px;padding:12px;background:#fff}
+.compare-card h4{margin-bottom:10px;color:#123e69}
+.workbench{position:absolute;left:880px;top:720px;width:1780px;height:980px;background:#fff;border:1px solid #ccd6df;border-radius:8px;display:grid;grid-template-columns:330px 1fr 360px;overflow:hidden}
+.side-left{border-right:1px solid #dde4eb;padding:18px;background:#fbfcfd}
+.center-main{padding:18px;background:#fff}
+.side-right{border-left:1px solid #dde4eb;padding:18px;background:#fbfcfd}
+.panel-title{font-size:18px;font-weight:700;color:#113a63;margin-bottom:14px}
+.info-box{background:#f8fafc;border:1px solid #d7dee8;border-radius:8px;padding:12px;margin-bottom:14px}
+.tag{display:inline-block;padding:4px 8px;border-radius:999px;font-size:11px;margin:4px 6px 0 0;font-weight:600}
+.blue{background:#dbeafe;color:#1d4ed8}
+.green{background:#dcfce7;color:#15803d}
+.orange{background:#ffedd5;color:#c2410c}
+.red{background:#fee2e2;color:#b42318}
+.gray{background:#e5e7eb;color:#374151}
+.list{font-size:12px;line-height:1.8;color:#344054}
+.goal-box{background:#eef5fb;border:1px solid #bfd2e4;border-radius:8px;padding:16px;font-size:15px;line-height:1.8;color:#123e69;font-weight:600}
+.plan-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+.plan-card{background:#f9fbfd;border:1px solid #dbe3ec;border-radius:8px;padding:14px;min-height:180px}
+.plan-card h4{color:#123e69;margin-bottom:10px}
+.progress-row{margin-top:14px}
+.progress-row div{display:flex;justify-content:space-between;font-size:12px;margin-bottom:4px}
+.bar{height:8px;background:#e5e7eb;border-radius:999px;overflow:hidden}
+.fill{height:100%;background:#0f7b53}
+.confirm-card{background:#fff;border:1px solid #d8dee7;border-radius:8px;padding:12px;margin-bottom:12px}
+.confirm-card h5{font-size:13px;color:#111827;margin-bottom:8px}
+.confirm-card p{font-size:12px;line-height:1.6;color:#475467}
+.actions{display:flex;gap:6px;margin-top:10px;flex-wrap:wrap}
+.smallbtn{padding:6px 10px;border-radius:6px;border:1px solid #c7d0db;background:#fff;font-size:11px}
+.smallbtn.primary{background:#103d69;color:#fff;border-color:#103d69}
+.module-grid{position:absolute;left:2700px;top:720px;width:1470px;display:grid;grid-template-columns:repeat(2,1fr);gap:18px;align-content:start}
+.module{background:#fff;border:1px solid #d1d8e0;border-radius:8px;padding:16px;min-height:340px}
+.module h3{font-size:17px;color:#113a63;margin-bottom:12px}
+.table{width:100%;border-collapse:collapse;font-size:11px}
+.table th,.table td{border:1px solid #dde3ea;padding:6px;text-align:left}
+.table th{background:#f4f7fa;color:#475467}
+.kv{display:grid;grid-template-columns:120px 1fr;gap:6px;font-size:12px;line-height:1.7;margin-bottom:6px}
+.tree{background:#f8fafc;border:1px solid #d7dee8;border-radius:6px;padding:10px;font-size:12px;line-height:1.8}
+.mapping{position:absolute;left:24px;top:1740px;width:2600px;height:500px;background:#fff;border:1px solid #d0d7e0;border-radius:8px;padding:20px}
+.mapping table{width:100%;border-collapse:collapse;font-size:12px;margin-top:14px}
+.mapping th,.mapping td{border:1px solid #d9e0e8;padding:10px;text-align:center}
+.mapping th{background:#f4f7fa}
+.dot{width:14px;height:14px;border-radius:50%;display:inline-block;background:#0f7b53}
+.dot.gray{background:#cbd5e1}
+.dot.orange{background:#ea580c}
+.lane{position:absolute;left:24px;top:2260px;width:4150px;height:300px;background:#fff;border:1px solid #d1d8e0;border-radius:8px;padding:20px}
+.lane-row{display:flex;justify-content:space-between;margin-top:40px}
+.lane-node{width:360px;background:#f8fafc;border:1px solid #d8e0e8;border-radius:8px;padding:14px;position:relative}
+.lane-node:after{content:'';position:absolute;right:-54px;top:50%;width:54px;height:2px;background:#93a4b8}
+.lane-node:last-child:after{display:none}
+.lane-node h4{color:#113a63;margin-bottom:10px}
+.lane-node p{font-size:12px;color:#475467;line-height:1.6}
+.caption{font-size:11px;color:#667085;margin-top:10px}
+.mini-list{font-size:12px;line-height:1.7;padding-left:18px;color:#344054}
+.header-right{position:absolute;top:18px;right:20px;font-size:12px;color:#667085}
+.header-right span{margin-left:14px}
+</style>
+</head>
+<body>
+<div class="canvas">
+<div class="topbar">
+<div class="brand">
+<h1>AI Native 工程文档 Agent 平台</h1>
+<p>从目标到交付 · 不让用户选择复杂流程，而是让 Agent 理解目标、规划任务、调度平台能力、执行交付、暴露关键判断。</p>
+</div>
+<div class="goal-area">
+<div class="goal-input">输入目标，例如：把这些设备资料生成施工方案，并检查缺失资料和高风险条款</div>
+<div class="quick-row">
+<div class="btn">拖入资料包</div>
+<div class="btn">引用历史项目</div>
+<div class="btn primary">生成方案</div>
+<div class="btn">检查缺口</div>
+<div class="btn">整理交付包</div>
+<div class="btn green">分析变更影响</div>
+</div>
+</div>
+<div class="status">
+<div class="metric"><div class="num">18</div><div class="label">今日完成任务</div></div>
+<div class="metric"><div class="num">6</div><div class="label">待确认事项</div></div>
+<div class="metric"><div class="num" style="color:#b42318">2</div><div class="label">高风险阻塞</div></div>
+<div class="metric"><div class="num">82%</div><div class="label">资料完整率</div></div>
+</div>
+</div>
+
+<div class="capability">
+<div class="header-right"><span>工作台</span><span>任务中心</span><span>治理后台</span><span>规则管理</span></div>
+<div class="section-title">平台能力地图：Agent 执行过程中自动调度的必要功能模块</div>
+<div class="section-sub">AI Native 不是取消 SaaS 功能，而是把复杂能力从用户手动入口变成 Agent 自动调度的执行底座。</div>
+<div class="agent-core">
+<h2>Agent 编排层</h2>
+<p>理解目标、拆解任务、选择工具、调度模块、追问确认、生成交付物。用户只表达目标，不再进入复杂模块配置流程。</p>
+<div class="running">正在调度 5 个能力模块 · 执行 7 个子任务 · 已将 31 处正文内容绑定原文依据</div>
+</div>
+<div class="cap-grid">
+<div class="cap-card"><h3>目标与任务理解</h3><ul><li>自然语言目标解析</li><li>任务类型自动识别</li><li>输出物意图识别</li><li>优先级与责任边界判断</li></ul><div class="cap-state">已识别：这是化工设备改造施工场景</div></div>
+<div class="cap-card"><h3>多源资料接入与解析</h3><ul><li>Word / Excel / PDF / PPT</li><li>扫描件 OCR / 图片</li><li>CAD / P&ID 索引</li><li>文件版本与签章识别</li></ul><div class="cap-state">已解析 27 个文件 · 发现 4 个异常</div></div>
+<div class="cap-card"><h3>工程对象模型</h3><ul><li>项目 / 专业 / 系统</li><li>设备 / 材料 / 产品</li><li>图纸 / 标准 / 条款</li><li>对象关联关系</li></ul><div class="cap-state">识别 14 个工程对象 · 关联 62 条关系</div></div>
+<div class="cap-card"><h3>行业场景包</h3><ul><li>建筑 / 能源 / 化工</li><li>术语库与标准映射</li><li>行业工作流策略</li><li>专家样例约束</li></ul><div class="cap-state">命中化工设备改造场景包</div></div>
+<div class="cap-card"><h3>模板与规则引擎</h3><ul><li>企业模板</li><li>完整性规则</li><li>技术符合性规则</li><li>禁止生成规则</li></ul><div class="cap-state">匹配 42 条规则 · 触发 3 条高风险</div></div>
+<div class="cap-card"><h3>证据链与可追溯</h3><ul><li>原文引用</li><li>页码 / 条款 / 图号</li><li>规则命中记录</li><li>审计日志</li></ul><div class="cap-state">绑定 31 处引用证据</div></div>
+<div class="cap-card"><h3>审阅协同与人工确认</h3><ul><li>关键假设确认</li><li>专家批注</li><li>版本对比</li><li>责任记录</li></ul><div class="cap-state">生成 4 个待确认项</div></div>
+<div class="cap-card"><h3>交付与复用沉淀</h3><ul><li>Word / PDF / Excel</li><li>交付包目录</li><li>案例与模板沉淀</li><li>规则进化</li></ul><div class="cap-state">输出 6 类交付物</div></div>
+</div>
+</div>
+
+<div class="flow">
+<div class="section-title">AI Native 完整执行流程</div>
+<div class="flow-col">
+<div class="node">用户输入目标 / 拖入资料<br/>“我需要一份可直接交付的施工方案，不只是生成一段文字”</div>
+<div class="node">Agent 自动理解任务意图<br/>自动识别输出类型、责任边界、交付格式</div>
+<div class="node">自动识别行业、专业、工程对象<br/>化工 / 设备安装 / 改造施工</div>
+<div class="node">自动盘点已有资料与缺失资料<br/>检测报告缺少签章页，建议标记为待补件</div>
+<div class="node parallel">自动生成工作计划<br/>方案生成 / 风险识别 / 缺口检查 / 交付整理并行执行</div>
+<div class="node parallel">并行执行<br/>文档生成 · 资料审查 · 风险识别 · 引用绑定 · 交付整理</div>
+<div class="node warn">只追问关键问题<br/>以下 4 项会影响方案责任边界，需要人工确认</div>
+<div class="node">输出草稿、风险、证据、缺口清单</div>
+<div class="node">人工确认关键判断</div>
+<div class="node">Agent 自动修订并生成最终交付物</div>
+<div class="node parallel">沉淀为案例、模板、规则、知识对象</div>
+</div>
+<div class="compare">
+<div style="font-weight:700;color:#113a63">AI Native 与传统 SaaS 差异</div>
+<div class="compare-grid">
+<div class="compare-card"><h4>传统 SaaS</h4><p style="font-size:12px;line-height:1.7">用户选择模块 → 配置流程 → 上传资料 → 等待结果 → 人工修订</p></div>
+<div class="compare-card"><h4>AI Native</h4><p style="font-size:12px;line-height:1.7">用户表达目标 → Agent 规划执行 → 人确认关键项 → 直接交付</p></div>
+</div>
+</div>
+</div>
+
+<div class="workbench">
+<div class="side-left">
+<div class="panel-title">资料与上下文</div>
+<div class="info-box">
+<div class="kv"><strong>当前项目</strong><span>某化工装置设备改造项目</span></div>
+<div class="kv"><strong>自动识别行业</strong><span>化工 / 设备安装 / 改造施工</span></div>
+</div>
+<div class="info-box">
+<strong style="font-size:13px">资料清单</strong>
+<ul class="mini-list">
+<li>设备说明书.pdf</li>
+<li>P&ID 图纸索引.dwg</li>
+<li>产品检测报告.pdf</li>
+<li>企业施工方案模板.docx</li>
+<li>历史类似项目方案.docx</li>
+<li>安全技术规范.pdf</li>
+</ul>
+</div>
+<div class="info-box">
+<strong style="font-size:13px">自动识别工程对象</strong>
+<div style="margin-top:8px">
+<span class="tag blue">设备：换热器 HX-204</span>
+<span class="tag blue">管线：DN150 蒸汽管线</span>
+<span class="tag blue">材料：耐高温防腐涂层</span>
+<span class="tag gray">专业：工艺 / 设备 / 安全</span>
+</div>
+</div>
+<div class="info-box">
+<strong style="font-size:13px">资料状态</strong>
+<div style="margin-top:8px">
+<span class="tag green">已解析</span>
+<span class="tag orange">待确认</span>
+<span class="tag red">缺失</span>
+<span class="tag gray">版本冲突</span>
+</div>
+</div>
+</div>
+
+<div class="center-main">
+<div class="panel-title">目标驱动工作台</div>
+<div class="goal-box">请基于这些资料生成一份施工方案，同时检查缺失资料、高风险条款，并输出引用证据包。</div>
+<div class="plan-grid">
+<div class="plan-card">
+<h4>已识别任务</h4>
+<ul class="mini-list">
+<li>施工方案生成</li>
+<li>作业指导书派生</li>
+<li>资料缺口检查</li>
+<li>风险条款识别</li>
+<li>引用证据包生成</li>
+</ul>
+</div>
+<div class="plan-card">
+<h4>Agent 判断</h4>
+<ul class="mini-list">
+<li>行业场景包：化工设备改造</li>
+<li>适用模板：企业施工方案模板 V3.2</li>
+<li>适用规则：动火 / 吊装 / 压力管道</li>
+<li>输出格式：Word / Excel / PDF</li>
+</ul>
+</div>
+<div class="plan-card">
+<h4>预计产出</h4>
+<ul class="mini-list">
+<li>施工方案 Word</li>
+<li>作业指导书 Word</li>
+<li>缺失资料清单 Excel</li>
+<li>高风险条款清单</li>
+<li>引用证据包 PDF</li>
+</ul>
+</div>
+<div class="plan-card">
+<h4>并行执行看板</h4>
+<div class="progress-row"><div><span>文档解析</span><span>96%</span></div><div class="bar"><div class="fill" style="width:96%"></div></div></div>
+<div class="progress-row"><div><span>工程对象抽取</span><span>完成</span></div><div class="bar"><div class="fill" style="width:100%"></div></div></div>
+<div class="progress-row"><div><span>规则匹配</span><span>命中 42 条</span></div><div class="bar"><div class="fill" style="width:82%"></div></div></div>
+<div class="progress-row"><div><span>方案生成</span><span>进行中</span></div><div class="bar"><div class="fill" style="width:61%"></div></div></div>
+<div class="progress-row"><div><span>风险识别</span><span>2 个高风险</span></div><div class="bar"><div class="fill" style="width:70%"></div></div></div>
+</div>
+</div>
+</div>
+
+<div class="side-right">
+<div class="panel-title">需要你确认的关键判断</div>
+<div class="confirm-card">
+<h5>缺少现场吊装半径，是否按 18m 临时假设？</h5>
+<p>风险等级：高风险 · Agent 建议：先采用历史项目默认值，并在风险清单中标记。</p>
+<div class="actions"><div class="smallbtn primary">确认</div><div class="smallbtn">修改</div><div class="smallbtn">稍后处理</div><div class="smallbtn">指派专家</div></div>
+</div>
+<div class="confirm-card">
+<h5>P&ID 与设备清单版本不一致，请确认优先依据</h5>
+<p>依据来源：P&ID 2024-09 / 设备清单 2024-07</p>
+<div class="actions"><div class="smallbtn primary">以 P&ID 为准</div><div class="smallbtn">修改依据</div></div>
+</div>
+<div class="confirm-card">
+<h5>规范条款中动火等级存在冲突</h5>
+<p>需要选择企业标准还是行业标准。</p>
+<div class="actions"><div class="smallbtn primary">企业标准</div><div class="smallbtn">行业标准</div></div>
+</div>
+<div class="confirm-card">
+<h5>设备检验报告缺少签章页</h5>
+<p>建议标记为待补件，并继续生成草稿。</p>
+<div class="actions"><div class="smallbtn primary">确认假设</div><div class="smallbtn">停止执行</div></div>
+</div>
+</div>
+</div>
+
+<div class="module-grid">
+<div class="module"><h3>页面 A · Agent 任务计划侧栏</h3><div class="list">任务目标摘要：生成可交付施工方案<br/>已识别交付物：Word / 风险清单 / 证据包</div><table class="table" style="margin-top:12px"><tr><th>子任务</th><th>状态</th><th>耗时</th><th>置信度</th></tr><tr><td>提取设备参数</td><td>完成</td><td>12s</td><td>96%</td></tr><tr><td>匹配施工模板</td><td>完成</td><td>5s</td><td>93%</td></tr><tr><td>检查资料完整性</td><td>进行中</td><td>18s</td><td>88%</td></tr><tr><td>识别安全风险</td><td>进行中</td><td>26s</td><td>84%</td></tr><tr><td>生成方案初稿</td><td>进行中</td><td>42s</td><td>79%</td></tr></table></div>
+<div class="module"><h3>页面 B · 全局任务与项目 Overview</h3><div class="info-box"><div class="kv"><strong>任务地图</strong><span>方案生成 / 缺口检查 / 交付整理 / 专家审阅</span></div></div><table class="table"><tr><th>项目</th><th>完整率</th><th>风险</th></tr><tr><td>设计资料</td><td>86%</td><td>低</td></tr><tr><td>设备资料</td><td>72%</td><td>中</td></tr><tr><td>检测报告</td><td>64%</td><td>高</td></tr><tr><td>验收资料</td><td>41%</td><td>高</td></tr></table><div style="margin-top:10px"><span class="tag red">标准版本冲突</span><span class="tag orange">签章缺失</span><span class="tag gray">图纸版本不一致</span></div></div>
+<div class="module"><h3>页面 C · 多源资料解析中心</h3><table class="table"><tr><th>文件</th><th>类型</th><th>解析状态</th><th>异常</th></tr><tr><td>设备说明书</td><td>PDF</td><td>完成</td><td>0</td></tr><tr><td>P&ID 图纸</td><td>DWG</td><td>完成</td><td>1</td></tr><tr><td>检测报告</td><td>扫描 PDF</td><td>进行中</td><td>2</td></tr></table><div style="margin-top:10px"><span class="tag blue">Word 结构识别</span><span class="tag blue">OCR 签章识别</span><span class="tag blue">CAD 索引</span></div><p class="caption">扫描件清晰度不足 · 表格跨页 · 文件版本冲突</p></div>
+<div class="module"><h3>页面 D · 工程对象模型页面</h3><div style="display:grid;grid-template-columns:180px 1fr 180px;gap:12px"><div class="tree">项目<br/>├ 专业<br/>├ 系统<br/>├ 设备<br/>├ 材料<br/>└ 标准条款</div><div class="info-box"><strong>换热器 HX-204</strong><p class="caption">型号规格 / 厂家 / 关键参数 / 关联 P&ID 图号 / 检测报告</p></div><div class="tree">设备 → 管线<br/>标准 → 风险规则<br/>图纸 → 施工章节<br/>报告 → 验收条款</div></div></div>
+<div class="module"><h3>页面 E · 行业场景包与规则覆盖</h3><div style="display:flex;gap:8px;flex-wrap:wrap"><span class="tag blue">化工设备改造</span><span class="tag gray">电力试验移交</span><span class="tag gray">装备制造交付</span><span class="tag gray">建筑竣工资料</span></div><div class="info-box" style="margin-top:12px"><strong>当前命中：</strong>化工设备改造，置信度 91%</div><table class="table"><tr><th>规则</th><th>覆盖率</th></tr><tr><td>安全规则</td><td>88%</td></tr><tr><td>资料规则</td><td>74%</td></tr><tr><td>模板规则</td><td>96%</td></tr><tr><td>参数校验</td><td>67%</td></tr></table></div>
+<div class="module"><h3>页面 F · 模板与规则引擎</h3><table class="table"><tr><th>规则</th><th>风险</th><th>动作</th></tr><tr><td>动火等级未明确</td><td>高</td><td>必须确认</td></tr><tr><td>检测报告缺签章</td><td>中</td><td>标记补件</td></tr><tr><td>标准版本冲突</td><td>高</td><td>指派专家</td></tr></table><div style="margin-top:10px"><span class="tag green">施工方案模板 V3.2</span><span class="tag green">作业指导书 V2.8</span></div></div>
+<div class="module"><h3>页面 G · 关键追问弹窗</h3><div class="info-box"><strong>Agent 需要确认 3 个关键假设</strong></div><ul class="mini-list"><li>作业环境是否包含受限空间？</li><li>吊装设备最大作业半径采用哪个值？</li><li>本项目优先遵循企业标准还是行业标准？</li></ul><div style="margin-top:10px"><span class="tag orange">Agent 推荐答案</span><span class="tag blue">推荐理由</span><span class="tag gray">影响范围</span></div></div>
+<div class="module"><h3>页面 H · 风险与证据链面板</h3><div class="confirm-card"><h5>高风险：动火作业等级未明确</h5><p>命中规则：HG-RISK-204 · 引用位置：安全规范.pdf P12</p></div><div class="confirm-card"><h5>中风险：设备检验报告签章缺失</h5><p>原文引用：检测报告.pdf P2</p></div><div class="confirm-card"><h5>低风险：模板章节版本不一致</h5><p>建议处理：自动替换为最新模板章节</p></div></div>
+<div class="module"><h3>页面 I · 交付物预览页</h3><ul class="mini-list"><li>施工方案 Word 预览</li><li>作业指导书 Word</li><li>缺失资料清单 Excel</li><li>风险条款矩阵</li><li>引用证据包 PDF</li></ul><div class="actions" style="margin-top:14px"><div class="smallbtn primary">导出全部</div><div class="smallbtn">发送审阅</div><div class="smallbtn">生成修订版</div><div class="smallbtn">归档为案例</div></div></div>
+<div class="module"><h3>页面 J · 文档审阅与自动修订</h3><div style="display:grid;grid-template-columns:150px 1fr 180px;gap:10px"><div class="tree">工程概况<br/>编制依据<br/>施工准备<br/>施工工艺<br/>安全措施</div><div class="info-box">章节旁显示引用编号 [E-12] [R-09] [P-21]</div><div class="tree">专家批注<br/>Agent 修订建议<br/>一键应用<br/>保留原文<br/>重新生成本节</div></div></div>
+<div class="module"><h3>页面 K · 复用沉淀与治理页</h3><ul class="mini-list"><li>化工设备改造案例</li><li>动火作业风险规则</li><li>施工方案章节模板</li><li>换热器设备参数对象</li></ul><table class="table" style="margin-top:12px"><tr><th>治理项</th><th>状态</th></tr><tr><td>入库状态</td><td>待审核</td></tr><tr><td>可见范围</td><td>化工事业部</td></tr><tr><td>版本号</td><td>V1.2</td></tr><tr><td>审计记录</td><td>完整</td></tr></table></div>
+</div>
+
+<div class="mapping" style="top:2550px;">
+<div class="section-title">执行步骤 × 平台能力模块映射</div>
+<table>
+<tr><th>执行步骤</th><th>目标理解</th><th>文档解析</th><th>工程对象模型</th><th>行业场景包</th><th>模板规则</th><th>证据链</th><th>审阅协同</th><th>交付管理</th><th>治理后台</th></tr>
+<tr><td>目标理解</td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td></tr>
+<tr><td>资料解析</td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td></tr>
+<tr><td>工程对象抽取</td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td></tr>
+<tr><td>场景包识别</td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td></tr>
+<tr><td>规则匹配</td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot orange"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td></tr>
+<tr><td>内容生成</td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td></tr>
+<tr><td>风险识别</td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot orange"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td></tr>
+<tr><td>证据绑定</td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td></tr>
+<tr><td>人工确认</td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td></tr>
+<tr><td>交付导出</td><td><span class="dot gray"></span></td><td><span class="dot gray"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td></tr>
+<tr><td>复用沉淀</td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td><td><span class="dot"></span></td></tr>
+</table>
+</div>
+
+<div class="lane" style="top:3110px;">
+<div class="section-title">交付闭环 · 沉淀复用 · 治理反馈泳道</div>
+<div class="lane-row">
+<div class="lane-node"><h4>资料输入</h4><p>Word / PDF / CAD / Excel / 图片</p></div>
+<div class="lane-node"><h4>任务理解</h4><p>行业、专业、设备、材料</p></div>
+<div class="lane-node"><h4>工程对象化</h4><p>项目、系统、设备、条款</p></div>
+<div class="lane-node"><h4>规则 / 知识匹配</h4><p>模板、规范、历史案例</p></div>
+<div class="lane-node"><h4>Agent 执行</h4><p>生成、审查、整理、分析</p></div>
+<div class="lane-node"><h4>证据链</h4><p>引用、原文、页码、规则</p></div>
+<div class="lane-node"><h4>人工确认</h4><p>关键假设、风险、冲突</p></div>
+<div class="lane-node"><h4>交付物</h4><p>Word、PPT、Excel、PDF、目录</p></div>
+<div class="lane-node"><h4>归档复用</h4><p>案例、模板、知识对象</p></div>
+<div class="lane-node"><h4>规则进化</h4><p>新规则、风险阈值、专家样例</p></div>
+</div>
+</div>
+
+</div>
+</body>
+</html>

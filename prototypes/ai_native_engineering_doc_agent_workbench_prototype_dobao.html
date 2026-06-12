@@ -1,0 +1,2218 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Native 工程文档 Agent 平台 · 从目标到交付</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1e40af',
+                        secondary: '#0891b2',
+                        success: '#059669',
+                        warning: '#d97706',
+                        danger: '#dc2626',
+                        neutral: {
+                            50: '#f8fafc',
+                            100: '#f1f5f9',
+                            200: '#e2e8f0',
+                            300: '#cbd5e1',
+                            400: '#94a3b8',
+                            500: '#64748b',
+                            600: '#475569',
+                            700: '#334155',
+                            800: '#1e293b',
+                            900: '#0f172a',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                    },
+                }
+            }
+        }
+    </script>
+    <style type="text/tailwindcss">
+        @layer utilities {
+            .content-auto {
+                content-visibility: auto;
+            }
+            .card-shadow {
+                box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+            }
+            .card-shadow-lg {
+                box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            }
+        }
+    </style>
+</head>
+<body class="bg-neutral-100 font-sans text-neutral-800 overflow-x-auto">
+    <!-- 超大画布容器 -->
+    <div class="w-[4200px] h-[2600px] bg-neutral-100 p-6 relative">
+        <!-- 顶部标题区域 -->
+        <div class="text-center mb-6">
+            <h1 class="text-4xl font-bold text-neutral-900 mb-2">AI Native 工程文档 Agent 平台 · 从目标到交付</h1>
+            <p class="text-xl text-neutral-600">不让用户选择复杂流程，而是让 Agent 理解目标、规划任务、调度平台能力、执行交付、暴露关键判断。</p>
+        </div>
+
+        <!-- 区域 1：顶部全局产品入口 -->
+        <div class="bg-white rounded-lg card-shadow-lg p-4 mb-8">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-6">
+                    <div class="text-2xl font-bold text-primary">工程文档 Agent</div>
+                    
+                    <div class="flex-1 max-w-4xl">
+                        <div class="relative">
+                            <input 
+                                type="text" 
+                                placeholder="输入目标，例如：把这些设备资料生成施工方案，并检查缺失资料和高风险条款"
+                                class="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-primary text-lg"
+                            >
+                            <div class="absolute right-3 top-1/2 transform -translate-y-1/2 flex space-x-2">
+                                <button class="bg-primary text-white px-4 py-1.5 rounded-md hover:bg-primary/90 transition">开始执行</button>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button class="bg-neutral-100 hover:bg-neutral-200 px-4 py-2 rounded-md border border-neutral-300 transition flex items-center">
+                            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+                            </svg>
+                            拖入资料包
+                        </button>
+                        <button class="bg-neutral-100 hover:bg-neutral-200 px-4 py-2 rounded-md border border-neutral-300 transition">引用历史项目</button>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-4">
+                    <button class="bg-secondary/10 text-secondary px-3 py-2 rounded-md hover:bg-secondary/20 transition">生成方案</button>
+                    <button class="bg-secondary/10 text-secondary px-3 py-2 rounded-md hover:bg-secondary/20 transition">检查缺口</button>
+                    <button class="bg-secondary/10 text-secondary px-3 py-2 rounded-md hover:bg-secondary/20 transition">整理交付包</button>
+                    <button class="bg-secondary/10 text-secondary px-3 py-2 rounded-md hover:bg-secondary/20 transition">分析变更影响</button>
+                </div>
+                
+                <div class="flex items-center space-x-6 ml-6 pl-6 border-l border-neutral-200">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-success">18</div>
+                        <div class="text-xs text-neutral-500">今日完成</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-warning">6</div>
+                        <div class="text-xs text-neutral-500">待确认</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-danger">2</div>
+                        <div class="text-xs text-neutral-500">高风险</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold text-primary">82%</div>
+                        <div class="text-xs text-neutral-500">资料完整率</div>
+                    </div>
+                    <div class="w-10 h-10 rounded-full bg-neutral-200 flex items-center justify-center">
+                        <svg class="w-6 h-6 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                        </svg>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 区域 2：全局功能 Overview / 能力地图 -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-neutral-800">平台能力地图：Agent 执行过程中自动调度的必要功能模块</h2>
+            
+            <div class="bg-white rounded-lg card-shadow-lg p-6">
+                <div class="relative h-[400px]">
+                    <!-- 中心 Agent 编排层 -->
+                    <div class="absolute left-1/2 top-1/2 transform -translate-x-1/2 -translate-y-1/2 w-64 h-64 bg-primary/5 border-2 border-primary rounded-full flex flex-col items-center justify-center z-10">
+                        <div class="text-xl font-bold text-primary mb-2">Agent 编排层</div>
+                        <div class="text-sm text-neutral-600 text-center px-4 mb-4">
+                            理解目标、拆解任务、选择工具、调度模块、追问确认、生成交付物
+                        </div>
+                        <div class="bg-primary/10 text-primary px-3 py-1 rounded-full text-sm">
+                            正在调度 5 个能力模块，执行 7 个子任务
+                        </div>
+                    </div>
+                    
+                    <!-- 周围 8 个功能模块 -->
+                    <!-- 目标与任务理解 -->
+                    <div class="absolute left-[10%] top-[5%] w-56 bg-white border border-neutral-200 rounded-lg card-shadow p-4">
+                        <div class="font-bold text-neutral-800 mb-2">目标与任务理解</div>
+                        <div class="text-xs text-neutral-500 mb-2">Agent 调用时机：任务开始时</div>
+                        <div class="text-xs mb-1"><span class="text-neutral-500">输入：</span>自然语言描述、历史对话</div>
+                        <div class="text-xs mb-2"><span class="text-neutral-500">输出：</span>结构化任务、交付物清单</div>
+                        <div class="text-xs text-success">已解析目标，识别 5 项交付物</div>
+                    </div>
+                    
+                    <!-- 多源资料接入与解析 -->
+                    <div class="absolute left-[30%] top-[0%] w-56 bg-white border border-neutral-200 rounded-lg card-shadow p-4">
+                        <div class="font-bold text-neutral-800 mb-2">多源资料接入与解析</div>
+                        <div class="text-xs text-neutral-500 mb-2">Agent 调用时机：资料上传后</div>
+                        <div class="text-xs mb-1"><span class="text-neutral-500">输入：</span>Word/PDF/Excel/CAD/图片</div>
+                        <div class="text-xs mb-2"><span class="text-neutral-500">输出：</span>结构化数据、元数据、证据片段</div>
+                        <div class="text-xs text-success">已解析 27 个文件，识别 142 个条款</div>
+                    </div>
+                    
+                    <!-- 工程对象模型 -->
+                    <div class="absolute right-[30%] top-[0%] w-56 bg-white border border-neutral-200 rounded-lg card-shadow p-4">
+                        <div class="font-bold text-neutral-800 mb-2">工程对象模型</div>
+                        <div class="text-xs text-neutral-500 mb-2">Agent 调用时机：资料解析后</div>
+                        <div class="text-xs mb-1"><span class="text-neutral-500">输入：</span>解析后的文档内容</div>
+                        <div class="text-xs mb-2"><span class="text-neutral-500">输出：</span>工程对象、关系图谱</div>
+                        <div class="text-xs text-success">识别 14 个工程对象，建立 32 个关联</div>
+                    </div>
+                    
+                    <!-- 行业场景包 -->
+                    <div class="absolute right-[10%] top-[5%] w-56 bg-white border border-neutral-200 rounded-lg card-shadow p-4">
+                        <div class="font-bold text-neutral-800 mb-2">行业场景包</div>
+                        <div class="text-xs text-neutral-500 mb-2">Agent 调用时机：任务理解后</div>
+                        <div class="text-xs mb-1"><span class="text-neutral-500">输入：</span>任务描述、工程对象</div>
+                        <div class="text-xs mb-2"><span class="text-neutral-500">输出：</span>适用规则、模板、工作流</div>
+                        <div class="text-xs text-success">命中化工设备改造场景包，置信度 91%</div>
+                    </div>
+                    
+                    <!-- 模板与规则引擎 -->
+                    <div class="absolute right-[5%] top-[40%] w-56 bg-white border border-neutral-200 rounded-lg card-shadow p-4">
+                        <div class="font-bold text-neutral-800 mb-2">模板与规则引擎</div>
+                        <div class="text-xs text-neutral-500 mb-2">Agent 调用时机：内容生成前</div>
+                        <div class="text-xs mb-1"><span class="text-neutral-500">输入：</span>场景包、工程对象</div>
+                        <div class="text-xs mb-2"><span class="text-neutral-500">输出：</span>文档结构、校验规则</div>
+                        <div class="text-xs text-success">匹配 42 条规则，应用企业施工方案模板 V3.2</div>
+                    </div>
+                    
+                    <!-- 证据链与可追溯 -->
+                    <div class="absolute right-[10%] bottom-[5%] w-56 bg-white border border-neutral-200 rounded-lg card-shadow p-4">
+                        <div class="font-bold text-neutral-800 mb-2">证据链与可追溯</div>
+                        <div class="text-xs text-neutral-500 mb-2">Agent 调用时机：内容生成时</div>
+                        <div class="text-xs mb-1"><span class="text-neutral-500">输入：</span>生成内容、原始资料</div>
+                        <div class="text-xs mb-2"><span class="text-neutral-500">输出：</span>引用记录、审计日志</div>
+                        <div class="text-xs text-success">已绑定 31 处引用证据，覆盖 87% 内容</div>
+                    </div>
+                    
+                    <!-- 审阅协同与人工确认 -->
+                    <div class="absolute left-[10%] bottom-[5%] w-56 bg-white border border-neutral-200 rounded-lg card-shadow p-4">
+                        <div class="font-bold text-neutral-800 mb-2">审阅协同与人工确认</div>
+                        <div class="text-xs text-neutral-500 mb-2">Agent 调用时机：关键判断点</div>
+                        <div class="text-xs mb-1"><span class="text-neutral-500">输入：</span>高风险项、不确定项</div>
+                        <div class="text-xs mb-2"><span class="text-neutral-500">输出：</span>确认记录、修订指令</div>
+                        <div class="text-xs text-warning">生成 4 个待确认项，等待人工处理</div>
+                    </div>
+                    
+                    <!-- 交付与复用沉淀 -->
+                    <div class="absolute left-[5%] top-[40%] w-56 bg-white border border-neutral-200 rounded-lg card-shadow p-4">
+                        <div class="font-bold text-neutral-800 mb-2">交付与复用沉淀</div>
+                        <div class="text-xs text-neutral-500 mb-2">Agent 调用时机：任务完成后</div>
+                        <div class="text-xs mb-1"><span class="text-neutral-500">输入：</span>最终交付物、确认记录</div>
+                        <div class="text-xs mb-2"><span class="text-neutral-500">输出：</span>交付包、可复用资产</div>
+                        <div class="text-xs text-success">将输出 6 类交付物，可沉淀为 3 项资产</div>
+                    </div>
+                    
+                    <!-- 连接线 -->
+                    <svg class="absolute inset-0 w-full h-full" style="z-index: 0;">
+                        <line x1="210" y1="80" x2="840" y2="200" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 2"/>
+                        <line x1="630" y1="40" x2="840" y2="200" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 2"/>
+                        <line x1="1260" y1="40" x2="1260" y2="200" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 2"/>
+                        <line x1="1680" y1="80" x2="1260" y2="200" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 2"/>
+                        <line x1="1890" y1="200" x2="1260" y2="200" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 2"/>
+                        <line x1="1680" y1="360" x2="1260" y2="200" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 2"/>
+                        <line x1="210" y1="360" x2="840" y2="200" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 2"/>
+                        <line x1="105" y1="200" x2="840" y2="200" stroke="#cbd5e1" stroke-width="2" stroke-dasharray="4 2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 主内容区域：左侧流程图 + 中心工作台 + 右侧模块页面 -->
+        <div class="flex gap-6 mb-8">
+            <!-- 区域 3：AI Native 完整页面流程图 -->
+            <div class="w-[500px]">
+                <h2 class="text-2xl font-bold mb-4 text-neutral-800">AI Native 完整工作流程</h2>
+                
+                <div class="bg-white rounded-lg card-shadow-lg p-6 h-full">
+                    <div class="relative h-[700px]">
+                        <!-- 流程节点 -->
+                        <div class="absolute left-0 top-0 w-full">
+                            <div class="bg-primary text-white rounded-lg p-3 text-center font-medium">
+                                用户输入目标 / 拖入资料
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[80px] w-full">
+                            <div class="bg-primary/10 border border-primary rounded-lg p-3 text-center">
+                                Agent 自动理解任务意图
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[160px] w-full">
+                            <div class="bg-primary/10 border border-primary rounded-lg p-3 text-center">
+                                自动识别行业、专业、工程对象
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[240px] w-full">
+                            <div class="bg-primary/10 border border-primary rounded-lg p-3 text-center">
+                                自动盘点已有资料与缺失资料
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[320px] w-full">
+                            <div class="bg-primary/10 border border-primary rounded-lg p-3 text-center">
+                                自动生成工作计划
+                            </div>
+                        </div>
+                        
+                        <!-- 并行执行分支 -->
+                        <div class="absolute left-0 top-[400px] w-[48%]">
+                            <div class="bg-secondary/10 border border-secondary rounded-lg p-3 text-center text-sm">
+                                文档生成
+                            </div>
+                        </div>
+                        
+                        <div class="absolute right-0 top-[400px] w-[48%]">
+                            <div class="bg-secondary/10 border border-secondary rounded-lg p-3 text-center text-sm">
+                                资料审查
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[470px] w-[48%]">
+                            <div class="bg-secondary/10 border border-secondary rounded-lg p-3 text-center text-sm">
+                                缺口检查
+                            </div>
+                        </div>
+                        
+                        <div class="absolute right-0 top-[470px] w-[48%]">
+                            <div class="bg-secondary/10 border border-secondary rounded-lg p-3 text-center text-sm">
+                                风险识别
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[540px] w-full">
+                            <div class="bg-secondary/10 border border-secondary rounded-lg p-3 text-center text-sm">
+                                交付包整理
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[610px] w-full">
+                            <div class="bg-warning/10 border border-warning rounded-lg p-3 text-center">
+                                只追问关键问题
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[690px] w-full">
+                            <div class="bg-warning/10 border border-warning rounded-lg p-3 text-center">
+                                输出草稿、风险、证据、缺口清单
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[770px] w-full">
+                            <div class="bg-success/10 border border-success rounded-lg p-3 text-center">
+                                人工确认关键判断
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[850px] w-full">
+                            <div class="bg-primary/10 border border-primary rounded-lg p-3 text-center">
+                                Agent 自动修订
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[930px] w-full">
+                            <div class="bg-success text-white rounded-lg p-3 text-center font-medium">
+                                生成最终交付物
+                            </div>
+                        </div>
+                        
+                        <div class="absolute left-0 top-[1010px] w-full">
+                            <div class="bg-neutral-100 border border-neutral-300 rounded-lg p-3 text-center">
+                                沉淀为案例、模板、规则、知识对象
+                            </div>
+                        </div>
+                        
+                        <!-- 连接线 -->
+                        <svg class="absolute inset-0 w-full h-full" style="z-index: 0;">
+                            <!-- 主流程线 -->
+                            <line x1="250" y1="50" x2="250" y2="80" stroke="#1e40af" stroke-width="2"/>
+                            <line x1="250" y1="130" x2="250" y2="160" stroke="#1e40af" stroke-width="2"/>
+                            <line x1="250" y1="210" x2="250" y2="240" stroke="#1e40af" stroke-width="2"/>
+                            <line x1="250" y1="290" x2="250" y2="320" stroke="#1e40af" stroke-width="2"/>
+                            <line x1="250" y1="370" x2="250" y2="400" stroke="#1e40af" stroke-width="2"/>
+                            
+                            <!-- 并行分支 -->
+                            <line x1="250" y1="370" x2="120" y2="400" stroke="#0891b2" stroke-width="2"/>
+                            <line x1="250" y1="370" x2="380" y2="400" stroke="#0891b2" stroke-width="2"/>
+                            <line x1="120" y1="450" x2="120" y2="470" stroke="#0891b2" stroke-width="2"/>
+                            <line x1="380" y1="450" x2="380" y2="470" stroke="#0891b2" stroke-width="2"/>
+                            <line x1="120" y1="520" x2="250" y2="540" stroke="#0891b2" stroke-width="2"/>
+                            <line x1="380" y1="520" x2="250" y2="540" stroke="#0891b2" stroke-width="2"/>
+                            
+                            <!-- 继续主流程 -->
+                            <line x1="250" y1="590" x2="250" y2="610" stroke="#0891b2" stroke-width="2"/>
+                            <line x1="250" y1="660" x2="250" y2="690" stroke="#d97706" stroke-width="2"/>
+                            <line x1="250" y1="740" x2="250" y2="770" stroke="#d97706" stroke-width="2"/>
+                            <line x1="250" y1="820" x2="250" y2="850" stroke="#059669" stroke-width="2"/>
+                            <line x1="250" y1="900" x2="250" y2="930" stroke="#1e40af" stroke-width="2"/>
+                            <line x1="250" y1="980" x2="250" y2="1010" stroke="#64748b" stroke-width="2"/>
+                        </svg>
+                    </div>
+                    
+                    <!-- 对比卡片 -->
+                    <div class="mt-8 bg-neutral-50 border border-neutral-200 rounded-lg p-4">
+                        <div class="font-bold text-neutral-800 mb-3">传统 SaaS vs AI Native 对比</div>
+                        
+                        <div class="space-y-3">
+                            <div>
+                                <div class="text-sm font-medium text-neutral-700 mb-1">传统 SaaS：</div>
+                                <div class="text-sm text-neutral-600">用户选择模块 → 配置流程 → 上传资料 → 等待结果 → 人工修订</div>
+                            </div>
+                            
+                            <div>
+                                <div class="text-sm font-medium text-primary mb-1">AI Native：</div>
+                                <div class="text-sm text-neutral-600">用户表达目标 → Agent 规划执行 → 人确认关键项 → 直接交付</div>
+                            </div>
+                            
+                            <div>
+                                <div class="text-sm font-medium text-neutral-700 mb-1">平台能力：</div>
+                                <div class="text-sm text-neutral-600">解析、对象模型、规则、模板、证据、审阅、交付、治理在后台被自动调度</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 区域 4：核心工作台主页面截图 -->
+            <div class="flex-1">
+                <h2 class="text-2xl font-bold mb-4 text-neutral-800">目标驱动工作台</h2>
+                
+                <div class="bg-white rounded-lg card-shadow-lg overflow-hidden h-[1100px]">
+                    <!-- 工作台顶部栏 -->
+                    <div class="bg-neutral-800 text-white p-3 flex items-center justify-between">
+                        <div class="flex items-center space-x-4">
+                            <div class="font-bold">工程文档 Agent</div>
+                            <div class="text-neutral-400">|</div>
+                            <div>某化工装置设备改造项目</div>
+                        </div>
+                        <div class="flex items-center space-x-4">
+                            <button class="bg-neutral-700 hover:bg-neutral-600 px-3 py-1 rounded text-sm">保存</button>
+                            <button class="bg-primary hover:bg-primary/90 px-3 py-1 rounded text-sm">导出交付物</button>
+                            <div class="w-8 h-8 rounded-full bg-neutral-600 flex items-center justify-center text-sm">张</div>
+                        </div>
+                    </div>
+                    
+                    <!-- 工作台主体 -->
+                    <div class="flex h-[calc(100%-48px)]">
+                        <!-- 左侧：资料与上下文栏 -->
+                        <div class="w-72 border-r border-neutral-200 bg-neutral-50 p-4 overflow-y-auto">
+                            <div class="mb-6">
+                                <div class="font-bold text-neutral-800 mb-2">当前项目</div>
+                                <div class="text-sm text-neutral-600 mb-1">某化工装置设备改造项目</div>
+                                <div class="flex items-center space-x-2 mb-3">
+                                    <span class="bg-secondary/10 text-secondary text-xs px-2 py-0.5 rounded">化工</span>
+                                    <span class="bg-secondary/10 text-secondary text-xs px-2 py-0.5 rounded">设备安装</span>
+                                    <span class="bg-secondary/10 text-secondary text-xs px-2 py-0.5 rounded">改造施工</span>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <div class="font-bold text-neutral-800 mb-2">资料清单</div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border border-neutral-200">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">设备说明书.pdf</span>
+                                        </div>
+                                        <span class="bg-success/10 text-success text-xs px-2 py-0.5 rounded">已解析</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border border-neutral-200">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-blue-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">P&ID 图纸索引.dwg</span>
+                                        </div>
+                                        <span class="bg-success/10 text-success text-xs px-2 py-0.5 rounded">已解析</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border border-neutral-200">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">产品检测报告.pdf</span>
+                                        </div>
+                                        <span class="bg-warning/10 text-warning text-xs px-2 py-0.5 rounded">待确认</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border border-neutral-200">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-blue-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">企业施工方案模板.docx</span>
+                                        </div>
+                                        <span class="bg-success/10 text-success text-xs px-2 py-0.5 rounded">已解析</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border border-neutral-200">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-blue-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">历史类似项目方案.docx</span>
+                                        </div>
+                                        <span class="bg-success/10 text-success text-xs px-2 py-0.5 rounded">已解析</span>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between p-2 bg-white rounded border border-neutral-200">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-red-500 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">安全技术规范.pdf</span>
+                                        </div>
+                                        <span class="bg-success/10 text-success text-xs px-2 py-0.5 rounded">已解析</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="font-bold text-neutral-800 mb-2">自动识别工程对象</div>
+                                <div class="space-y-2">
+                                    <div class="text-sm font-medium text-neutral-700">设备</div>
+                                    <div class="pl-3 text-sm text-neutral-600 mb-1">换热器 HX-204</div>
+                                    <div class="pl-3 text-sm text-neutral-600 mb-1">泵 P-105A/B</div>
+                                    
+                                    <div class="text-sm font-medium text-neutral-700 mt-2">管线</div>
+                                    <div class="pl-3 text-sm text-neutral-600 mb-1">DN150 蒸汽管线</div>
+                                    <div class="pl-3 text-sm text-neutral-600 mb-1">DN80 循环水管线</div>
+                                    
+                                    <div class="text-sm font-medium text-neutral-700 mt-2">材料</div>
+                                    <div class="pl-3 text-sm text-neutral-600 mb-1">耐高温防腐涂层</div>
+                                    <div class="pl-3 text-sm text-neutral-600 mb-1">不锈钢螺栓 M16</div>
+                                    
+                                    <div class="text-sm font-medium text-neutral-700 mt-2">专业</div>
+                                    <div class="pl-3 text-sm text-neutral-600 mb-1">工艺</div>
+                                    <div class="pl-3 text-sm text-neutral-600 mb-1">设备</div>
+                                    <div class="pl-3 text-sm text-neutral-600 mb-1">安全</div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 中间：Agent 工作区 -->
+                        <div class="flex-1 p-6 overflow-y-auto">
+                            <!-- 用户目标 -->
+                            <div class="bg-primary/5 border border-primary/20 rounded-lg p-4 mb-6">
+                                <div class="text-sm text-neutral-500 mb-1">你的目标：</div>
+                                <div class="text-lg font-medium text-neutral-800">
+                                    请基于这些资料生成一份施工方案，同时检查缺失资料、高风险条款，并输出引用证据包。
+                                </div>
+                            </div>
+                            
+                            <!-- Agent 判断 -->
+                            <div class="mb-6">
+                                <div class="font-bold text-neutral-800 mb-3">Agent 任务分析</div>
+                                <div class="bg-white border border-neutral-200 rounded-lg p-4">
+                                    <div class="grid grid-cols-2 gap-4">
+                                        <div>
+                                            <div class="text-sm text-neutral-500 mb-1">已识别任务：</div>
+                                            <div class="space-y-1">
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span class="text-sm">施工方案生成</span>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span class="text-sm">作业指导书派生</span>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span class="text-sm">资料缺口检查</span>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span class="text-sm">风险条款识别</span>
+                                                </div>
+                                                <div class="flex items-center">
+                                                    <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                                    </svg>
+                                                    <span class="text-sm">引用证据包生成</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div>
+                                            <div class="text-sm text-neutral-500 mb-1">Agent 判断：</div>
+                                            <div class="space-y-1 text-sm">
+                                                <div>• 行业场景包：化工设备改造</div>
+                                                <div>• 适用模板：企业施工方案模板 V3.2</div>
+                                                <div>• 适用规则：动火、吊装、受限空间、压力管道</div>
+                                                <div>• 输出格式：Word、Excel 风险清单、证据包 PDF</div>
+                                            </div>
+                                            
+                                            <div class="mt-3">
+                                                <div class="text-sm text-neutral-500 mb-1">预计产出：</div>
+                                                <div class="space-y-1 text-sm">
+                                                    <div>• 施工方案 Word</div>
+                                                    <div>• 作业指导书 Word</div>
+                                                    <div>• 缺失资料清单 Excel</div>
+                                                    <div>• 高风险条款清单</div>
+                                                    <div>• 引用证据包</div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- 并行执行看板 -->
+                            <div>
+                                <div class="font-bold text-neutral-800 mb-3">执行进度看板</div>
+                                <div class="bg-white border border-neutral-200 rounded-lg overflow-hidden">
+                                    <table class="w-full">
+                                        <thead class="bg-neutral-50 border-b border-neutral-200">
+                                            <tr>
+                                                <th class="text-left p-3 text-sm font-medium text-neutral-600">任务</th>
+                                                <th class="text-left p-3 text-sm font-medium text-neutral-600">状态</th>
+                                                <th class="text-left p-3 text-sm font-medium text-neutral-600">进度</th>
+                                                <th class="text-left p-3 text-sm font-medium text-neutral-600">结果</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr class="border-b border-neutral-100">
+                                                <td class="p-3 text-sm">文档解析</td>
+                                                <td class="p-3">
+                                                    <span class="bg-success/10 text-success text-xs px-2 py-0.5 rounded">进行中</span>
+                                                </td>
+                                                <td class="p-3">
+                                                    <div class="w-full bg-neutral-200 rounded-full h-2">
+                                                        <div class="bg-success h-2 rounded-full" style="width: 96%"></div>
+                                                    </div>
+                                                    <div class="text-xs text-neutral-500 mt-1">96%</div>
+                                                </td>
+                                                <td class="p-3 text-sm">已解析 27 个文件</td>
+                                            </tr>
+                                            <tr class="border-b border-neutral-100">
+                                                <td class="p-3 text-sm">工程对象抽取</td>
+                                                <td class="p-3">
+                                                    <span class="bg-success text-white text-xs px-2 py-0.5 rounded">已完成</span>
+                                                </td>
+                                                <td class="p-3">
+                                                    <div class="w-full bg-neutral-200 rounded-full h-2">
+                                                        <div class="bg-success h-2 rounded-full" style="width: 100%"></div>
+                                                    </div>
+                                                    <div class="text-xs text-neutral-500 mt-1">100%</div>
+                                                </td>
+                                                <td class="p-3 text-sm">识别 14 个工程对象</td>
+                                            </tr>
+                                            <tr class="border-b border-neutral-100">
+                                                <td class="p-3 text-sm">规则匹配</td>
+                                                <td class="p-3">
+                                                    <span class="bg-success text-white text-xs px-2 py-0.5 rounded">已完成</span>
+                                                </td>
+                                                <td class="p-3">
+                                                    <div class="w-full bg-neutral-200 rounded-full h-2">
+                                                        <div class="bg-success h-2 rounded-full" style="width: 100%"></div>
+                                                    </div>
+                                                    <div class="text-xs text-neutral-500 mt-1">100%</div>
+                                                </td>
+                                                <td class="p-3 text-sm">命中 42 条规则</td>
+                                            </tr>
+                                            <tr class="border-b border-neutral-100">
+                                                <td class="p-3 text-sm">方案生成</td>
+                                                <td class="p-3">
+                                                    <span class="bg-secondary/10 text-secondary text-xs px-2 py-0.5 rounded">进行中</span>
+                                                </td>
+                                                <td class="p-3">
+                                                    <div class="w-full bg-neutral-200 rounded-full h-2">
+                                                        <div class="bg-secondary h-2 rounded-full" style="width: 68%"></div>
+                                                    </div>
+                                                    <div class="text-xs text-neutral-500 mt-1">68%</div>
+                                                </td>
+                                                <td class="p-3 text-sm">已生成 5/8 章节</td>
+                                            </tr>
+                                            <tr class="border-b border-neutral-100">
+                                                <td class="p-3 text-sm">缺口检查</td>
+                                                <td class="p-3">
+                                                    <span class="bg-warning/10 text-warning text-xs px-2 py-0.5 rounded">已完成</span>
+                                                </td>
+                                                <td class="p-3">
+                                                    <div class="w-full bg-neutral-200 rounded-full h-2">
+                                                        <div class="bg-warning h-2 rounded-full" style="width: 100%"></div>
+                                                    </div>
+                                                    <div class="text-xs text-neutral-500 mt-1">100%</div>
+                                                </td>
+                                                <td class="p-3 text-sm">发现 5 项缺失资料</td>
+                                            </tr>
+                                            <tr class="border-b border-neutral-100">
+                                                <td class="p-3 text-sm">风险识别</td>
+                                                <td class="p-3">
+                                                    <span class="bg-danger/10 text-danger text-xs px-2 py-0.5 rounded">已完成</span>
+                                                </td>
+                                                <td class="p-3">
+                                                    <div class="w-full bg-neutral-200 rounded-full h-2">
+                                                        <div class="bg-danger h-2 rounded-full" style="width: 100%"></div>
+                                                    </div>
+                                                    <div class="text-xs text-neutral-500 mt-1">100%</div>
+                                                </td>
+                                                <td class="p-3 text-sm">发现 2 个高风险</td>
+                                            </tr>
+                                            <tr>
+                                                <td class="p-3 text-sm">引用溯源</td>
+                                                <td class="p-3">
+                                                    <span class="bg-success/10 text-success text-xs px-2 py-0.5 rounded">进行中</span>
+                                                </td>
+                                                <td class="p-3">
+                                                    <div class="w-full bg-neutral-200 rounded-full h-2">
+                                                        <div class="bg-success h-2 rounded-full" style="width: 78%"></div>
+                                                    </div>
+                                                    <div class="text-xs text-neutral-500 mt-1">78%</div>
+                                                </td>
+                                                <td class="p-3 text-sm">已绑定 31 处证据</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <!-- 右侧：只需人工处理的确认项 -->
+                        <div class="w-80 border-l border-neutral-200 bg-neutral-50 p-4 overflow-y-auto">
+                            <div class="font-bold text-neutral-800 mb-4 flex items-center">
+                                <svg class="w-5 h-5 text-warning mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path>
+                                </svg>
+                                需要你确认的关键判断
+                                <span class="ml-2 bg-warning text-white text-xs px-2 py-0.5 rounded-full">4</span>
+                            </div>
+                            
+                            <div class="space-y-4">
+                                <!-- 确认项 1 -->
+                                <div class="bg-white border border-neutral-200 rounded-lg p-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="bg-danger/10 text-danger text-xs px-2 py-0.5 rounded font-medium">高风险</span>
+                                        <span class="text-xs text-neutral-500">影响：责任边界</span>
+                                    </div>
+                                    <div class="text-sm font-medium mb-2">缺少现场吊装半径，是否按 18m 临时假设？</div>
+                                    <div class="text-xs text-neutral-600 mb-3">
+                                        <span class="font-medium">Agent 建议：</span>根据历史类似项目，建议采用 18m 作为临时假设，在风险清单中标记待现场确认。
+                                    </div>
+                                    <div class="text-xs text-neutral-500 mb-3">
+                                        <span class="font-medium">依据来源：</span>历史项目方案-2024-化工设备改造-003.pdf，第 17 页
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="bg-primary text-white px-3 py-1 rounded text-xs hover:bg-primary/90 transition">确认</button>
+                                        <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs hover:bg-neutral-200 transition">修改</button>
+                                        <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs hover:bg-neutral-200 transition">稍后</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- 确认项 2 -->
+                                <div class="bg-white border border-neutral-200 rounded-lg p-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="bg-danger/10 text-danger text-xs px-2 py-0.5 rounded font-medium">高风险</span>
+                                        <span class="text-xs text-neutral-500">影响：技术依据</span>
+                                    </div>
+                                    <div class="text-sm font-medium mb-2">P&ID 版本为 2024-09，但设备清单版本为 2024-07，是否以 P&ID 为准？</div>
+                                    <div class="text-xs text-neutral-600 mb-3">
+                                        <span class="font-medium">Agent 建议：</span>通常图纸版本优先级高于设备清单，建议以 P&ID 为准，并在方案中注明版本差异。
+                                    </div>
+                                    <div class="text-xs text-neutral-500 mb-3">
+                                        <span class="font-medium">依据来源：</span>企业文档管理规范 V4.1，第 5.3 节
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="bg-primary text-white px-3 py-1 rounded text-xs hover:bg-primary/90 transition">确认</button>
+                                        <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs hover:bg-neutral-200 transition">修改</button>
+                                        <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs hover:bg-neutral-200 transition">稍后</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- 确认项 3 -->
+                                <div class="bg-white border border-neutral-200 rounded-lg p-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="bg-warning/10 text-warning text-xs px-2 py-0.5 rounded font-medium">中风险</span>
+                                        <span class="text-xs text-neutral-500">影响：合规性</span>
+                                    </div>
+                                    <div class="text-sm font-medium mb-2">规范条款中动火等级存在冲突，需要选择企业标准还是行业标准。</div>
+                                    <div class="text-xs text-neutral-600 mb-3">
+                                        <span class="font-medium">Agent 建议：</span>本项目为企业内部改造项目，建议优先遵循企业标准，并在方案中明确说明。
+                                    </div>
+                                    <div class="text-xs text-neutral-500 mb-3">
+                                        <span class="font-medium">依据来源：</span>企业安全管理规定 V2.5，第 3.1 节；行业标准 HG/T 23011-2019
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="bg-primary text-white px-3 py-1 rounded text-xs hover:bg-primary/90 transition">企业标准</button>
+                                        <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs hover:bg-neutral-200 transition">行业标准</button>
+                                        <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs hover:bg-neutral-200 transition">指派专家</button>
+                                    </div>
+                                </div>
+                                
+                                <!-- 确认项 4 -->
+                                <div class="bg-white border border-neutral-200 rounded-lg p-3">
+                                    <div class="flex items-center justify-between mb-2">
+                                        <span class="bg-warning/10 text-warning text-xs px-2 py-0.5 rounded font-medium">中风险</span>
+                                        <span class="text-xs text-neutral-500">影响：验收</span>
+                                    </div>
+                                    <div class="text-sm font-medium mb-2">设备检验报告缺少签章页，是否先标记为待补件？</div>
+                                    <div class="text-xs text-neutral-600 mb-3">
+                                        <span class="font-medium">Agent 建议：</span>建议先标记为待补件，继续生成方案，待收到完整报告后自动更新相关内容。
+                                    </div>
+                                    <div class="text-xs text-neutral-500 mb-3">
+                                        <span class="font-medium">依据来源：</span>产品检测报告.pdf，共 12 页，缺少第 12 页签章
+                                    </div>
+                                    <div class="flex space-x-2">
+                                        <button class="bg-primary text-white px-3 py-1 rounded text-xs hover:bg-primary/90 transition">标记待补</button>
+                                        <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs hover:bg-neutral-200 transition">暂停等待</button>
+                                        <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs hover:bg-neutral-200 transition">稍后</button>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mt-6 pt-4 border-t border-neutral-200">
+                                <button class="w-full bg-success text-white py-2 rounded-lg hover:bg-success/90 transition font-medium">
+                                    全部确认并继续执行
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：关键功能模块页面截图（上半部分） -->
+            <div class="w-[450px] space-y-6">
+                <!-- 页面 A：Agent 任务计划侧栏 -->
+                <div>
+                    <h3 class="text-lg font-bold mb-2 text-neutral-800">A. Agent 任务计划侧栏</h3>
+                    <div class="bg-white rounded-lg card-shadow overflow-hidden">
+                        <div class="bg-neutral-700 text-white p-2 text-sm font-medium">Agent 任务计划</div>
+                        <div class="p-3">
+                            <div class="mb-3">
+                                <div class="text-xs text-neutral-500 mb-1">任务目标摘要</div>
+                                <div class="text-sm">生成化工设备改造施工方案，检查资料缺口和高风险条款，输出引用证据包</div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <div class="text-xs text-neutral-500 mb-1">已识别交付物</div>
+                                <div class="flex flex-wrap gap-1">
+                                    <span class="bg-neutral-100 text-neutral-700 text-xs px-2 py-0.5 rounded">施工方案</span>
+                                    <span class="bg-neutral-100 text-neutral-700 text-xs px-2 py-0.5 rounded">作业指导书</span>
+                                    <span class="bg-neutral-100 text-neutral-700 text-xs px-2 py-0.5 rounded">资料缺口清单</span>
+                                    <span class="bg-neutral-100 text-neutral-700 text-xs px-2 py-0.5 rounded">风险清单</span>
+                                    <span class="bg-neutral-100 text-neutral-700 text-xs px-2 py-0.5 rounded">证据包</span>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="text-xs text-neutral-500 mb-2">自动拆解的子任务</div>
+                                <div class="space-y-2">
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">提取设备参数</span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-xs text-success">98%</span>
+                                            <span class="text-xs text-neutral-500">2.3s</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">匹配施工方案模板</span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-xs text-success">100%</span>
+                                            <span class="text-xs text-neutral-500">0.8s</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">检查资料完整性</span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-xs text-success">100%</span>
+                                            <span class="text-xs text-neutral-500">1.5s</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-success mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">识别安全风险</span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-xs text-success">100%</span>
+                                            <span class="text-xs text-neutral-500">3.2s</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-secondary mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">生成方案初稿</span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-xs text-secondary">68%</span>
+                                            <span class="text-xs text-neutral-500">12.7s</span>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex items-center">
+                                            <svg class="w-4 h-4 text-secondary mr-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <span class="text-sm">生成引用证据包</span>
+                                        </div>
+                                        <div class="flex items-center space-x-2">
+                                            <span class="text-xs text-secondary">78%</span>
+                                            <span class="text-xs text-neutral-500">8.4s</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 页面 B：全局任务与项目 Overview -->
+                <div>
+                    <h3 class="text-lg font-bold mb-2 text-neutral-800">B. 全局任务与项目 Overview</h3>
+                    <div class="bg-white rounded-lg card-shadow overflow-hidden">
+                        <div class="bg-neutral-700 text-white p-2 text-sm font-medium flex justify-between items-center">
+                            <span>项目总览</span>
+                            <span class="text-xs text-neutral-300">某化工装置设备改造项目</span>
+                        </div>
+                        <div class="p-3">
+                            <div class="mb-4">
+                                <div class="text-xs text-neutral-500 mb-2">项目任务地图</div>
+                                <div class="flex items-center justify-between text-xs">
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-success text-white flex items-center justify-center mb-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <span>方案生成</span>
+                                    </div>
+                                    <div class="w-12 h-0.5 bg-success"></div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-success text-white flex items-center justify-center mb-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <span>资料检查</span>
+                                    </div>
+                                    <div class="w-12 h-0.5 bg-secondary"></div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-secondary text-white flex items-center justify-center mb-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <span>交付整理</span>
+                                    </div>
+                                    <div class="w-12 h-0.5 bg-neutral-200"></div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-neutral-200 text-neutral-500 flex items-center justify-center mb-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 00-2 2v4a2 2 0 002 2V6h10a2 2 0 00-2-2H4zm2 6a2 2 0 012-2h8a2 2 0 012 2v4a2 2 0 01-2 2H8a2 2 0 01-2-2v-4zm6 4a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <span>变更分析</span>
+                                    </div>
+                                    <div class="w-12 h-0.5 bg-neutral-200"></div>
+                                    <div class="flex flex-col items-center">
+                                        <div class="w-8 h-8 rounded-full bg-neutral-200 text-neutral-500 flex items-center justify-center mb-1">
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M9 2a1 1 0 000 2h2a1 1 0 100-2H9z"></path>
+                                                <path fill-rule="evenodd" d="M4 5a2 2 0 012-2 3 3 0 003 3h2a3 3 0 003-3 2 2 0 012 2v11a2 2 0 01-2 2H6a2 2 0 01-2-2V5zm3 4a1 1 0 000 2h.01a1 1 0 100-2H7zm3 0a1 1 0 000 2h3a1 1 0 100-2h-3zm-3 4a1 1 0 100 2h.01a1 1 0 100-2H7zm3 0a1 1 0 100 2h3a1 1 0 100-2h-3z" clip-rule="evenodd"></path>
+                                            </svg>
+                                        </div>
+                                        <span>专家审阅</span>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="text-xs text-neutral-500 mb-2">任务状态看板</div>
+                                <div class="grid grid-cols-4 gap-2">
+                                    <div class="bg-secondary/5 border border-secondary/20 rounded p-2 text-center">
+                                        <div class="text-lg font-bold text-secondary">3</div>
+                                        <div class="text-xs text-neutral-600">进行中</div>
+                                    </div>
+                                    <div class="bg-warning/5 border border-warning/20 rounded p-2 text-center">
+                                        <div class="text-lg font-bold text-warning">4</div>
+                                        <div class="text-xs text-neutral-600">待确认</div>
+                                    </div>
+                                    <div class="bg-success/5 border border-success/20 rounded p-2 text-center">
+                                        <div class="text-lg font-bold text-success">12</div>
+                                        <div class="text-xs text-neutral-600">已交付</div>
+                                    </div>
+                                    <div class="bg-danger/5 border border-danger/20 rounded p-2 text-center">
+                                        <div class="text-lg font-bold text-danger">2</div>
+                                        <div class="text-xs text-neutral-600">高风险</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="text-xs text-neutral-500 mb-2">项目资料完整率</div>
+                                <div class="space-y-2">
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span>设计资料</span>
+                                            <span>86%</span>
+                                        </div>
+                                        <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                                            <div class="bg-primary h-1.5 rounded-full" style="width: 86%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span>设备资料</span>
+                                            <span>72%</span>
+                                        </div>
+                                        <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                                            <div class="bg-primary h-1.5 rounded-full" style="width: 72%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span>检测报告</span>
+                                            <span>64%</span>
+                                        </div>
+                                        <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                                            <div class="bg-primary h-1.5 rounded-full" style="width: 64%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span>施工记录</span>
+                                            <span>58%</span>
+                                        </div>
+                                        <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                                            <div class="bg-primary h-1.5 rounded-full" style="width: 58%"></div>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="flex justify-between text-xs mb-1">
+                                            <span>验收资料</span>
+                                            <span>41%</span>
+                                        </div>
+                                        <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                                            <div class="bg-primary h-1.5 rounded-full" style="width: 41%"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <div class="text-xs text-neutral-500 mb-2">跨任务风险</div>
+                                <div class="space-y-1">
+                                    <div class="flex items-center text-xs">
+                                        <span class="w-2 h-2 rounded-full bg-danger mr-2"></span>
+                                        <span>标准版本冲突</span>
+                                    </div>
+                                    <div class="flex items-center text-xs">
+                                        <span class="w-2 h-2 rounded-full bg-warning mr-2"></span>
+                                        <span>签章缺失</span>
+                                    </div>
+                                    <div class="flex items-center text-xs">
+                                        <span class="w-2 h-2 rounded-full bg-warning mr-2"></span>
+                                        <span>图纸版本不一致</span>
+                                    </div>
+                                    <div class="flex items-center text-xs">
+                                        <span class="w-2 h-2 rounded-full bg-warning mr-2"></span>
+                                        <span>关键参数缺失</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 页面 C：多源资料解析中心 -->
+                <div>
+                    <h3 class="text-lg font-bold mb-2 text-neutral-800">C. 多源资料解析中心</h3>
+                    <div class="bg-white rounded-lg card-shadow overflow-hidden">
+                        <div class="bg-neutral-700 text-white p-2 text-sm font-medium flex justify-between items-center">
+                            <span>资料解析中心</span>
+                            <div class="flex space-x-2">
+                                <span class="bg-success/20 text-success text-xs px-2 py-0.5 rounded">已解析 27/29</span>
+                            </div>
+                        </div>
+                        <div class="p-3">
+                            <div class="mb-3 flex flex-wrap gap-1">
+                                <span class="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded">Word 结构识别</span>
+                                <span class="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded">PDF 条款抽取</span>
+                                <span class="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded">Excel 参数表识别</span>
+                                <span class="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded">OCR 签章识别</span>
+                                <span class="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded">CAD / P&ID 索引</span>
+                            </div>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-xs">
+                                    <thead class="bg-neutral-50 border-b border-neutral-200">
+                                        <tr>
+                                            <th class="text-left p-2 font-medium text-neutral-600">文件名</th>
+                                            <th class="text-left p-2 font-medium text-neutral-600">类型</th>
+                                            <th class="text-left p-2 font-medium text-neutral-600">版本</th>
+                                            <th class="text-left p-2 font-medium text-neutral-600">状态</th>
+                                            <th class="text-left p-2 font-medium text-neutral-600">质量</th>
+                                            <th class="text-left p-2 font-medium text-neutral-600">对象数</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-neutral-100">
+                                            <td class="p-2">设备说明书.pdf</td>
+                                            <td class="p-2">PDF</td>
+                                            <td class="p-2">2024-08</td>
+                                            <td class="p-2"><span class="bg-success/10 text-success px-1.5 py-0.5 rounded">已完成</span></td>
+                                            <td class="p-2">95%</td>
+                                            <td class="p-2">7</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-100">
+                                            <td class="p-2">P&ID 图纸索引.dwg</td>
+                                            <td class="p-2">CAD</td>
+                                            <td class="p-2">2024-09</td>
+                                            <td class="p-2"><span class="bg-success/10 text-success px-1.5 py-0.5 rounded">已完成</span></td>
+                                            <td class="p-2">88%</td>
+                                            <td class="p-2">12</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-100">
+                                            <td class="p-2">产品检测报告.pdf</td>
+                                            <td class="p-2">PDF</td>
+                                            <td class="p-2">2024-07</td>
+                                            <td class="p-2"><span class="bg-warning/10 text-warning px-1.5 py-0.5 rounded">异常</span></td>
+                                            <td class="p-2">72%</td>
+                                            <td class="p-2">3</td>
+                                        </tr>
+                                        <tr class="border-b border-neutral-100">
+                                            <td class="p-2">企业施工方案模板.docx</td>
+                                            <td class="p-2">Word</td>
+                                            <td class="p-2">V3.2</td>
+                                            <td class="p-2"><span class="bg-success/10 text-success px-1.5 py-0.5 rounded">已完成</span></td>
+                                            <td class="p-2">100%</td>
+                                            <td class="p-2">8</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="p-2">现场照片集.zip</td>
+                                            <td class="p-2">图片</td>
+                                            <td class="p-2">-</td>
+                                            <td class="p-2"><span class="bg-secondary/10 text-secondary px-1.5 py-0.5 rounded">解析中</span></td>
+                                            <td class="p-2">-</td>
+                                            <td class="p-2">-</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            
+                            <div class="mt-3">
+                                <div class="text-xs text-neutral-500 mb-1">异常示例：</div>
+                                <div class="text-xs space-y-1">
+                                    <div>• 扫描件清晰度不足</div>
+                                    <div>• 表格跨页</div>
+                                    <div>• 签章页缺失</div>
+                                    <div>• 文件版本冲突</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 下半部分：更多关键功能模块页面 + 映射表 + 闭环泳道图 -->
+        <div class="mb-8">
+            <div class="flex gap-6">
+                <!-- 左侧：更多关键功能模块页面 -->
+                <div class="w-[900px] grid grid-cols-2 gap-6">
+                    <!-- 页面 D：工程对象模型页面 -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2 text-neutral-800">D. 工程对象模型页面</h3>
+                        <div class="bg-white rounded-lg card-shadow overflow-hidden h-[380px]">
+                            <div class="bg-neutral-700 text-white p-2 text-sm font-medium">工程对象模型</div>
+                            <div class="flex h-[calc(100%-32px)]">
+                                <div class="w-1/3 border-r border-neutral-200 p-2 overflow-y-auto">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">对象树</div>
+                                    <div class="space-y-1 text-xs">
+                                        <div class="font-medium">项目</div>
+                                        <div class="pl-2">某化工装置设备改造</div>
+                                        <div class="font-medium mt-2">专业</div>
+                                        <div class="pl-2">工艺</div>
+                                        <div class="pl-2">设备</div>
+                                        <div class="pl-2">安全</div>
+                                        <div class="font-medium mt-2">系统</div>
+                                        <div class="pl-2">换热系统</div>
+                                        <div class="pl-2">蒸汽系统</div>
+                                        <div class="font-medium mt-2">设备</div>
+                                        <div class="pl-2 bg-primary/5 text-primary rounded">换热器 HX-204</div>
+                                        <div class="pl-2">泵 P-105A/B</div>
+                                        <div class="font-medium mt-2">材料</div>
+                                        <div class="pl-2">耐高温防腐涂层</div>
+                                        <div class="font-medium mt-2">标准条款</div>
+                                        <div class="font-medium mt-2">报告证据</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="w-1/3 border-r border-neutral-200 p-2 overflow-y-auto">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">对象详情</div>
+                                    <div class="text-xs space-y-2">
+                                        <div class="font-medium">换热器 HX-204</div>
+                                        <div><span class="text-neutral-500">型号规格：</span>BEM-600-1.6-60</div>
+                                        <div><span class="text-neutral-500">厂家：</span>某化工设备有限公司</div>
+                                        <div><span class="text-neutral-500">设计压力：</span>1.6MPa</div>
+                                        <div><span class="text-neutral-500">设计温度：</span>200°C</div>
+                                        <div><span class="text-neutral-500">换热面积：</span>60m²</div>
+                                        <div><span class="text-neutral-500">关联管线：</span>DN150 蒸汽管线</div>
+                                        <div><span class="text-neutral-500">关联 P&ID 图号：</span>PID-03-05</div>
+                                        <div><span class="text-neutral-500">关联检测报告：</span>报告-2024-0789</div>
+                                        <div><span class="text-neutral-500">适用标准：</span>GB151-2014</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="w-1/3 p-2 overflow-y-auto">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">关系面板</div>
+                                    <div class="text-xs space-y-2">
+                                        <div class="font-medium">设备 → 管线</div>
+                                        <div class="pl-2">DN150 蒸汽管线（入口）</div>
+                                        <div class="pl-2">DN150 冷凝水管线（出口）</div>
+                                        
+                                        <div class="font-medium mt-2">设备 → 安全措施</div>
+                                        <div class="pl-2">压力试验</div>
+                                        <div class="pl-2">气密性试验</div>
+                                        <div class="pl-2">保温隔热</div>
+                                        
+                                        <div class="font-medium mt-2">标准 → 风险规则</div>
+                                        <div class="pl-2">压力管道安装规范</div>
+                                        <div class="pl-2">动火作业安全规范</div>
+                                        
+                                        <div class="font-medium mt-2">图纸 → 施工章节</div>
+                                        <div class="pl-2">第 4 章 设备安装</div>
+                                        <div class="pl-2">第 6 章 管道施工</div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 页面 E：行业场景包与规则覆盖 -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2 text-neutral-800">E. 行业场景包与规则覆盖</h3>
+                        <div class="bg-white rounded-lg card-shadow overflow-hidden h-[380px]">
+                            <div class="bg-neutral-700 text-white p-2 text-sm font-medium flex justify-between items-center">
+                                <span>行业场景包</span>
+                                <span class="bg-success/20 text-success text-xs px-2 py-0.5 rounded">当前命中：化工设备改造 (91%)</span>
+                            </div>
+                            <div class="p-3">
+                                <div class="grid grid-cols-3 gap-2 mb-4">
+                                    <div class="bg-primary/10 border border-primary rounded p-2 text-center">
+                                        <div class="text-xs font-medium">化工设备改造</div>
+                                        <div class="text-xs text-neutral-500">置信度 91%</div>
+                                    </div>
+                                    <div class="bg-neutral-50 border border-neutral-200 rounded p-2 text-center">
+                                        <div class="text-xs font-medium">电力试验移交</div>
+                                        <div class="text-xs text-neutral-500">置信度 12%</div>
+                                    </div>
+                                    <div class="bg-neutral-50 border border-neutral-200 rounded p-2 text-center">
+                                        <div class="text-xs font-medium">装备制造交付</div>
+                                        <div class="text-xs text-neutral-500">置信度 8%</div>
+                                    </div>
+                                    <div class="bg-neutral-50 border border-neutral-200 rounded p-2 text-center">
+                                        <div class="text-xs font-medium">建筑竣工资料</div>
+                                        <div class="text-xs text-neutral-500">置信度 5%</div>
+                                    </div>
+                                    <div class="bg-neutral-50 border border-neutral-200 rounded p-2 text-center">
+                                        <div class="text-xs font-medium">基建检测资料</div>
+                                        <div class="text-xs text-neutral-500">置信度 3%</div>
+                                    </div>
+                                    <div class="bg-neutral-50 border border-neutral-200 rounded p-2 text-center">
+                                        <div class="text-xs font-medium">+ 12 个行业</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">场景包组成</div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div class="flex items-center">
+                                            <svg class="w-3 h-3 text-success mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            术语库 (1247 条)
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg class="w-3 h-3 text-success mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            资料目录 (18 类)
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg class="w-3 h-3 text-success mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            标准映射 (326 项)
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg class="w-3 h-3 text-success mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            风险规则 (87 条)
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg class="w-3 h-3 text-success mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            输出模板 (12 个)
+                                        </div>
+                                        <div class="flex items-center">
+                                            <svg class="w-3 h-3 text-success mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            专家样例 (43 个)
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">规则覆盖率</div>
+                                    <div class="space-y-2">
+                                        <div>
+                                            <div class="flex justify-between text-xs mb-1">
+                                                <span>安全规则</span>
+                                                <span>88%</span>
+                                            </div>
+                                            <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                                                <div class="bg-success h-1.5 rounded-full" style="width: 88%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-xs mb-1">
+                                                <span>资料规则</span>
+                                                <span>74%</span>
+                                            </div>
+                                            <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                                                <div class="bg-success h-1.5 rounded-full" style="width: 74%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-xs mb-1">
+                                                <span>模板规则</span>
+                                                <span>96%</span>
+                                            </div>
+                                            <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                                                <div class="bg-success h-1.5 rounded-full" style="width: 96%"></div>
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <div class="flex justify-between text-xs mb-1">
+                                                <span>参数校验</span>
+                                                <span>67%</span>
+                                            </div>
+                                            <div class="w-full bg-neutral-200 rounded-full h-1.5">
+                                                <div class="bg-warning h-1.5 rounded-full" style="width: 67%"></div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 页面 F：模板与规则引擎 -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2 text-neutral-800">F. 模板与规则引擎</h3>
+                        <div class="bg-white rounded-lg card-shadow overflow-hidden h-[380px]">
+                            <div class="bg-neutral-700 text-white p-2 text-sm font-medium flex justify-between items-center">
+                                <span>模板与规则引擎</span>
+                                <span class="bg-primary/20 text-primary text-xs px-2 py-0.5 rounded">当前应用 42 条规则</span>
+                            </div>
+                            <div class="flex h-[calc(100%-32px)]">
+                                <div class="w-2/5 border-r border-neutral-200 p-2 overflow-y-auto">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">模板列表</div>
+                                    <div class="space-y-1 text-xs">
+                                        <div class="bg-primary/5 border border-primary/20 rounded p-2">
+                                            <div class="font-medium">施工方案模板 V3.2</div>
+                                            <div class="text-neutral-500">企业标准 · 化工行业</div>
+                                        </div>
+                                        <div class="bg-neutral-50 border border-neutral-200 rounded p-2">
+                                            <div class="font-medium">作业指导书模板 V2.8</div>
+                                            <div class="text-neutral-500">企业标准 · 通用</div>
+                                        </div>
+                                        <div class="bg-neutral-50 border border-neutral-200 rounded p-2">
+                                            <div class="font-medium">风险清单模板</div>
+                                            <div class="text-neutral-500">行业标准 · 化工</div>
+                                        </div>
+                                        <div class="bg-neutral-50 border border-neutral-200 rounded p-2">
+                                            <div class="font-medium">交付包目录模板</div>
+                                            <div class="text-neutral-500">企业标准 · 通用</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="w-3/5 p-2 overflow-y-auto">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">规则列表</div>
+                                    <div class="overflow-x-auto">
+                                        <table class="w-full text-xs">
+                                            <thead class="bg-neutral-50 border-b border-neutral-200">
+                                                <tr>
+                                                    <th class="text-left p-1 font-medium text-neutral-600">规则名称</th>
+                                                    <th class="text-left p-1 font-medium text-neutral-600">触发条件</th>
+                                                    <th class="text-left p-1 font-medium text-neutral-600">风险等级</th>
+                                                    <th class="text-left p-1 font-medium text-neutral-600">确认阈值</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr class="border-b border-neutral-100">
+                                                    <td class="p-1">动火等级未明确</td>
+                                                    <td class="p-1">方案中未明确动火等级</td>
+                                                    <td class="p-1"><span class="bg-danger/10 text-danger px-1 rounded">高</span></td>
+                                                    <td class="p-1">必须确认</td>
+                                                </tr>
+                                                <tr class="border-b border-neutral-100">
+                                                    <td class="p-1">检测报告缺签章</td>
+                                                    <td class="p-1">报告缺少有效签章</td>
+                                                    <td class="p-1"><span class="bg-warning/10 text-warning px-1 rounded">中</span></td>
+                                                    <td class="p-1">标记补件</td>
+                                                </tr>
+                                                <tr class="border-b border-neutral-100">
+                                                    <td class="p-1">标准版本冲突</td>
+                                                    <td class="p-1">多个标准版本不一致</td>
+                                                    <td class="p-1"><span class="bg-danger/10 text-danger px-1 rounded">高</span></td>
+                                                    <td class="p-1">指派专家</td>
+                                                </tr>
+                                                <tr class="border-b border-neutral-100">
+                                                    <td class="p-1">吊装半径缺失</td>
+                                                    <td class="p-1">吊装方案未明确半径</td>
+                                                    <td class="p-1"><span class="bg-danger/10 text-danger px-1 rounded">高</span></td>
+                                                    <td class="p-1">必须确认</td>
+                                                </tr>
+                                                <tr>
+                                                    <td class="p-1">参数超出范围</td>
+                                                    <td class="p-1">设备参数超出标准</td>
+                                                    <td class="p-1"><span class="bg-warning/10 text-warning px-1 rounded">中</span></td>
+                                                    <td class="p-1">自动标记</td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 页面 G：关键追问弹窗 -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2 text-neutral-800">G. 关键追问弹窗</h3>
+                        <div class="bg-white rounded-lg card-shadow-lg overflow-hidden h-[380px] flex items-center justify-center bg-neutral-800/50 p-6">
+                            <div class="bg-white rounded-lg shadow-xl w-full max-w-md">
+                                <div class="bg-warning text-white p-3 rounded-t-lg">
+                                    <div class="font-bold">Agent 需要确认 3 个关键假设</div>
+                                    <div class="text-xs opacity-90">这些问题会影响方案的准确性和责任边界</div>
+                                </div>
+                                <div class="p-4">
+                                    <div class="space-y-4">
+                                        <div class="border border-neutral-200 rounded-lg p-3">
+                                            <div class="text-sm font-medium mb-2">作业环境是否包含受限空间？</div>
+                                            <div class="text-xs text-neutral-600 mb-2">
+                                                <span class="font-medium">Agent 推荐：</span>是。根据设备位置和历史项目经验，该区域属于受限空间。
+                                            </div>
+                                            <div class="text-xs text-neutral-500 mb-3">
+                                                <span class="font-medium">影响范围：</span>安全措施章节、作业许可要求
+                                            </div>
+                                            <div class="flex space-x-2">
+                                                <button class="bg-primary text-white px-3 py-1 rounded text-xs">是</button>
+                                                <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs">否</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="border border-neutral-200 rounded-lg p-3">
+                                            <div class="text-sm font-medium mb-2">吊装设备最大作业半径采用哪个值？</div>
+                                            <div class="text-xs text-neutral-600 mb-2">
+                                                <span class="font-medium">Agent 推荐：</span>18m。参考历史类似项目，这是最常用的假设值。
+                                            </div>
+                                            <div class="text-xs text-neutral-500 mb-3">
+                                                <span class="font-medium">影响范围：</span>吊装方案、安全距离要求
+                                            </div>
+                                            <div class="flex space-x-2">
+                                                <button class="bg-primary text-white px-3 py-1 rounded text-xs">18m</button>
+                                                <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs">15m</button>
+                                                <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs">20m</button>
+                                                <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs">自定义</button>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="border border-neutral-200 rounded-lg p-3">
+                                            <div class="text-sm font-medium mb-2">本项目优先遵循企业标准还是行业标准？</div>
+                                            <div class="text-xs text-neutral-600 mb-2">
+                                                <span class="font-medium">Agent 推荐：</span>企业标准。本项目为企业内部改造项目，应优先遵循企业内部规定。
+                                            </div>
+                                            <div class="text-xs text-neutral-500 mb-3">
+                                                <span class="font-medium">影响范围：</span>所有技术和安全条款
+                                            </div>
+                                            <div class="flex space-x-2">
+                                                <button class="bg-primary text-white px-3 py-1 rounded text-xs">企业标准</button>
+                                                <button class="bg-neutral-100 border border-neutral-300 px-3 py-1 rounded text-xs">行业标准</button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-4 flex justify-end space-x-2">
+                                        <button class="bg-neutral-100 border border-neutral-300 px-4 py-2 rounded text-sm">稍后处理</button>
+                                        <button class="bg-primary text-white px-4 py-2 rounded text-sm">全部确认</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- 右侧：更多关键功能模块页面 -->
+                <div class="w-[900px] grid grid-cols-2 gap-6">
+                    <!-- 页面 H：风险与证据链面板 -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2 text-neutral-800">H. 风险与证据链面板</h3>
+                        <div class="bg-white rounded-lg card-shadow overflow-hidden h-[380px]">
+                            <div class="bg-neutral-700 text-white p-2 text-sm font-medium flex justify-between items-center">
+                                <span>风险与证据链</span>
+                                <div class="flex space-x-2">
+                                    <span class="bg-danger/20 text-danger text-xs px-2 py-0.5 rounded">高风险 2</span>
+                                    <span class="bg-warning/20 text-warning text-xs px-2 py-0.5 rounded">中风险 5</span>
+                                    <span class="bg-neutral-200 text-neutral-700 text-xs px-2 py-0.5 rounded">低风险 12</span>
+                                </div>
+                            </div>
+                            <div class="p-3 h-[calc(100%-32px)] overflow-y-auto">
+                                <div class="space-y-3">
+                                    <!-- 高风险 1 -->
+                                    <div class="border border-danger/20 bg-danger/5 rounded-lg p-3">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="bg-danger text-white text-xs px-2 py-0.5 rounded font-medium">高风险</span>
+                                            <span class="text-xs text-neutral-500">需要确认</span>
+                                        </div>
+                                        <div class="text-sm font-medium mb-2">动火作业等级未明确</div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">风险原因：</span>方案中未明确换热器拆除作业的动火等级
+                                        </div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">原文引用：</span>施工方案.docx，第 5.2 节，动火作业
+                                        </div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">命中规则：</span>化工安全规则-017：动火作业必须明确等级
+                                        </div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">建议处理：</span>根据设备内介质性质，应定为一级动火
+                                        </div>
+                                        <div class="flex space-x-2 mt-2">
+                                            <button class="bg-primary text-white px-2 py-1 rounded text-xs">确认一级</button>
+                                            <button class="bg-neutral-100 border border-neutral-300 px-2 py-1 rounded text-xs">修改等级</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 高风险 2 -->
+                                    <div class="border border-danger/20 bg-danger/5 rounded-lg p-3">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="bg-danger text-white text-xs px-2 py-0.5 rounded font-medium">高风险</span>
+                                            <span class="text-xs text-neutral-500">需要确认</span>
+                                        </div>
+                                        <div class="text-sm font-medium mb-2">P&ID 与设备清单版本不一致</div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">风险原因：</span>P&ID 版本为 2024-09，设备清单版本为 2024-07
+                                        </div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">原文引用：</span>P&ID-03-05.dwg，设备清单-2024-07.xlsx
+                                        </div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">命中规则：</span>文档管理规则-009：图纸版本优先级高于清单
+                                        </div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">建议处理：</span>以 P&ID 为准，在方案中注明版本差异
+                                        </div>
+                                        <div class="flex space-x-2 mt-2">
+                                            <button class="bg-primary text-white px-2 py-1 rounded text-xs">以 P&ID 为准</button>
+                                            <button class="bg-neutral-100 border border-neutral-300 px-2 py-1 rounded text-xs">以清单为准</button>
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- 中风险 1 -->
+                                    <div class="border border-warning/20 bg-warning/5 rounded-lg p-3">
+                                        <div class="flex items-center justify-between mb-2">
+                                            <span class="bg-warning text-white text-xs px-2 py-0.5 rounded font-medium">中风险</span>
+                                            <span class="text-xs text-neutral-500">已标记待补</span>
+                                        </div>
+                                        <div class="text-sm font-medium mb-2">设备检验报告缺少签章页</div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">风险原因：</span>产品检测报告.pdf 缺少第 12 页签章
+                                        </div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">原文引用：</span>产品检测报告.pdf，共 12 页
+                                        </div>
+                                        <div class="text-xs text-neutral-600 mb-2">
+                                            <span class="font-medium">命中规则：</span>资料审核规则-023：检测报告必须有有效签章
+                                        </div>
+                                        <div class="text-xs text-neutral-600">
+                                            <span class="font-medium">建议处理：</span>标记为待补件，待收到后自动更新
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 页面 I：交付物预览页 -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2 text-neutral-800">I. 交付物预览页</h3>
+                        <div class="bg-white rounded-lg card-shadow overflow-hidden h-[380px]">
+                            <div class="bg-neutral-700 text-white p-2 text-sm font-medium flex justify-between items-center">
+                                <span>交付物预览</span>
+                                <div class="flex space-x-2">
+                                    <button class="bg-primary text-white px-2 py-0.5 rounded text-xs">导出全部</button>
+                                    <button class="bg-neutral-600 text-white px-2 py-0.5 rounded text-xs">发送审阅</button>
+                                </div>
+                            </div>
+                            <div class="flex h-[calc(100%-32px)]">
+                                <div class="w-1/3 border-r border-neutral-200 p-2 overflow-y-auto">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">交付物清单</div>
+                                    <div class="space-y-1 text-xs">
+                                        <div class="bg-primary/5 border border-primary/20 rounded p-2">
+                                            <div class="flex items-center">
+                                                <svg class="w-3 h-3 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span class="font-medium">施工方案.docx</span>
+                                            </div>
+                                            <div class="text-neutral-500">2.3MB · 生成中</div>
+                                        </div>
+                                        <div class="bg-neutral-50 border border-neutral-200 rounded p-2">
+                                            <div class="flex items-center">
+                                                <svg class="w-3 h-3 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span>作业指导书.docx</span>
+                                            </div>
+                                            <div class="text-neutral-500">856KB · 待生成</div>
+                                        </div>
+                                        <div class="bg-neutral-50 border border-neutral-200 rounded p-2">
+                                            <div class="flex items-center">
+                                                <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span>缺失资料清单.xlsx</span>
+                                            </div>
+                                            <div class="text-neutral-500">12KB · 已完成</div>
+                                        </div>
+                                        <div class="bg-neutral-50 border border-neutral-200 rounded p-2">
+                                            <div class="flex items-center">
+                                                <svg class="w-3 h-3 text-green-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span>高风险条款清单.xlsx</span>
+                                            </div>
+                                            <div class="text-neutral-500">15KB · 已完成</div>
+                                        </div>
+                                        <div class="bg-neutral-50 border border-neutral-200 rounded p-2">
+                                            <div class="flex items-center">
+                                                <svg class="w-3 h-3 text-red-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span>引用证据包.pdf</span>
+                                            </div>
+                                            <div class="text-neutral-500">5.7MB · 生成中</div>
+                                        </div>
+                                        <div class="bg-neutral-50 border border-neutral-200 rounded p-2">
+                                            <div class="flex items-center">
+                                                <svg class="w-3 h-3 text-blue-500 mr-1" fill="currentColor" viewBox="0 0 20 20">
+                                                    <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                                </svg>
+                                                <span>交付包目录.docx</span>
+                                            </div>
+                                            <div class="text-neutral-500">8KB · 已完成</div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="w-2/3 p-3 overflow-y-auto bg-neutral-50">
+                                    <div class="bg-white border border-neutral-200 rounded p-4 h-full">
+                                        <div class="text-center text-neutral-400 mb-4">
+                                            <svg class="w-12 h-12 mx-auto mb-2" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4z" clip-rule="evenodd"></path>
+                                            </svg>
+                                            <div class="text-sm">施工方案.docx 预览</div>
+                                            <div class="text-xs">正在生成中 (68%)</div>
+                                        </div>
+                                        
+                                        <div class="text-xs space-y-2">
+                                            <div class="font-medium">1. 工程概况</div>
+                                            <div class="pl-3 text-neutral-600">1.1 项目背景</div>
+                                            <div class="pl-3 text-neutral-600">1.2 工程范围</div>
+                                            <div class="pl-3 text-neutral-600">1.3 编制依据</div>
+                                            
+                                            <div class="font-medium">2. 施工准备</div>
+                                            <div class="pl-3 text-neutral-600">2.1 技术准备</div>
+                                            <div class="pl-3 text-neutral-600">2.2 人员准备</div>
+                                            <div class="pl-3 text-neutral-600">2.3 材料准备</div>
+                                            <div class="pl-3 text-neutral-600">2.4 设备准备</div>
+                                            
+                                            <div class="font-medium">3. 施工组织机构</div>
+                                            <div class="font-medium text-neutral-400">4. 施工工艺与方法 (生成中...)</div>
+                                            <div class="font-medium text-neutral-400">5. 质量保证措施 (待生成)</div>
+                                            <div class="font-medium text-neutral-400">6. 安全文明施工 (待生成)</div>
+                                            <div class="font-medium text-neutral-400">7. 环境保护措施 (待生成)</div>
+                                            <div class="font-medium text-neutral-400">8. 应急预案 (待生成)</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 页面 J：文档审阅与自动修订页 -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2 text-neutral-800">J. 文档审阅与自动修订页</h3>
+                        <div class="bg-white rounded-lg card-shadow overflow-hidden h-[380px]">
+                            <div class="bg-neutral-700 text-white p-2 text-sm font-medium flex justify-between items-center">
+                                <span>文档审阅</span>
+                                <div class="flex space-x-2">
+                                    <button class="bg-success text-white px-2 py-0.5 rounded text-xs">一键应用所有</button>
+                                    <button class="bg-neutral-600 text-white px-2 py-0.5 rounded text-xs">完成审阅</button>
+                                </div>
+                            </div>
+                            <div class="flex h-[calc(100%-32px)]">
+                                <div class="w-1/4 border-r border-neutral-200 p-2 overflow-y-auto">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">章节目录</div>
+                                    <div class="space-y-1 text-xs">
+                                        <div class="font-medium">1. 工程概况</div>
+                                        <div class="pl-2">1.1 项目背景</div>
+                                        <div class="pl-2">1.2 工程范围</div>
+                                        <div class="pl-2 bg-primary/5 text-primary rounded">1.3 编制依据 <span class="bg-primary text-white text-xs px-1 rounded ml-1">3</span></div>
+                                        <div class="font-medium mt-1">2. 施工准备</div>
+                                        <div class="pl-2">2.1 技术准备</div>
+                                        <div class="pl-2 bg-warning/5 text-warning rounded">2.2 人员准备 <span class="bg-warning text-white text-xs px-1 rounded ml-1">1</span></div>
+                                        <div class="pl-2">2.3 材料准备</div>
+                                        <div class="pl-2">2.4 设备准备</div>
+                                        <div class="font-medium mt-1">3. 施工组织机构</div>
+                                        <div class="font-medium mt-1">4. 施工工艺与方法</div>
+                                        <div class="font-medium mt-1">5. 质量保证措施</div>
+                                        <div class="font-medium mt-1">6. 安全文明施工</div>
+                                    </div>
+                                </div>
+                                
+                                <div class="w-1/2 border-r border-neutral-200 p-3 overflow-y-auto">
+                                    <div class="text-xs space-y-3">
+                                        <div class="font-bold text-sm mb-2">1.3 编制依据</div>
+                                        
+                                        <div class="mb-3">
+                                            <div class="mb-1">1. 《石油化工施工安全技术规程》SH3505-2019 <span class="text-primary">[1]</span></div>
+                                            <div class="mb-1">2. 《工业金属管道工程施工规范》GB50235-2010 <span class="text-primary">[2]</span></div>
+                                            <div class="mb-1">3. 《现场设备、工业管道焊接工程施工规范》GB50236-2011 <span class="text-primary">[3]</span></div>
+                                            
+                                            <div class="bg-danger/10 border-l-4 border-danger p-2 my-2">
+                                                <div class="text-xs font-medium text-danger mb-1">Agent 建议添加：</div>
+                                                <div class="text-xs">4. 《化学品生产单位特殊作业安全规范》GB30871-2014</div>
+                                                <div class="text-xs text-neutral-500 mt-1">依据：本项目涉及动火、受限空间等特殊作业</div>
+                                            </div>
+                                            
+                                            <div class="mb-1">5. 某化工装置设备改造项目 P&ID 图纸，图号：PID-03-05，版本：2024-09 <span class="text-primary">[4]</span></div>
+                                            <div class="mb-1">6. 换热器 HX-204 设备说明书，版本：2024-08 <span class="text-primary">[5]</span></div>
+                                            
+                                            <div class="bg-warning/10 border-l-4 border-warning p-2 my-2">
+                                                <div class="text-xs font-medium text-warning mb-1">专家批注：</div>
+                                                <div class="text-xs">请补充企业内部安全管理规定 V2.5 作为依据</div>
+                                                <div class="text-xs text-neutral-500 mt-1">批注人：李安全 · 2024-10-15</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="flex space-x-2">
+                                            <button class="bg-success text-white px-2 py-1 rounded text-xs">应用建议</button>
+                                            <button class="bg-neutral-100 border border-neutral-300 px-2 py-1 rounded text-xs">忽略</button>
+                                            <button class="bg-neutral-100 border border-neutral-300 px-2 py-1 rounded text-xs">编辑</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="w-1/4 p-2 overflow-y-auto">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">审阅意见</div>
+                                    <div class="space-y-2">
+                                        <div class="bg-primary/5 border border-primary/20 rounded p-2">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-xs font-medium text-primary">Agent 建议</span>
+                                                <span class="text-xs text-neutral-500">3 条</span>
+                                            </div>
+                                            <div class="text-xs text-neutral-600">
+                                                • 补充 GB30871-2014 标准<br>
+                                                • 增加吊装半径说明<br>
+                                                • 明确动火作业等级
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="bg-warning/5 border border-warning/20 rounded p-2">
+                                            <div class="flex items-center justify-between mb-1">
+                                                <span class="text-xs font-medium text-warning">专家批注</span>
+                                                <span class="text-xs text-neutral-500">1 条</span>
+                                            </div>
+                                            <div class="text-xs text-neutral-600">
+                                                • 补充企业安全管理规定
+                                            </div>
+                                        </div>
+                                        
+                                        <div class="mt-4 pt-3 border-t border-neutral-200">
+                                            <button class="w-full bg-primary text-white py-1.5 rounded text-xs mb-2">一键应用所有建议</button>
+                                            <button class="w-full bg-neutral-100 border border-neutral-300 py-1.5 rounded text-xs mb-2">保留原文</button>
+                                            <button class="w-full bg-neutral-100 border border-neutral-300 py-1.5 rounded text-xs">重新生成本节</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <!-- 页面 K：复用沉淀与治理页 -->
+                    <div>
+                        <h3 class="text-lg font-bold mb-2 text-neutral-800">K. 复用沉淀与治理页</h3>
+                        <div class="bg-white rounded-lg card-shadow overflow-hidden h-[380px]">
+                            <div class="bg-neutral-700 text-white p-2 text-sm font-medium flex justify-between items-center">
+                                <span>复用沉淀与治理</span>
+                                <button class="bg-success text-white px-2 py-0.5 rounded text-xs">确认入库</button>
+                            </div>
+                            <div class="p-3 h-[calc(100%-32px)] overflow-y-auto">
+                                <div class="mb-4">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">本次任务可沉淀为以下资产</div>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between bg-success/5 border border-success/20 rounded p-2">
+                                            <div class="flex items-center">
+                                                <input type="checkbox" checked class="mr-2">
+                                                <div>
+                                                    <div class="text-xs font-medium">化工设备改造案例</div>
+                                                    <div class="text-xs text-neutral-500">可用于相似项目方案生成</div>
+                                                </div>
+                                            </div>
+                                            <span class="bg-success/10 text-success text-xs px-2 py-0.5 rounded">高价值</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between bg-success/5 border border-success/20 rounded p-2">
+                                            <div class="flex items-center">
+                                                <input type="checkbox" checked class="mr-2">
+                                                <div>
+                                                    <div class="text-xs font-medium">动火作业风险规则</div>
+                                                    <div class="text-xs text-neutral-500">可加入企业规则库</div>
+                                                </div>
+                                            </div>
+                                            <span class="bg-success/10 text-success text-xs px-2 py-0.5 rounded">高价值</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between bg-primary/5 border border-primary/20 rounded p-2">
+                                            <div class="flex items-center">
+                                                <input type="checkbox" checked class="mr-2">
+                                                <div>
+                                                    <div class="text-xs font-medium">施工方案章节模板</div>
+                                                    <div class="text-xs text-neutral-500">可作为标准章节模板</div>
+                                                </div>
+                                            </div>
+                                            <span class="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded">中价值</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between bg-primary/5 border border-primary/20 rounded p-2">
+                                            <div class="flex items-center">
+                                                <input type="checkbox" checked class="mr-2">
+                                                <div>
+                                                    <div class="text-xs font-medium">换热器设备参数对象</div>
+                                                    <div class="text-xs text-neutral-500">可用于设备参数自动填充</div>
+                                                </div>
+                                            </div>
+                                            <span class="bg-primary/10 text-primary text-xs px-2 py-0.5 rounded">中价值</span>
+                                        </div>
+                                        
+                                        <div class="flex items-center justify-between bg-neutral-50 border border-neutral-200 rounded p-2">
+                                            <div class="flex items-center">
+                                                <input type="checkbox" class="mr-2">
+                                                <div>
+                                                    <div class="text-xs font-medium">资料缺口检查规则</div>
+                                                    <div class="text-xs text-neutral-500">可用于自动检查资料完整性</div>
+                                                </div>
+                                            </div>
+                                            <span class="bg-neutral-200 text-neutral-700 text-xs px-2 py-0.5 rounded">低价值</span>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="mb-4">
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">复用价值说明</div>
+                                    <div class="text-xs space-y-1">
+                                        <div>• 可用于相似项目方案生成，预计节省 40% 时间</div>
+                                        <div>• 可加入企业规则库，提升未来项目风险识别能力</div>
+                                        <div>• 可作为专家审核样例，用于新人培训</div>
+                                        <div>• 可用于设备参数自动填充，减少人工输入错误</div>
+                                    </div>
+                                </div>
+                                
+                                <div>
+                                    <div class="text-xs font-medium text-neutral-600 mb-2">治理信息</div>
+                                    <div class="grid grid-cols-2 gap-2 text-xs">
+                                        <div>
+                                            <span class="text-neutral-500">入库状态：</span>待审核
+                                        </div>
+                                        <div>
+                                            <span class="text-neutral-500">审核人：</span>待分配
+                                        </div>
+                                        <div>
+                                            <span class="text-neutral-500">适用行业：</span>化工
+                                        </div>
+                                        <div>
+                                            <span class="text-neutral-500">可见范围：</span>全公司
+                                        </div>
+                                        <div>
+                                            <span class="text-neutral-500">版本号：</span>V1.0
+                                        </div>
+                                        <div>
+                                            <span class="text-neutral-500">创建人：</span>张工程师
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <div class="text-xs font-medium text-neutral-600 mb-1">权限与风控</div>
+                                        <div class="text-xs space-y-1">
+                                            <div>• 所有工程师可查看和复用</div>
+                                            <div>• 仅规则管理员可修改规则</div>
+                                            <div>• 禁止生成涉及国家秘密的内容</div>
+                                            <div>• 所有引用必须来自企业认可的来源</div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 区域 6：功能模块与执行流程映射表 -->
+        <div class="mb-8">
+            <h2 class="text-2xl font-bold mb-4 text-neutral-800">执行步骤 × 平台能力模块映射</h2>
+            
+            <div class="bg-white rounded-lg card-shadow-lg overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-xs">
+                        <thead class="bg-neutral-700 text-white">
+                            <tr>
+                                <th class="p-3 text-left font-medium">执行步骤</th>
+                                <th class="p-3 text-center font-medium">目标理解</th>
+                                <th class="p-3 text-center font-medium">文档解析</th>
+                                <th class="p-3 text-center font-medium">工程对象模型</th>
+                                <th class="p-3 text-center font-medium">行业场景包</th>
+                                <th class="p-3 text-center font-medium">模板规则</th>
+                                <th class="p-3 text-center font-medium">证据链</th>
+                                <th class="p-3 text-center font-medium">审阅协同</th>
+                                <th class="p-3 text-center font-medium">交付管理</th>
+                                <th class="p-3 text-center font-medium">治理后台</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr class="border-b border-neutral-100">
+                                <td class="p-3 font-medium">目标理解</td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr class="border-b border-neutral-100 bg-neutral-50">
+                                <td class="p-3 font-medium">资料解析</td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr class="border-b border-neutral-100">
+                                <td class="p-3 font-medium">工程对象抽取</td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr class="border-b border-neutral-100 bg-neutral-50">
+                                <td class="p-3 font-medium">场景包识别</td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr class="border-b border-neutral-100">
+                                <td class="p-3 font-medium">规则匹配</td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr class="border-b border-neutral-100 bg-neutral-50">
+                                <td class="p-3 font-medium">内容生成</td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr class="border-b border-neutral-100">
+                                <td class="p-3 font-medium">风险识别</td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr class="border-b border-neutral-100 bg-neutral-50">
+                                <td class="p-3 font-medium">证据绑定</td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr class="border-b border-neutral-100">
+                                <td class="p-3 font-medium">人工确认</td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr class="border-b border-neutral-100 bg-neutral-50">
+                                <td class="p-3 font-medium">交付导出</td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                            </tr>
+                            <tr>
+                                <td class="p-3 font-medium">复用沉淀</td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary/50 rounded-full"></span></td>
+                                <td class="p-3 text-center"><span class="inline-block w-3 h-3 bg-primary rounded-full"></span></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+                <div class="p-3 bg-neutral-50 border-t border-neutral-200 flex items-center space-x-6 text-xs">
+                    <div class="flex items-center">
+                        <span class="inline-block w-3 h-3 bg-primary rounded-full mr-2"></span>
+                        <span>主要调用</span>
+                    </div>
+                    <div class="flex items-center">
+                        <span class="inline-block w-3 h-3 bg-primary/50 rounded-full mr-2"></span>
+                        <span>辅助调用</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 区域 7：底部闭环泳道图 -->
+        <div>
+            <h2 class="text-2xl font-bold mb-4 text-neutral-800">产品完整工作闭环</h2>
+            
+            <div class="bg-white rounded-lg card-shadow-lg p-6">
+                <div class="relative h-[120px]">
+                    <!-- 泳道节点 -->
+                    <div class="absolute left-[4%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-primary/10 border-2 border-primary rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">资料输入</div>
+                        <div class="text-xs text-neutral-500 mt-1">Word / PDF / CAD<br>Excel / 图片</div>
+                    </div>
+                    
+                    <div class="absolute left-[13%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-primary/10 border-2 border-primary rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">任务理解</div>
+                        <div class="text-xs text-neutral-500 mt-1">行业、专业<br>设备、材料</div>
+                    </div>
+                    
+                    <div class="absolute left-[22%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-primary/10 border-2 border-primary rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">工程对象化</div>
+                        <div class="text-xs text-neutral-500 mt-1">项目、系统<br>设备、条款</div>
+                    </div>
+                    
+                    <div class="absolute left-[31%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-primary/10 border-2 border-primary rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-primary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">规则/知识匹配</div>
+                        <div class="text-xs text-neutral-500 mt-1">模板、规范<br>历史案例</div>
+                    </div>
+                    
+                    <div class="absolute left-[40%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-secondary/10 border-2 border-secondary rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">Agent 执行</div>
+                        <div class="text-xs text-neutral-500 mt-1">生成、审查<br>整理、分析</div>
+                    </div>
+                    
+                    <div class="absolute left-[49%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-secondary/10 border-2 border-secondary rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-secondary" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">证据链</div>
+                        <div class="text-xs text-neutral-500 mt-1">引用、原文<br>页码、规则</div>
+                    </div>
+                    
+                    <div class="absolute left-[58%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-warning/10 border-2 border-warning rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-warning" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">人工确认</div>
+                        <div class="text-xs text-neutral-500 mt-1">关键假设<br>风险、冲突</div>
+                    </div>
+                    
+                    <div class="absolute left-[67%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-success/10 border-2 border-success rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">交付物</div>
+                        <div class="text-xs text-neutral-500 mt-1">Word、PPT<br>Excel、PDF</div>
+                    </div>
+                    
+                    <div class="absolute left-[76%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-success/10 border-2 border-success rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">归档复用</div>
+                        <div class="text-xs text-neutral-500 mt-1">案例、模板<br>知识对象</div>
+                    </div>
+                    
+                    <div class="absolute left-[85%] top-0 transform -translate-x-1/2 text-center">
+                        <div class="w-16 h-16 bg-neutral-100 border-2 border-neutral-400 rounded-full flex items-center justify-center mb-2 mx-auto">
+                            <svg class="w-8 h-8 text-neutral-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+                            </svg>
+                        </div>
+                        <div class="text-sm font-medium">规则进化</div>
+                        <div class="text-xs text-neutral-500 mt-1">新规则、阈值<br>专家样例</div>
+                    </div>
+                    
+                    <!-- 连接线 -->
+                    <svg class="absolute inset-0 w-full h-full" style="z-index: 0;">
+                        <line x1="8%" y1="40" x2="11%" y2="40" stroke="#1e40af" stroke-width="2"/>
+                        <line x1="17%" y1="40" x2="20%" y2="40" stroke="#1e40af" stroke-width="2"/>
+                        <line x1="26%" y1="40" x2="29%" y2="40" stroke="#1e40af" stroke-width="2"/>
+                        <line x1="35%" y1="40" x2="38%" y2="40" stroke="#1e40af" stroke-width="2"/>
+                        <line x1="44%" y1="40" x2="47%" y2="40" stroke="#0891b2" stroke-width="2"/>
+                        <line x1="53%" y1="40" x2="56%" y2="40" stroke="#0891b2" stroke-width="2"/>
+                        <line x1="62%" y1="40" x2="65%" y2="40" stroke="#d97706" stroke-width="2"/>
+                        <line x1="71%" y1="40" x2="74%" y2="40" stroke="#059669" stroke-width="2"/>
+                        <line x1="80%" y1="40" x2="83%" y2="40" stroke="#059669" stroke-width="2"/>
+                        
+                        <!-- 闭环箭头 -->
+                        <path d="M 89% 40 Q 92% 40 92% 70 Q 92% 100 50% 100 Q 8% 100 8% 70 Q 8% 40 11% 40" stroke="#64748b" stroke-width="2" fill="none" stroke-dasharray="4 2"/>
+                    </svg>
+                </div>
+            </div>
+        </div>
+
+        <!-- 底部说明 -->
+        <div class="mt-8 text-center text-neutral-500 text-sm">
+            <p>AI Native 工程文档 Agent 平台 · 从目标到交付 · 产品评审画布 v1.0</p>
+        </div>
+    </div>
+</body>
+</html>

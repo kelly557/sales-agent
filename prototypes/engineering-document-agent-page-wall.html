@@ -1,0 +1,565 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工程行业文档 Agent 平台 - 超大页面墙原型</title>
+  <style>
+    :root {
+      --bg: #e8eef4;
+      --panel: #fff;
+      --ink: #132235;
+      --muted: #617386;
+      --line: #d8e2eb;
+      --soft: #f6f9fc;
+      --blue: #0c4778;
+      --blue-2: #e7f1fa;
+      --cyan: #0d8aa6;
+      --green: #14835f;
+      --orange: #c96f0b;
+      --red: #bf3b3b;
+      --shadow: 0 14px 32px rgba(19,34,53,.10);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      background: #dbe5ed;
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+      color: var(--ink);
+    }
+    .canvas {
+      position: relative;
+      width: 3200px;
+      height: 1800px;
+      overflow: hidden;
+      background: var(--bg);
+    }
+    .topbar {
+      position: absolute;
+      left: 34px;
+      top: 30px;
+      width: 3132px;
+      height: 86px;
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      padding: 0 26px;
+      border-radius: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.96);
+      box-shadow: var(--shadow);
+    }
+    .brand {
+      width: 520px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 22px;
+      font-weight: 800;
+      color: var(--blue);
+      line-height: 1.2;
+    }
+    .logo {
+      width: 42px;
+      height: 42px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      background: var(--blue);
+      color: #fff;
+      font-weight: 900;
+    }
+    .nav {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex: 1;
+    }
+    .nav span {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border-radius: 8px;
+      color: #344a60;
+      font-size: 16px;
+      white-space: nowrap;
+    }
+    .nav .on {
+      background: var(--blue-2);
+      border: 1px solid #c7ddeb;
+      color: var(--blue);
+      font-weight: 800;
+    }
+    .global-search {
+      width: 360px;
+      height: 42px;
+      display: flex;
+      align-items: center;
+      padding: 0 14px;
+      border: 1px solid var(--line);
+      border-radius: 10px;
+      background: #f8fbfd;
+      color: #718295;
+      font-size: 14px;
+    }
+    .page {
+      position: absolute;
+      border: 1px solid var(--line);
+      border-radius: 16px;
+      background: var(--panel);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .p1 { left: 34px; top: 144px; width: 736px; height: 455px; }
+    .p2 { left: 804px; top: 144px; width: 980px; height: 455px; }
+    .p3 { left: 1818px; top: 144px; width: 648px; height: 455px; }
+    .p4 { left: 2500px; top: 144px; width: 666px; height: 455px; }
+    .p5 { left: 34px; top: 636px; width: 930px; height: 470px; }
+    .p6 { left: 998px; top: 636px; width: 860px; height: 470px; }
+    .p7 { left: 1892px; top: 636px; width: 1274px; height: 470px; }
+    .p8 { left: 34px; top: 1144px; width: 1030px; height: 472px; }
+    .p9 { left: 1098px; top: 1144px; width: 1344px; height: 472px; }
+    .p10 { left: 2476px; top: 1144px; width: 690px; height: 472px; }
+    .flow { left: 34px; top: 1642px; width: 3132px; height: 126px; }
+
+    .window-head {
+      height: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      background: #fbfdff;
+      border-bottom: 1px solid var(--line);
+    }
+    .title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 17px;
+      font-weight: 850;
+      color: #17283b;
+    }
+    .title i {
+      width: 10px;
+      height: 10px;
+      border-radius: 3px;
+      background: var(--cyan);
+      display: inline-block;
+    }
+    .actions { display: flex; gap: 8px; align-items: center; }
+    .button {
+      height: 30px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 10px;
+      border-radius: 7px;
+      background: var(--blue);
+      color: #fff;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .button.secondary {
+      background: #fff;
+      color: #344a60;
+      border: 1px solid var(--line);
+      font-weight: 650;
+    }
+    .body { padding: 14px; }
+    .grid { display: grid; gap: 10px; }
+    .kpis { grid-template-columns: repeat(5, 1fr); }
+    .kpi {
+      min-height: 70px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: #fbfdff;
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .kpi b {
+      display: block;
+      color: var(--ink);
+      font-size: 25px;
+      margin-bottom: 4px;
+    }
+    .split { display: grid; grid-template-columns: 1.35fr .8fr; gap: 10px; margin-top: 10px; }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 12px;
+      color: #32475d;
+    }
+    th {
+      text-align: left;
+      background: #f3f7fa;
+      color: #53677a;
+      font-weight: 800;
+      height: 30px;
+      border-bottom: 1px solid var(--line);
+      padding: 0 8px;
+    }
+    td {
+      height: 34px;
+      border-bottom: 1px solid #edf2f6;
+      padding: 0 8px;
+      vertical-align: middle;
+    }
+    .card {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      overflow: hidden;
+    }
+    .card-h {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 10px;
+      border-bottom: 1px solid #e8eff5;
+      background: #f9fbfd;
+      font-size: 13px;
+      font-weight: 800;
+    }
+    .list { padding: 10px; display: grid; gap: 7px; }
+    .line {
+      min-height: 31px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      border: 1px solid #e2eaf2;
+      border-radius: 8px;
+      background: #fbfdff;
+      padding: 6px 8px;
+      font-size: 12px;
+      color: #34495f;
+    }
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      height: 22px;
+      padding: 0 7px;
+      border-radius: 99px;
+      background: #edf5fb;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+    .tag.green { background:#e8f6f1; color:var(--green); }
+    .tag.orange { background:#fff3df; color:var(--orange); }
+    .tag.red { background:#fff0f0; color:var(--red); }
+    .agent-layout { display: grid; grid-template-columns: 120px 1fr 214px; height: 405px; }
+    .side {
+      border-right: 1px solid var(--line);
+      background: #f7fafc;
+      padding: 12px;
+    }
+    .side span {
+      display: flex;
+      align-items: center;
+      height: 35px;
+      padding: 0 10px;
+      border-radius: 8px;
+      font-size: 13px;
+      color: #40556b;
+      margin-bottom: 7px;
+    }
+    .side .on { background: var(--blue-2); color: var(--blue); font-weight: 850; border: 1px solid #c8dce9; }
+    .agent-grid { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: start; }
+    .agent {
+      min-height: 119px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: #fff;
+      font-size: 11px;
+      color: #596d80;
+    }
+    .agent b { display: block; color: #182b3d; font-size: 14px; margin-bottom: 7px; }
+    .io { display: grid; grid-template-columns: 1fr 22px 1fr; gap: 5px; align-items: center; margin: 7px 0; }
+    .io div:not(.arr) { border: 1px solid #e1e9f0; background: #f8fbfd; border-radius: 7px; padding: 5px; min-height: 34px; }
+    .arr { color: var(--cyan); font-weight: 900; text-align: center; }
+    .workflow { border-left: 1px solid var(--line); padding: 12px; background: #fbfdff; }
+    .step {
+      display: grid;
+      grid-template-columns: 24px 1fr;
+      gap: 8px;
+      align-items: center;
+      min-height: 41px;
+      font-size: 12px;
+      color: #34495f;
+    }
+    .num {
+      width: 23px;
+      height: 23px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: var(--cyan);
+      border: 1px solid #b8dce5;
+      background: #eaf8fb;
+      font-size: 11px;
+      font-weight: 850;
+    }
+    .form-grid { display: grid; grid-template-columns: 1fr 230px; gap: 12px; }
+    .form-section { border: 1px solid var(--line); border-radius: 12px; padding: 12px; background: #fff; margin-bottom: 10px; }
+    .form-section h4 { margin: 0 0 10px; font-size: 14px; }
+    .choices { display: flex; flex-wrap: wrap; gap: 7px; }
+    .choice {
+      height: 29px;
+      display: inline-flex;
+      align-items: center;
+      padding: 0 9px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fbfdff;
+      color: #34495f;
+      font-size: 12px;
+    }
+    .choice.on { border-color: #a8cde4; background: var(--blue-2); color: var(--blue); font-weight: 800; }
+    .upload {
+      height: 94px;
+      display: grid;
+      place-items: center;
+      border: 1px dashed #aebfce;
+      border-radius: 12px;
+      background: #f8fbfd;
+      color: #66798a;
+      font-size: 13px;
+    }
+    .precheck .line { min-height: 38px; }
+    .task-detail { display: grid; grid-template-columns: 150px 1fr 190px; height: 405px; }
+    .timeline { border-right: 1px solid var(--line); background: #f7fafc; padding: 12px; }
+    .timeline .step { min-height: 45px; }
+    .exec { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: start; }
+    .object-chips { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; }
+    .object-chips span { padding: 5px 8px; border: 1px solid #dce6ee; border-radius: 7px; background: #fbfdff; font-size: 12px; color:#34495f; }
+    .risk-panel { border-left: 1px solid var(--line); background: #fbfdff; padding: 12px; }
+    .industry-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+    .industry {
+      min-height: 128px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 10px;
+      background: #fff;
+      font-size: 11px;
+      color: #5f7184;
+    }
+    .industry b { display: flex; justify-content: space-between; color: #17283b; font-size: 15px; margin-bottom: 8px; }
+    .coverage { height: 7px; border-radius: 99px; background: #e8eef4; margin: 8px 0; overflow: hidden; }
+    .coverage i { display: block; height: 100%; background: var(--cyan); border-radius: inherit; }
+    .rule-detail { display: grid; grid-template-columns: 150px 1fr 210px; height: 420px; }
+    .rule-table { padding: 12px; }
+    .test-panel { border-left: 1px solid var(--line); background: #fbfdff; padding: 12px; }
+    .kb-layout { display: grid; grid-template-columns: 230px 1fr 340px; height: 420px; }
+    .tree { border-right: 1px solid var(--line); background: #f7fafc; padding: 12px; font-size: 13px; }
+    .tree div { min-height: 34px; display:flex; align-items:center; padding:0 8px; border-radius:8px; color:#34495f; }
+    .tree .sel { background: var(--blue-2); color: var(--blue); font-weight: 850; border:1px solid #c8dce9; }
+    .detail { padding: 12px; display: grid; grid-template-columns: 1fr 1fr; gap: 10px; align-content: start; }
+    .relations { border-left: 1px solid var(--line); background:#fbfdff; padding: 12px; }
+    .rule-lib { display: grid; grid-template-columns: 1fr 260px; gap: 12px; }
+    .tabs { display:flex; gap:8px; margin-bottom:10px; }
+    .tab { height: 30px; display:flex; align-items:center; padding:0 10px; border-radius:8px; border:1px solid var(--line); font-size:12px; color:#40556b; background:#fff; }
+    .tab.on { background:var(--blue-2); color:var(--blue); font-weight:850; }
+    .delivery { display: grid; grid-template-columns: 210px 1fr 260px; height: 422px; }
+    .doc-preview { padding: 12px; display: grid; grid-template-rows: 190px 1fr; gap: 10px; }
+    .paper {
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 14px;
+      background: #fff;
+      color: #34495f;
+      font-size: 12px;
+    }
+    .paper h3 { margin: 0 0 10px; font-size: 16px; color:#17283b; }
+    .review-side { border-left:1px solid var(--line); background:#fbfdff; padding:12px; }
+    .admin { display:grid; grid-template-columns: 1fr 1fr; gap:10px; }
+    .perm { display:grid; grid-template-columns: 1fr 1fr 1fr; gap:6px; padding:10px; }
+    .perm span { border:1px solid #e2eaf2; border-radius:7px; background:#fbfdff; padding:7px; font-size:11px; color:#40556b; }
+    .flow-body { padding: 18px 20px; }
+    .flow-row { display:grid; grid-template-columns: 230px 190px 190px 220px 220px 210px 200px 230px 220px 210px; gap:10px; align-items:center; }
+    .flow-box {
+      position: relative;
+      min-height: 68px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+      padding: 9px;
+      font-size: 12px;
+      color: #5c6f82;
+    }
+    .flow-box b { display:block; color:#17283b; font-size:14px; margin-bottom:4px; }
+    .flow-box:after {
+      content: "→";
+      position:absolute;
+      right:-16px;
+      top:22px;
+      color:var(--cyan);
+      font-size:20px;
+      font-weight:900;
+    }
+    .flow-box:last-child:after { display:none; }
+  </style>
+</head>
+<body>
+  <div class="canvas">
+    <div class="topbar">
+      <div class="brand"><span class="logo">EA</span>工程行业文档 Agent 平台 · 页面原型总览</div>
+      <div class="nav">
+        <span class="on">工作台</span><span>Agent 任务中心</span><span>行业场景包</span><span>工程知识底座</span><span>模板与规则库</span><span>审阅与交付</span><span>管理配置</span>
+      </div>
+      <div class="global-search">搜索项目、设备、标准、图纸、报告、案例</div>
+    </div>
+
+    <section class="page p1">
+      <div class="window-head"><div class="title"><i></i>工作台</div><div class="actions"><span class="button secondary">筛选项目</span><span class="button">新建任务</span></div></div>
+      <div class="body">
+        <div class="grid kpis">
+          <div class="kpi"><b>26</b>进行中任务</div><div class="kpi"><b>11</b>待人工确认</div><div class="kpi"><b style="color:var(--red)">6</b>风险提醒</div><div class="kpi"><b>84%</b>资料完整率</div><div class="kpi"><b>43</b>今日生成文档</div>
+        </div>
+        <div class="split">
+          <div class="card"><div class="card-h">最近任务</div><table><tr><th>任务名称</th><th>行业</th><th>Agent</th><th>状态</th><th>风险</th></tr><tr><td>地铁联调资料审查</td><td>轨交</td><td>符合性审查</td><td><span class="tag orange">待确认</span></td><td>高</td></tr><tr><td>涂料应用方案生成</td><td>涂料</td><td>方案生成</td><td><span class="tag green">已生成</span></td><td>中</td></tr><tr><td>能源设备交付包</td><td>能源</td><td>交付包生成</td><td><span class="tag">进行中</span></td><td>中</td></tr><tr><td>水利验收资料缺口</td><td>水利</td><td>缺口检查</td><td><span class="tag red">异常</span></td><td>高</td></tr></table></div>
+          <div class="card"><div class="card-h">待确认项</div><div class="list"><div class="line">标准版本待确认 <span class="tag orange">3</span></div><div class="line">签章日期异常 <span class="tag red">2</span></div><div class="line">引用依据冲突 <span class="tag orange">4</span></div><div class="line">检测报告缺失 <span class="tag red">6</span></div><div class="line">常用 Agent <span class="tag">方案 / 审查 / 交付</span></div></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page p2">
+      <div class="window-head"><div class="title"><i></i>Agent 任务中心</div><div class="actions"><span class="button">+ 新建 Agent 任务</span></div></div>
+      <div class="agent-layout">
+        <div class="side"><span class="on">生成类</span><span>审查类</span><span>整理类</span><span>分析类</span><span>交付类</span></div>
+        <div class="agent-grid">
+          <div class="agent"><b>工程方案生成 Agent <span class="tag orange">中风险</span></b><div>行业：建筑 / 装备制造 / 涂料 / 能源</div><div class="io"><div>输入：需求、产品资料、标准</div><div class="arr">→</div><div>输出：方案 Word、推广 PPT、证据包</div></div><div>处理：抽取约束、匹配案例、生成大纲与正文</div></div>
+          <div class="agent"><b>作业指导书 Agent <span class="tag orange">中风险</span></b><div>行业：建筑 / 电力 / 矿山 / 水利</div><div class="io"><div>输入：工序、图纸、设备说明</div><div class="arr">→</div><div>输出：指导书 Word、风险控制项</div></div><div>最近使用：昨天 16:11</div></div>
+          <div class="agent"><b>技术符合性审查 Agent <span class="tag red">高风险</span></b><div>行业：轨交 / 化工 / 电力 / 能源</div><div class="io"><div>输入：技术规格、标准、响应文件</div><div class="arr">→</div><div>输出：符合性矩阵、审查报告</div></div><div>处理：条款抽取、规则判断、证据定位</div></div>
+          <div class="agent"><b>资料缺口检查 Agent <span class="tag orange">中风险</span></b><div>行业：基建 / 水利 / 建筑 / 能源</div><div class="io"><div>输入：资料目录、文件包、签章</div><div class="arr">→</div><div>输出：缺失清单、补件优先级</div></div><div>最近使用：周二 14:03</div></div>
+          <div class="agent"><b>设备资料建档 Agent <span class="tag green">低风险</span></b><div>行业：装备制造 / 能源 / 化工</div><div class="io"><div>输入：说明书、检测报告、铭牌</div><div class="arr">→</div><div>输出：设备档案、参数表</div></div><div>处理：设备对象识别、字段归一</div></div>
+          <div class="agent"><b>变更影响分析 Agent <span class="tag red">高风险</span></b><div>行业：化工 / 轨交 / 电力 / 基建</div><div class="io"><div>输入：新旧文件、变更单、P&ID</div><div class="arr">→</div><div>输出：影响范围、受影响资料</div></div><div>最近使用：5月24日</div></div>
+        </div>
+        <div class="workflow"><div class="card-h" style="border:0;background:transparent;padding:0 0 8px;">推荐工作流</div><div class="step"><span class="num">1</span>选择行业场景包</div><div class="step"><span class="num">2</span>上传资料</div><div class="step"><span class="num">3</span>抽取工程对象</div><div class="step"><span class="num">4</span>调用规则库</div><div class="step"><span class="num">5</span>生成结果</div><div class="step"><span class="num">6</span>人工确认</div><div class="step"><span class="num">7</span>导出交付物</div></div>
+      </div>
+    </section>
+
+    <section class="page p3">
+      <div class="window-head"><div class="title"><i></i>新建 Agent 任务</div><div class="actions"><span class="button secondary">保存草稿</span><span class="button">开始预检</span></div></div>
+      <div class="body form-grid">
+        <div>
+          <div class="form-section"><h4>任务类型</h4><div class="choices"><span class="choice on">方案生成</span><span class="choice">作业指导书生成</span><span class="choice">技术符合性审查</span><span class="choice">资料缺口检查</span><span class="choice">设备资料建档</span><span class="choice">变更影响分析</span><span class="choice">交付包生成</span></div></div>
+          <div class="form-section"><h4>行业场景包</h4><div class="choices"><span class="choice">建筑</span><span class="choice">基建</span><span class="choice on">装备制造</span><span class="choice">能源</span><span class="choice">轨交</span><span class="choice">化工</span><span class="choice">电力</span><span class="choice">矿山</span><span class="choice">水利</span><span class="choice">涂料</span></div></div>
+          <div class="form-section"><h4>资料上传</h4><div class="upload">拖拽上传 Word / Excel / PDF / PPT / OCR / 图片 / CAD / P&ID / 标准规范 / 产品设备资料</div></div>
+          <div class="form-section"><h4>输出格式</h4><div class="choices"><span class="choice on">Word</span><span class="choice on">PPT</span><span class="choice">PDF</span><span class="choice">Excel</span><span class="choice on">引用证据包</span></div></div>
+        </div>
+        <div class="card precheck"><div class="card-h">任务预检</div><div class="list"><div class="line">规则覆盖率 <span class="tag green">91%</span></div><div class="line">资料缺失 <span class="tag orange">2项</span></div><div class="line">引用来源 <span class="tag green">可追溯</span></div><div class="line">预计风险 <span class="tag orange">中</span></div><div class="line">人工确认阈值 <span class="tag">启用</span></div></div></div>
+      </div>
+    </section>
+
+    <section class="page p4">
+      <div class="window-head"><div class="title"><i></i>任务执行详情</div><div class="actions"><span class="button secondary">暂停</span><span class="button">导出中间结果</span></div></div>
+      <div class="task-detail">
+        <div class="timeline"><div class="step"><span class="num">1</span>资料解析</div><div class="step"><span class="num">2</span>工程对象抽取</div><div class="step"><span class="num">3</span>规则匹配</div><div class="step"><span class="num">4</span>内容生成 / 审查</div><div class="step"><span class="num">5</span>风险识别</div><div class="step"><span class="num">6</span>人工确认</div><div class="step"><span class="num">7</span>导出</div></div>
+        <div class="exec">
+          <div class="card"><div class="card-h">输入资料清单</div><div class="list"><div class="line">技术规格书.pdf <span class="tag green">已解析</span></div><div class="line">设备说明书.docx <span class="tag green">已解析</span></div><div class="line">P&ID-03.dwg <span class="tag orange">索引中</span></div></div></div>
+          <div class="card"><div class="card-h">工程对象</div><div class="object-chips"><span>项目：储能站</span><span>专业：电气</span><span>系统：PCS</span><span>设备：逆变器</span><span>材料：阻燃电缆</span><span>标准条款：GB/T</span></div></div>
+          <div class="card"><div class="card-h">执行日志</div><div class="list"><div class="line">已匹配 43 条规则 <span class="tag green">完成</span></div><div class="line">需确认 5 项 <span class="tag orange">待审</span></div><div class="line">已生成矩阵草稿 <span class="tag">预览</span></div></div></div>
+          <div class="card"><div class="card-h">中间结果</div><div class="list"><div class="line">方案大纲</div><div class="line">符合性矩阵</div><div class="line">缺失资料清单</div><div class="line">设备档案草稿</div></div></div>
+        </div>
+        <div class="risk-panel"><div class="card-h" style="border:0;background:transparent;padding:0 0 8px;">风险与追问</div><div class="list" style="padding:0;"><div class="line">额定参数缺失 <span class="tag red">高</span></div><div class="line">标准版本冲突 <span class="tag orange">确认</span></div><div class="line">现场条件未知 <span class="tag orange">追问</span></div><div class="line">引用证据 18 条 <span class="tag green">可用</span></div></div></div>
+      </div>
+    </section>
+
+    <section class="page p5">
+      <div class="window-head"><div class="title"><i></i>行业场景包</div><div class="actions"><span class="button secondary">按任务筛选</span><span class="button">新增行业包</span></div></div>
+      <div class="body">
+        <div class="industry-grid">
+          <div class="industry"><b>建筑 <span class="tag green">启用</span></b>术语库 / 模板 / 资料目录 / 标准映射 / 检查规则<div class="coverage"><i style="width:86%"></i></div>覆盖率 86%</div>
+          <div class="industry"><b>基建 <span class="tag green">启用</span></b>试验检测 / 验收资料 / 交工目录 / 补件规则<div class="coverage"><i style="width:82%"></i></div>覆盖率 82%</div>
+          <div class="industry"><b>装备制造 <span class="tag green">启用</span></b>设备交付 / 说明书 / 检验规程 / Agent 工作流<div class="coverage"><i style="width:91%"></i></div>覆盖率 91%</div>
+          <div class="industry"><b>能源 <span class="tag green">启用</span></b>调试 / 运维移交 / 合规资料 / 设备规则<div class="coverage"><i style="width:88%"></i></div>覆盖率 88%</div>
+          <div class="industry"><b>轨交 <span class="tag orange">维护</span></b>接口文件 / 联调联试 / 认证验收 / 符合性<div class="coverage"><i style="width:76%"></i></div>覆盖率 76%</div>
+          <div class="industry"><b>化工 <span class="tag green">启用</span></b>P&ID / 工艺安全 / 试压方案 / 变更影响<div class="coverage"><i style="width:84%"></i></div>覆盖率 84%</div>
+          <div class="industry"><b>电力 <span class="tag green">启用</span></b>试验报告 / 继保资料 / 移交标准 / 作业票<div class="coverage"><i style="width:80%"></i></div>覆盖率 80%</div>
+          <div class="industry"><b>矿山 <span class="tag">试运行</span></b>安全规程 / 设备运维 / 整改证据链<div class="coverage"><i style="width:68%"></i></div>覆盖率 68%</div>
+          <div class="industry"><b>水利 <span class="tag green">启用</span></b>验收层级 / 监测报告 / 施工记录 / 归档<div class="coverage"><i style="width:73%"></i></div>覆盖率 73%</div>
+          <div class="industry"><b>涂料 <span class="tag green">启用</span></b>应用方案 / 产品资料转译 / 推广 PPT<div class="coverage"><i style="width:89%"></i></div>覆盖率 89%</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="page p6">
+      <div class="window-head"><div class="title"><i></i>场景包详情 / 规则映射</div><div class="actions"><span class="button secondary">规则测试</span><span class="button">发布版本</span></div></div>
+      <div class="rule-detail">
+        <div class="side"><span class="on">术语库</span><span>资料目录</span><span>标准映射</span><span>检查规则</span><span>模板绑定</span><span>Agent 工作流</span></div>
+        <div class="rule-table"><table><tr><th>工程对象</th><th>适用标准</th><th>检查规则</th><th>风险</th><th>输出字段</th><th>证据</th></tr><tr><td>设备铭牌</td><td>GB/T 设备标识</td><td>型号与合格证一致</td><td><span class="tag red">高</span></td><td>设备编号</td><td>铭牌照片</td></tr><tr><td>检测报告</td><td>企业交付规范</td><td>有效期未过期</td><td><span class="tag orange">中</span></td><td>报告状态</td><td>PDF 页码</td></tr><tr><td>技术参数</td><td>技术规格书</td><td>额定值满足约束</td><td><span class="tag red">高</span></td><td>符合性结论</td><td>条款引用</td></tr><tr><td>施工记录</td><td>验收规范</td><td>日期与工序匹配</td><td><span class="tag orange">中</span></td><td>异常说明</td><td>记录表</td></tr></table></div>
+        <div class="test-panel"><div class="card-h" style="border:0;background:transparent;padding:0 0 8px;">规则测试</div><div class="list" style="padding:0;"><div class="line">输入样例：技术规格书</div><div class="line">命中规则 <span class="tag">12条</span></div><div class="line">输出判断 <span class="tag green">符合</span></div><div class="line">报告有效期 <span class="tag red">不符合</span></div><div class="line">现场适用性 <span class="tag orange">需人工确认</span></div></div></div>
+      </div>
+    </section>
+
+    <section class="page p7">
+      <div class="window-head"><div class="title"><i></i>工程知识底座</div><div class="actions"><span class="button secondary">对象搜索</span><span class="button">导入资料</span></div></div>
+      <div class="kb-layout">
+        <div class="tree"><div class="sel">项目：华东储能站</div><div>└ 专业 / 系统</div><div>　└ 电气系统</div><div>　　└ PCS 设备</div><div>　　　└ 技术文件</div><div>　　　　└ 引用证据</div><div>历史案例</div><div>标准规范</div></div>
+        <div class="detail">
+          <div class="card"><div class="card-h">对象详情</div><table><tr><td>对象名称</td><td>PCS 逆变器</td></tr><tr><td>型号规格</td><td>PCS-1250K</td></tr><tr><td>厂家</td><td>供应商 A</td></tr><tr><td>关键参数</td><td>额定功率 / 防护等级 / 通讯协议</td></tr><tr><td>适用标准</td><td>GB/T、企业交付规范</td></tr></table></div>
+          <div class="card"><div class="card-h">关联资料</div><div class="object-chips"><span>图纸 / 技术文件</span><span>检测报告 / 认证</span><span>施工记录 / 验收资料</span><span>维护手册</span><span>备件清单</span><span>历史案例</span></div></div>
+          <div class="card" style="grid-column:1/3;"><div class="card-h">可调用知识</div><table><tr><th>来源</th><th>证据位置</th><th>可用于</th><th>可信度</th></tr><tr><td>设备说明书</td><td>第 12 页参数表</td><td>方案 / 档案</td><td><span class="tag green">高</span></td></tr><tr><td>检测报告</td><td>报告编号 T-2026-03</td><td>审查 / 交付</td><td><span class="tag green">高</span></td></tr><tr><td>历史方案</td><td>项目 HZ-12</td><td>生成复用</td><td><span class="tag orange">需复核</span></td></tr></table></div>
+        </div>
+        <div class="relations"><div class="card-h" style="border:0;background:transparent;padding:0 0 8px;">对象关系</div><div class="list" style="padding:0;"><div class="line">设备 → 材料 <span class="tag">阻燃电缆</span></div><div class="line">设备 → 标准 <span class="tag">GB/T</span></div><div class="line">标准 → 条款 <span class="tag">13条</span></div><div class="line">文件 → 证据 <span class="tag green">42处</span></div><div class="line">案例 → 输出模板 <span class="tag">方案 Word</span></div></div></div>
+      </div>
+    </section>
+
+    <section class="page p8">
+      <div class="window-head"><div class="title"><i></i>模板与规则库</div><div class="actions"><span class="button secondary">版本对比</span><span class="button">新增规则</span></div></div>
+      <div class="body rule-lib">
+        <div>
+          <div class="tabs"><span class="tab on">模板库</span><span class="tab">规则库</span><span class="tab">引用溯源</span><span class="tab">风险分级</span></div>
+          <table><tr><th>规则 / 模板名称</th><th>适用行业</th><th>适用 Agent</th><th>触发条件</th><th>输出动作</th><th>版本</th><th>状态</th></tr><tr><td>方案 Word 模板</td><td>涂料 / 装备</td><td>方案生成</td><td>选择生成类任务</td><td>生成章节结构</td><td>v2.4</td><td><span class="tag green">启用</span></td></tr><tr><td>资料完整性规则</td><td>基建 / 建筑</td><td>缺口检查</td><td>交付包上传</td><td>输出缺失清单</td><td>v1.9</td><td><span class="tag green">启用</span></td></tr><tr><td>技术符合性规则</td><td>轨交 / 化工</td><td>符合性审查</td><td>条款命中</td><td>生成矩阵结论</td><td>v3.1</td><td><span class="tag orange">复核</span></td></tr><tr><td>命名归档规则</td><td>全部</td><td>交付包生成</td><td>导出交付物</td><td>重命名并归档</td><td>v1.5</td><td><span class="tag green">启用</span></td></tr></table>
+        </div>
+        <div class="card"><div class="card-h">规则编排</div><div class="list"><div class="line">1. 文档解析规则</div><div class="line">2. 工程对象抽取</div><div class="line">3. 标准映射规则</div><div class="line">4. 风险分级规则</div><div class="line">冲突处理 <span class="tag orange">人工确认</span></div><div class="line">确认阈值 <span class="tag">中风险以上</span></div></div></div>
+      </div>
+    </section>
+
+    <section class="page p9">
+      <div class="window-head"><div class="title"><i></i>审阅与交付</div><div class="actions"><span class="button secondary">版本对比</span><span class="button secondary">导出 Word</span><span class="button secondary">PPT</span><span class="button secondary">PDF</span><span class="button secondary">Excel</span><span class="button">交付包目录 / 引用证据包</span></div></div>
+      <div class="delivery">
+        <div class="tree"><div class="sel">交付包目录</div><div>01 方案 Word</div><div>02 作业指导书</div><div>03 审查报告</div><div>04 符合性矩阵</div><div>05 设备档案</div><div>06 引用证据包</div></div>
+        <div class="doc-preview">
+          <div class="paper"><h3>储能站 PCS 设备技术方案</h3><p>1. 项目背景与适用范围</p><p>2. 设备选型与关键参数</p><p>3. 施工与调试要求</p><p>4. 风险控制与验收依据</p><p>派生：方案 Word → 作业指导书 Word → 推广 PPT → 引用证据包</p></div>
+          <div class="card"><div class="card-h">符合性矩阵</div><table><tr><th>条款</th><th>原文引用</th><th>判断依据</th><th>结论</th><th>风险</th><th>确认人</th></tr><tr><td>额定功率</td><td>规格书 P12</td><td>参数表一致</td><td><span class="tag green">符合</span></td><td>低</td><td>张工</td></tr><tr><td>报告有效期</td><td>检测报告</td><td>已过期 18 天</td><td><span class="tag red">不符合</span></td><td>高</td><td>待确认</td></tr><tr><td>现场温度</td><td>现场条件</td><td>资料未提供</td><td><span class="tag orange">需人工确认</span></td><td>中</td><td>李工</td></tr></table></div>
+        </div>
+        <div class="review-side"><div class="card-h" style="border:0;background:transparent;padding:0 0 8px;">审阅面板</div><div class="list" style="padding:0;"><div class="line">引用溯源 <span class="tag green">72处</span></div><div class="line">风险标记 <span class="tag red">4项</span></div><div class="line">人工确认 <span class="tag orange">7项</span></div><div class="line">专家批注 <span class="tag">18条</span></div><div class="line">版本对比 <span class="tag green">已完成</span></div><div class="line">导出状态 <span class="tag">待确认后导出</span></div></div></div>
+      </div>
+    </section>
+
+    <section class="page p10">
+      <div class="window-head"><div class="title"><i></i>管理配置</div><div class="actions"><span class="button">保存配置</span></div></div>
+      <div class="body admin">
+        <div class="card"><div class="card-h">用户与角色</div><div class="list"><div class="line">技术负责人 <span class="tag">12人</span></div><div class="line">资料负责人 <span class="tag">8人</span></div><div class="line">解决方案工程师 <span class="tag">16人</span></div><div class="line">专家审阅人 <span class="tag">5人</span></div><div class="line">管理员 <span class="tag">3人</span></div></div></div>
+        <div class="card"><div class="card-h">Agent 配置</div><div class="list"><div class="line">默认行业包 <span class="tag">装备制造</span></div><div class="line">风险阈值 <span class="tag orange">中风险</span></div><div class="line">引用来源限制 <span class="tag green">企业资料</span></div><div class="line">人工确认策略 <span class="tag">强制</span></div></div></div>
+        <div class="card" style="grid-column:1/3;"><div class="card-h">权限矩阵</div><div class="perm"><span>行业包管理</span><span>规则编辑</span><span>任务创建</span><span>审阅确认</span><span>导出交付物</span><span>知识底座维护</span></div></div>
+        <div class="card" style="grid-column:1/3;"><div class="card-h">审计日志</div><table><tr><th>类型</th><th>对象</th><th>操作人</th><th>时间</th></tr><tr><td>规则变更</td><td>符合性规则 v3.1</td><td>管理员</td><td>13:20</td></tr><tr><td>导出记录</td><td>交付包目录</td><td>资料负责人</td><td>11:08</td></tr></table></div>
+      </div>
+    </section>
+
+    <section class="page flow">
+      <div class="flow-body">
+        <div class="flow-row">
+          <div class="flow-box"><b>外部资料输入</b>Word / Excel / PDF / PPT / OCR / 图片 / CAD / P&ID / 标准 / 设备资料</div>
+          <div class="flow-box"><b>文档解析</b>版式、表格、签章、目录</div>
+          <div class="flow-box"><b>工程对象抽取</b>项目、专业、系统、设备</div>
+          <div class="flow-box"><b>知识底座</b>图纸、报告、认证、案例</div>
+          <div class="flow-box"><b>行业规则包</b>术语、模板、标准映射</div>
+          <div class="flow-box"><b>Agent 执行</b>生成 / 审查 / 整理 / 分析</div>
+          <div class="flow-box"><b>中间结果</b>大纲、矩阵、缺口清单</div>
+          <div class="flow-box"><b>人工审阅</b>风险、批注、版本对比</div>
+          <div class="flow-box"><b>最终交付物</b>Word / PPT / PDF / Excel / 证据包</div>
+          <div class="flow-box"><b>沉淀复用</b>案例 / 模板 / 规则</div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>

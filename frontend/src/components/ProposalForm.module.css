@@ -1,0 +1,70 @@
+.formPanel {
+  display: grid;
+  gap: 24px;
+  padding: 10px 8px 4px;
+}
+
+.formHeader {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 0.8fr);
+  gap: 24px;
+  align-items: start;
+  padding-bottom: 4px;
+}
+
+.formHeader h1 {
+  margin: 0 0 8px;
+  color: var(--color-ink);
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-semibold);
+  line-height: var(--line-height-tight);
+}
+
+.formHeader p {
+  margin: 0;
+  color: var(--color-muted);
+  line-height: var(--line-height-body);
+}
+
+.steps {
+  padding-top: 6px;
+}
+
+.formGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 18px;
+}
+
+.fullWidth {
+  grid-column: 1 / -1;
+}
+
+.uploadPanel {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #fafafa;
+}
+
+.upload {
+  justify-self: start;
+}
+
+.formActions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@media (max-width: 820px) {
+  .formGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .formHeader {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<title>导航栏原型 - 调整后</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif;
+    background: #f5f6f8;
+    padding: 32px;
+    color: #1f2329;
+  }
+  h1 { font-size: 18px; margin-bottom: 8px; }
+  .hint { color: #86909c; font-size: 13px; margin-bottom: 24px; }
+  .stage {
+    display: flex;
+    gap: 40px;
+    align-items: flex-start;
+  }
+  .label {
+    font-size: 12px;
+    color: #86909c;
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  /* sidebar */
+  .sidebar {
+    width: 240px;
+    background: #ffffff;
+    border: 1px solid #e5e6eb;
+    border-radius: 8px;
+    padding: 12px 8px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 12px;
+    font-weight: 600;
+    color: #1d2129;
+    border-bottom: 1px solid #f2f3f5;
+    margin-bottom: 8px;
+  }
+  .nav { display: flex; flex-direction: column; gap: 2px; }
+
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 12px;
+    border-radius: 6px;
+    color: #4e5969;
+    font-size: 14px;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+  }
+  .nav-item:hover { background: #f2f3f5; }
+  .nav-item.active { background: #e8f3ff; color: #165dff; font-weight: 500; }
+
+  .group-title {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 12px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1d2129;
+    cursor: pointer;
+    border-radius: 6px;
+  }
+  .group-title:hover { background: #f2f3f5; }
+  .chevron { font-size: 10px; transition: transform .2s; color: #86909c; }
+  .chevron.open { transform: rotate(180deg); }
+
+  .sub-list { display: flex; flex-direction: column; padding: 2px 0 4px 12px; }
+  .sub-item {
+    padding: 6px 12px 6px 24px;
+    font-size: 13px;
+    color: #4e5969;
+    border-radius: 6px;
+    cursor: pointer;
+    text-decoration: none;
+    display: block;
+  }
+  .sub-item:hover { background: #f2f3f5; }
+  .sub-item.active { background: #e8f3ff; color: #165dff; font-weight: 500; }
+
+  .divider {
+    height: 1px;
+    background: #e5e6eb;
+    margin: 10px 12px;
+  }
+
+  .icon {
+    width: 16px; height: 16px;
+    display: inline-flex;
+    align-items: center; justify-content: center;
+    font-size: 14px;
+  }
+
+  .annotation {
+    margin-top: 20px;
+    padding: 16px;
+    background: #fff;
+    border: 1px dashed #c9cdd4;
+    border-radius: 8px;
+    max-width: 560px;
+  }
+  .annotation h2 { font-size: 14px; margin-bottom: 8px; color: #1d2129; }
+  .annotation ul { padding-left: 20px; font-size: 13px; color: #4e5969; line-height: 1.9; }
+  .annotation li code { background: #f2f3f5; padding: 1px 6px; border-radius: 3px; font-family: monospace; color: #165dff; }
+  .annotation .item-new { color: #00b42a; font-weight: 600; }
+  .annotation .item-move { color: #ff7d00; font-weight: 600; }
+</style>
+</head>
+<body>
+  <h1>侧边导航栏 - 调整后原型</h1>
+  <p class="hint">能力中心下沉到管理中心分组；定时任务归到项目下；新增"审批流程"独立模块，用分割线与"管理中心"隔开。</p>
+
+  <div class="stage">
+
+    <!-- 原型：项目下放定时任务 + 新增审批流程；管理中心下放能力中心 -->
+    <div>
+      <div class="label">调整后结构（推荐）</div>
+      <div class="sidebar">
+        <div class="brand">
+          <span class="icon">📄</span>
+          <span>销售助手Agent</span>
+        </div>
+        <nav class="nav">
+
+          <a class="nav-item" href="#"><span class="icon">＋</span>新项目</a>
+          <div class="group-title">
+            <span>最近项目</span>
+            <span class="chevron open">▼</span>
+          </div>
+          <div class="sub-list">
+            <a class="sub-item" href="#">华东大区报价 v2</a>
+            <a class="sub-item" href="#">光伏施工方案</a>
+          </div>
+
+          <div class="divider"></div>
+
+          <a class="nav-item" href="#"><span class="icon">📋</span>定制方案生成</a>
+          <a class="nav-item" href="#"><span class="icon">📝</span>施工作业指导书</a>
+          <div class="group-title">
+            <span>更多应用</span>
+            <span class="chevron">▼</span>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- 项目分组 -->
+          <a class="nav-item active" href="#"><span class="icon">🏗️</span>项目</a>
+          <a class="nav-item" href="#"><span class="icon">⏰</span>定时任务</a>
+          <a class="nav-item" href="#"><span class="icon">✅</span>审批流程 <span style="margin-left:auto;font-size:10px;background:#ff7d00;color:#fff;padding:1px 6px;border-radius:8px;">新</span></a>
+
+          <div class="divider"></div>
+
+          <!-- 管理中心分组 -->
+          <div class="group-title">
+            <span>管理中心</span>
+            <span class="chevron open">▼</span>
+          </div>
+          <div class="sub-list">
+            <a class="sub-item" href="#">能力中心 <span style="font-size:10px;color:#ff7d00;margin-left:6px;">已移入</span></a>
+            <a class="sub-item" href="#">权限管理</a>
+            <a class="sub-item" href="#">知识库</a>
+            <a class="sub-item" href="#">记忆系统</a>
+            <a class="sub-item" href="#">模版库</a>
+            <a class="sub-item" href="#">提示词库</a>
+            <a class="sub-item" href="#">规则库</a>
+            <a class="sub-item" href="#">审批配置</a>
+          </div>
+
+          <a class="nav-item" href="#"><span class="icon">🔌</span>连接中心</a>
+          <a class="nav-item" href="#"><span class="icon">📚</span>解决方案中心</a>
+        </nav>
+      </div>
+    </div>
+
+    <!-- 原型：旧位置参考 -->
+    <div>
+      <div class="label">调整前（旧结构，参考用）</div>
+      <div class="sidebar" style="opacity:.6;">
+        <div class="brand">
+          <span class="icon">📄</span>
+          <span>销售助手Agent</span>
+        </div>
+        <nav class="nav">
+          <a class="nav-item" href="#"><span class="icon">＋</span>新项目</a>
+          <div class="group-title"><span>最近项目</span><span class="chevron open">▼</span></div>
+          <div class="divider"></div>
+          <a class="nav-item" href="#"><span class="icon">📋</span>定制方案生成</a>
+          <a class="nav-item" href="#"><span class="icon">📝</span>施工作业指导书</a>
+          <div class="group-title"><span>更多应用</span><span class="chevron">▼</span></div>
+          <div class="divider"></div>
+          <a class="nav-item" href="#"><span class="icon">🏗️</span>项目</a>
+          <a class="nav-item" href="#"><span class="icon">🛡️</span>能力中心</a>
+          <div class="group-title"><span>管理中心</span><span class="chevron open">▼</span></div>
+          <a class="nav-item" href="#"><span class="icon">🔌</span>连接中心</a>
+          <a class="nav-item" href="#"><span class="icon">📚</span>解决方案中心</a>
+          <a class="nav-item" href="#"><span class="icon">⏰</span>定时任务</a>
+        </nav>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="annotation">
+    <h2>调整要点（对应你的要求）</h2>
+    <ul>
+      <li>要求 1：<span class="item-move">能力中心</span> 从根级移到 <code>管理中心</code> 折叠分组下，作为子项第一项。</li>
+      <li>要求 2：<span class="item-move">定时任务</span> 从根级移到 <code>项目</code> 紧邻的下一项（属于"项目"业务线）。</li>
+      <li>要求 3：<span class="item-new">新增"审批流程"</span> 放在 <code>定时任务</code> 之下，与"项目 + 定时任务"形成同级业务模块。</li>
+      <li>用 <code>divider</code> 分割线（视觉上 1px 横线）把 <code>项目/定时任务/审批</code> 模块与 <code>管理中心</code> 模块区分开，语义上表达"业务模块"vs"后台配置"。</li>
+      <li>建议：<code>审批流程</code> 走 <code>ApprovalPage</code>（已有页面），与 <code>管理中心 ▸ 审批配置</code> 在职责上拆开 —— 前者是流程实例发起与跟踪，后者是后台流程模板配置。</li>
+    </ul>
+  </div>
+
+</body>
+</html>

@@ -1,0 +1,225 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>产品资料查询（问答）详细流程</title>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      securityLevel: "loose",
+      flowchart: { curve: "basis", nodeSpacing: 42, rankSpacing: 52 },
+      themeVariables: {
+        fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        primaryColor: "#eef6ff",
+        primaryTextColor: "#12314d",
+        primaryBorderColor: "#79a9da",
+        lineColor: "#6d8298",
+        secondaryColor: "#f5f7fb",
+        tertiaryColor: "#fff7ed",
+        edgeLabelBackground: "#ffffff",
+        textColor: "#23384d"
+      }
+    });
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">A</div>
+        <div><strong>工程文档 Agent</strong><span>设计文档库</span></div>
+      </a>
+      <nav class="doc-nav"><a class="doc-link" href="product-plan.html"><span>工程行业文档 Agent 产品方案</span><small>面向工程行业的 Agent Native 文档任务产品设计。</small></a><a class="doc-link" href="research-notes.html"><span>行业调研与场景分析</span><small>行业痛点、适合场景、典型输入输出和案例。</small></a><a class="doc-link" href="business-process.html"><span>业务流程图</span><small>从我的项目、项目上下文、资料集成、任务执行、人工审阅到交付沉淀的端到端流程。</small></a><a class="doc-link" href="custom-solution-ppt.html"><span>定制方案生成（PPT）详细流程</span><small>定制方案 PPT 的输入输出、数据、知识库、模板、规则、流程与异常处理。</small></a><a class="doc-link active" href="product-data-qa.html"><span>产品资料查询（问答）详细流程</span><small>产品资料问答的输入输出、数据、知识库、规则、权限、流程与成功标准。</small></a></nav>
+      <div class="toc-card"><div class="toc-title">本页目录</div><a class="toc-l1" href="#产品资料查询-问答-agent-详细流程">产品资料查询（问答）Agent 详细流程</a><a class="toc-l2" href="#1-场景定义">1. 场景定义</a><a class="toc-l2" href="#2-典型用户">2. 典型用户</a><a class="toc-l2" href="#3-输入细节">3. 输入细节</a><a class="toc-l3" href="#3-1-用户自然语言输入">3.1 用户自然语言输入</a><a class="toc-l3" href="#3-2-结构化输入">3.2 结构化输入</a><a class="toc-l3" href="#3-3-文件输入">3.3 文件输入</a><a class="toc-l2" href="#4-所需数据">4. 所需数据</a><a class="toc-l3" href="#4-1-产品主数据">4.1 产品主数据</a><a class="toc-l3" href="#4-2-产品参数数据">4.2 产品参数数据</a><a class="toc-l3" href="#4-3-资料文件数据">4.3 资料文件数据</a><a class="toc-l3" href="#4-4-应用场景数据">4.4 应用场景数据</a><a class="toc-l3" href="#4-5-标准与规则数据">4.5 标准与规则数据</a><a class="toc-l2" href="#5-知识库设计">5. 知识库设计</a><a class="toc-l3" href="#5-1-知识库分层">5.1 知识库分层</a><a class="toc-l3" href="#5-2-检索方式">5.2 检索方式</a><a class="toc-l3" href="#5-3-索引字段">5.3 索引字段</a><a class="toc-l2" href="#6-规则设计">6. 规则设计</a><a class="toc-l3" href="#6-1-查询规则">6.1 查询规则</a><a class="toc-l3" href="#6-2-回答规则">6.2 回答规则</a><a class="toc-l3" href="#6-3-权限规则">6.3 权限规则</a><a class="toc-l3" href="#6-4-质量规则">6.4 质量规则</a><a class="toc-l2" href="#7-详细流程">7. 详细流程</a><a class="toc-l3" href="#7-1-端到端流程图">7.1 端到端流程图</a><a class="toc-l3" href="#7-2-处理步骤">7.2 处理步骤</a><a class="toc-l2" href="#8-输出细节">8. 输出细节</a><a class="toc-l3" href="#8-1-简答型输出">8.1 简答型输出</a><a class="toc-l3" href="#8-2-表格型输出">8.2 表格型输出</a><a class="toc-l3" href="#8-3-对比型输出">8.3 对比型输出</a><a class="toc-l3" href="#8-4-适用性判断输出">8.4 适用性判断输出</a><a class="toc-l3" href="#8-5-未找到依据输出">8.5 未找到依据输出</a><a class="toc-l2" href="#9-异常与边界情况">9. 异常与边界情况</a><a class="toc-l2" href="#10-需要配置的后台能力">10. 需要配置的后台能力</a><a class="toc-l3" href="#10-1-管理配置">10.1 管理配置</a><a class="toc-l3" href="#10-2-知识更新流程">10.2 知识更新流程</a><a class="toc-l2" href="#11-与其他任务的联动">11. 与其他任务的联动</a><a class="toc-l2" href="#12-成功标准">12. 成功标准</a></div>
+    </aside>
+    <main class="content">
+      <header class="hero">
+        <div class="eyebrow">Design Docs</div>
+        <h1>产品资料查询（问答）详细流程</h1>
+        <p>产品资料问答的输入输出、数据、知识库、规则、权限、流程与成功标准。</p>
+      </header>
+      <article class="article"><h1 id="产品资料查询-问答-agent-详细流程">产品资料查询（问答）Agent 详细流程</h1>
+<p>本文档以“查询/问答产品资料”为例，拆解工程文档 Agent 在查找类任务中的输入、输出、数据、知识库、规则、流程和异常处理。</p>
+<h2 id="1-场景定义">1. 场景定义</h2>
+<p>产品资料查询不是普通聊天问答，而是面向工程场景的受控检索与回答。</p>
+<p>用户希望快速回答：</p>
+<ul><li>某个产品是否适用于某个工程场景？</li><li>某个产品的关键参数是多少？</li><li>某个施工条件、适用范围、限制条件在哪里写明？</li><li>某个产品和另一个产品有什么差异？</li><li>某个产品是否满足客户技术要求？</li><li>能否引用某份 TDS、SDS、检测报告、认证或案例作为依据？</li></ul>
+<p>该场景属于四类能力中的“查找”，但经常联动：</p>
+<ul><li>生成：把查询结果写入方案、指导书、PPT。</li><li>计算：基于产品参数计算用量、膜厚、消耗量、设备选型参数。</li><li>审核：判断产品资料是否满足技术要求或资料是否缺失。</li></ul>
+<h2 id="2-典型用户">2. 典型用户</h2>
+<div class="table-wrap"><table><thead><tr><th>用户</th><th>典型问题</th></tr></thead><tbody><tr><td>技术销售</td><td>这个产品能不能用于客户这个工况？有什么依据？</td></tr><tr><td>应用工程师</td><td>某个底材、温湿度、腐蚀等级下推荐哪个体系？</td></tr><tr><td>产品经理</td><td>某个产品的参数、认证、检测报告在哪里？</td></tr><tr><td>项目工程师</td><td>当前项目使用的产品资料是否齐全？</td></tr><tr><td>资料负责人</td><td>交付包里某个产品缺哪些 TDS、SDS、合格证、检测报告？</td></tr></tbody></table></div>
+<h2 id="3-输入细节">3. 输入细节</h2>
+<h3 id="3-1-用户自然语言输入">3.1 用户自然语言输入</h3>
+<p>示例：</p>
+<ul><li>“帮我查一下 A-102 环氧底漆的重涂间隔和适用底材。”</li><li>“这个产品能不能用于沿海 C5-M 钢结构项目？”</li><li>“找出适用于混凝土地坪、耐磨、耐化学腐蚀的产品资料。”</li><li>“A-102 和 B-210 的固含、VOC、干燥时间有什么区别？”</li><li>“客户要求 VOC 小于 420g/L，我们哪些产品满足？”</li></ul>
+<p>需要解析的字段：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>示例</th></tr></thead><tbody><tr><td>产品名称/型号</td><td>A-102、B-210、环氧底漆</td></tr><tr><td>应用场景</td><td>沿海钢结构、混凝土地坪、储罐内壁</td></tr><tr><td>工况条件</td><td>C5-M、高湿、耐化学腐蚀、室外暴晒</td></tr><tr><td>查询参数</td><td>VOC、固含、干燥时间、重涂间隔、膜厚</td></tr><tr><td>约束条件</td><td>VOC 小于 420g/L、设计寿命 15 年</td></tr><tr><td>输出意图</td><td>查资料、做对比、给推荐、引用依据</td></tr></tbody></table></div>
+<h3 id="3-2-结构化输入">3.2 结构化输入</h3>
+<p>用户也可以通过表单或任务卡片输入：</p>
+<div class="table-wrap"><table><thead><tr><th>输入项</th><th>是否必填</th><th>说明</th></tr></thead><tbody><tr><td>我的项目</td><td>建议必填</td><td>选择当前项目入口</td></tr><tr><td>项目上下文</td><td>自动形成</td><td>限定资料范围、权限和输出归属</td></tr><tr><td>行业场景包</td><td>必填</td><td>例如涂料、装备制造、电力设备、化工设备</td></tr><tr><td>产品名称/型号</td><td>条件必填</td><td>明确查询对象</td></tr><tr><td>应用场景</td><td>可选</td><td>用于判断适用性</td></tr><tr><td>查询参数</td><td>可选</td><td>例如 VOC、膜厚、用量、温湿度限制</td></tr><tr><td>技术要求</td><td>可选</td><td>用于符合性判断</td></tr><tr><td>输出格式</td><td>可选</td><td>简答、表格、对比表、引用清单</td></tr><tr><td>资料范围</td><td>可选</td><td>当前项目、企业产品库、标准库、历史案例</td></tr></tbody></table></div>
+<h3 id="3-3-文件输入">3.3 文件输入</h3>
+<p>用户可上传或引用：</p>
+<ul><li>产品 TDS。</li><li>SDS。</li><li>检测报告。</li><li>认证证书。</li><li>产品手册。</li><li>施工工艺文件。</li><li>历史方案。</li><li>客户技术要求。</li><li>项目资料目录。</li></ul>
+<p>系统需要识别：</p>
+<ul><li>文件类型。</li><li>产品型号。</li><li>文件版本。</li><li>发布日期。</li><li>适用范围。</li><li>参数表。</li><li>安全信息。</li><li>检测结论。</li><li>认证范围。</li><li>是否过期或被替代。</li></ul>
+<h2 id="4-所需数据">4. 所需数据</h2>
+<h3 id="4-1-产品主数据">4.1 产品主数据</h3>
+<div class="table-wrap"><table><thead><tr><th>数据项</th><th>示例</th></tr></thead><tbody><tr><td>产品 ID</td><td>PROD-A-102</td></tr><tr><td>产品名称</td><td>A-102 环氧底漆</td></tr><tr><td>产品类别</td><td>底漆、中间漆、面漆、防腐涂料、防火涂料</td></tr><tr><td>产品系列</td><td>工业防腐系列</td></tr><tr><td>适用底材</td><td>钢结构、混凝土、镀锌钢</td></tr><tr><td>适用环境</td><td>C3、C4、C5-M、化工腐蚀、高温</td></tr><tr><td>推荐体系</td><td>底漆+中间漆+面漆</td></tr><tr><td>状态</td><td>在售、停用、替代、受限</td></tr><tr><td>替代产品</td><td>B-210</td></tr></tbody></table></div>
+<h3 id="4-2-产品参数数据">4.2 产品参数数据</h3>
+<div class="table-wrap"><table><thead><tr><th>参数</th><th>示例</th></tr></thead><tbody><tr><td>体积固含</td><td>65%</td></tr><tr><td>VOC</td><td>380 g/L</td></tr><tr><td>理论涂布率</td><td>8.1 m2/L @ 80um</td></tr><tr><td>推荐干膜厚度</td><td>80um</td></tr><tr><td>表干时间</td><td>2h @ 25C</td></tr><tr><td>实干时间</td><td>24h @ 25C</td></tr><tr><td>重涂间隔</td><td>最短 6h，最长 7d @ 25C</td></tr><tr><td>混合比例</td><td>A:B = 4:1</td></tr><tr><td>适用温度</td><td>5-40C</td></tr><tr><td>相对湿度限制</td><td>&lt;= 85%</td></tr><tr><td>闪点</td><td>28C</td></tr></tbody></table></div>
+<h3 id="4-3-资料文件数据">4.3 资料文件数据</h3>
+<div class="table-wrap"><table><thead><tr><th>数据项</th><th>说明</th></tr></thead><tbody><tr><td>文件 ID</td><td>唯一文件标识</td></tr><tr><td>文件类型</td><td>TDS、SDS、检测报告、认证、案例、说明书</td></tr><tr><td>文件名称</td><td>A-102_TDS_2025.pdf</td></tr><tr><td>产品关联</td><td>关联产品 ID</td></tr><tr><td>版本</td><td>V3.2</td></tr><tr><td>日期</td><td>发布/生效/过期日期</td></tr><tr><td>语言</td><td>中文、英文</td></tr><tr><td>权限</td><td>哪些用户、项目、角色可见</td></tr><tr><td>来源系统</td><td>产品库、网盘、项目、DMS</td></tr><tr><td>原文页码</td><td>参数或结论所在页</td></tr></tbody></table></div>
+<h3 id="4-4-应用场景数据">4.4 应用场景数据</h3>
+<div class="table-wrap"><table><thead><tr><th>数据项</th><th>示例</th></tr></thead><tbody><tr><td>底材</td><td>钢结构、混凝土、铝材</td></tr><tr><td>环境</td><td>海洋大气、化工厂、地下、室内</td></tr><tr><td>腐蚀等级</td><td>C3、C4、C5-M、CX</td></tr><tr><td>设计寿命</td><td>5 年、10 年、15 年、25 年</td></tr><tr><td>施工方式</td><td>喷涂、辊涂、刷涂</td></tr><tr><td>施工限制</td><td>低温、高湿、短工期、带锈施工</td></tr><tr><td>验收指标</td><td>膜厚、附着力、耐盐雾、VOC</td></tr></tbody></table></div>
+<h3 id="4-5-标准与规则数据">4.5 标准与规则数据</h3>
+<div class="table-wrap"><table><thead><tr><th>数据项</th><th>示例</th></tr></thead><tbody><tr><td>标准编号</td><td>ISO 12944、GB/T、HG/T</td></tr><tr><td>适用范围</td><td>钢结构防腐、地坪、饮用水接触材料</td></tr><tr><td>条款</td><td>腐蚀等级、膜厚、表面处理、测试要求</td></tr><tr><td>企业规则</td><td>某产品不得用于长期浸水</td></tr><tr><td>客户规则</td><td>VOC &lt; 420g/L</td></tr><tr><td>审核规则</td><td>参数缺失时必须标记“需人工确认”</td></tr></tbody></table></div>
+<h2 id="5-知识库设计">5. 知识库设计</h2>
+<h3 id="5-1-知识库分层">5.1 知识库分层</h3>
+<pre class="code"><code>产品资料知识库
+├── 产品主数据
+├── 产品参数库
+├── TDS 知识库
+├── SDS 知识库
+├── 检测报告库
+├── 认证证书库
+├── 应用案例库
+├── 施工工艺库
+├── 标准规范库
+├── 竞品/替代关系库
+└── 历史问答与专家确认库</code></pre>
+<h3 id="5-2-检索方式">5.2 检索方式</h3>
+<div class="table-wrap"><table><thead><tr><th>检索方式</th><th>用途</th></tr></thead><tbody><tr><td>精确检索</td><td>产品型号、文件编号、标准编号</td></tr><tr><td>语义检索</td><td>场景、问题、应用需求</td></tr><tr><td>结构化过滤</td><td>产品类别、底材、环境、日期、版本、状态</td></tr><tr><td>参数检索</td><td>VOC、膜厚、固含、温湿度、干燥时间</td></tr><tr><td>关系检索</td><td>产品-体系、产品-资料、产品-案例、产品-替代</td></tr><tr><td>权限过滤</td><td>按用户、项目、组织、资料密级过滤</td></tr></tbody></table></div>
+<h3 id="5-3-索引字段">5.3 索引字段</h3>
+<p>每份资料应建立以下索引：</p>
+<ul><li>产品名称。</li><li>产品型号。</li><li>文件类型。</li><li>文件版本。</li><li>发布日期。</li><li>适用底材。</li><li>适用环境。</li><li>关键参数。</li><li>认证范围。</li><li>检测项目。</li><li>标准编号。</li><li>原文页码。</li><li>来源系统。</li><li>权限标签。</li></ul>
+<h2 id="6-规则设计">6. 规则设计</h2>
+<h3 id="6-1-查询规则">6.1 查询规则</h3>
+<ul><li>产品型号精确匹配优先于语义匹配。</li><li>当前有效版本优先于历史版本。</li><li>当前项目上下文中的资料优先于企业通用资料。</li><li>企业正式产品库优先于用户临时上传文件。</li><li>有结构化参数时，优先使用结构化参数；无结构化参数时再引用文档抽取结果。</li><li>所有事实性回答必须提供来源。</li></ul>
+<h3 id="6-2-回答规则">6.2 回答规则</h3>
+<ul><li>不允许编造产品参数。</li><li>参数冲突时必须列出冲突来源，并标记需人工确认。</li><li>资料缺失时必须明确说“未找到依据”。</li><li>适用性判断必须区分“明确支持”“明确不支持”“资料不足，需确认”。</li><li>安全、环保、合规类内容必须引用 SDS、标准或认证。</li><li>涉及工程选型时，必须说明假设条件。</li><li>停用或被替代产品必须提示。</li></ul>
+<h3 id="6-3-权限规则">6.3 权限规则</h3>
+<ul><li>用户只能查询系统权限允许的项目、资料源和知识源。</li><li>跨项目资料默认不可引用，除非被授权为企业案例或公共知识。</li><li>外部协作方不可访问内部成本、配方、未发布产品资料。</li><li>回答中不得泄露无权限文件名或片段。</li><li>导出结果继承引用资料的权限标签。</li></ul>
+<h3 id="6-4-质量规则">6.4 质量规则</h3>
+<ul><li>回答必须包含来源文件和页码/章节。</li><li>低置信度结果需要标记。</li><li>多来源不一致时不得给唯一结论。</li><li>过期资料不得作为默认依据。</li><li>用户上传的临时文件只能作为当前任务依据，不能自动进入企业知识库。</li></ul>
+<h2 id="7-详细流程">7. 详细流程</h2>
+<h3 id="7-1-端到端流程图">7.1 端到端流程图</h3>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;用户提问&quot;] --&gt; B[&quot;识别意图&quot;]
+    B --&gt; C{&quot;问题类型&quot;}
+
+    C --&gt; C1[&quot;参数查询&quot;]
+    C --&gt; C2[&quot;适用性判断&quot;]
+    C --&gt; C3[&quot;资料定位&quot;]
+    C --&gt; C4[&quot;产品对比&quot;]
+    C --&gt; C5[&quot;符合性初判&quot;]
+
+    C1 --&gt; D[&quot;抽取实体与条件&quot;]
+    C2 --&gt; D
+    C3 --&gt; D
+    C4 --&gt; D
+    C5 --&gt; D
+
+    D --&gt; E[&quot;确定查询范围&quot;]
+    E --&gt; E1[&quot;项目上下文&quot;]
+    E --&gt; E2[&quot;产品资料库&quot;]
+    E --&gt; E3[&quot;标准规范库&quot;]
+    E --&gt; E4[&quot;历史案例库&quot;]
+    E --&gt; E5[&quot;用户上传文件&quot;]
+
+    E1 --&gt; F[&quot;权限过滤&quot;]
+    E2 --&gt; F
+    E3 --&gt; F
+    E4 --&gt; F
+    E5 --&gt; F
+
+    F --&gt; G[&quot;检索与结构化查询&quot;]
+    G --&gt; H[&quot;候选结果排序&quot;]
+    H --&gt; I{&quot;是否找到可信依据&quot;}
+
+    I --&gt;|&quot;否&quot;| J[&quot;返回未找到依据/请求补充资料&quot;]
+    I --&gt;|&quot;是&quot;| K[&quot;抽取证据片段和参数&quot;]
+
+    K --&gt; L[&quot;规则校验&quot;]
+    L --&gt; M{&quot;是否存在冲突或风险&quot;}
+
+    M --&gt;|&quot;是&quot;| N[&quot;标记冲突/风险/需人工确认&quot;]
+    M --&gt;|&quot;否&quot;| O[&quot;生成回答&quot;]
+
+    N --&gt; O
+    O --&gt; P[&quot;附带来源、页码、置信度&quot;]
+    P --&gt; Q[&quot;用户追问/引用到任务/导出&quot;]</pre></div>
+<h3 id="7-2-处理步骤">7.2 处理步骤</h3>
+<div class="table-wrap"><table><thead><tr><th>步骤</th><th>系统动作</th><th>关键判断</th></tr></thead><tbody><tr><td>1. 意图识别</td><td>判断用户是查参数、找资料、做对比、问适用性还是做符合性初判</td><td>是否需要结构化字段</td></tr><tr><td>2. 实体抽取</td><td>抽取产品型号、场景、参数、标准、约束条件</td><td>产品是否唯一</td></tr><tr><td>3. 查询范围确定</td><td>选择项目上下文、产品库、标准库、历史案例或上传文件</td><td>是否受权限限制</td></tr><tr><td>4. 权限过滤</td><td>过滤无权限资料</td><td>是否可显示文件名</td></tr><tr><td>5. 检索</td><td>结合精确检索、语义检索、参数检索</td><td>是否命中有效版本</td></tr><tr><td>6. 证据抽取</td><td>抽取参数、条款、结论和页码</td><td>是否为事实依据</td></tr><tr><td>7. 规则校验</td><td>校验版本、状态、冲突、适用性、安全合规</td><td>是否需人工确认</td></tr><tr><td>8. 答案生成</td><td>生成简答、表格、对比或建议</td><td>是否有来源</td></tr><tr><td>9. 输出处理</td><td>可追问、引用到方案/审核任务、导出</td><td>是否沉淀为知识</td></tr></tbody></table></div>
+<h2 id="8-输出细节">8. 输出细节</h2>
+<h3 id="8-1-简答型输出">8.1 简答型输出</h3>
+<p>示例：</p>
+<pre class="code"><code>A-102 环氧底漆在 25C 条件下的最短重涂间隔为 6 小时，最长重涂间隔为 7 天。
+
+依据：
+- A-102_TDS_V3.2.pdf，第 2 页，“施工参数”章节。
+
+注意：
+- 上述数据基于 25C 条件；低温或高湿环境下需要重新确认。</code></pre>
+<h3 id="8-2-表格型输出">8.2 表格型输出</h3>
+<div class="table-wrap"><table><thead><tr><th>参数</th><th>数值</th><th>条件</th><th>来源</th><th>置信度</th></tr></thead><tbody><tr><td>VOC</td><td>380 g/L</td><td>标准状态</td><td>A-102_TDS_V3.2.pdf p.1</td><td>高</td></tr><tr><td>推荐干膜厚度</td><td>80um</td><td>单道</td><td>A-102_TDS_V3.2.pdf p.2</td><td>高</td></tr><tr><td>重涂间隔</td><td>6h-7d</td><td>25C</td><td>A-102_TDS_V3.2.pdf p.2</td><td>高</td></tr></tbody></table></div>
+<h3 id="8-3-对比型输出">8.3 对比型输出</h3>
+<div class="table-wrap"><table><thead><tr><th>对比项</th><th>A-102</th><th>B-210</th><th>结论</th></tr></thead><tbody><tr><td>产品类别</td><td>环氧底漆</td><td>环氧底漆</td><td>同类</td></tr><tr><td>VOC</td><td>380 g/L</td><td>420 g/L</td><td>A-102 更低</td></tr><tr><td>推荐底材</td><td>钢结构</td><td>钢结构、镀锌钢</td><td>B-210 适用面更广</td></tr><tr><td>状态</td><td>在售</td><td>在售</td><td>均可选</td></tr></tbody></table></div>
+<h3 id="8-4-适用性判断输出">8.4 适用性判断输出</h3>
+<pre class="code"><code>结论：资料显示 A-102 可用于钢结构防腐底漆，但当前资料不足以直接确认其适用于“沿海 C5-M、设计寿命 15 年”的完整体系。
+
+已找到依据：
+- 支持钢结构底材：A-102_TDS_V3.2.pdf，第 1 页。
+- 推荐干膜厚度 80um：A-102_TDS_V3.2.pdf，第 2 页。
+
+缺失信息：
+- 未找到 C5-M 体系认证或对应配套体系说明。
+- 未找到 15 年设计寿命的检测或案例依据。
+
+建议：
+- 补充配套中间漆、面漆资料。
+- 查询 ISO 12944 对 C5-M 的体系要求。
+- 由应用工程师确认最终体系。</code></pre>
+<h3 id="8-5-未找到依据输出">8.5 未找到依据输出</h3>
+<pre class="code"><code>未在当前项目上下文和企业产品资料库中找到 A-102 用于饮用水接触场景的认证依据。
+
+已查询范围：
+- 当前项目资料。
+- 企业产品 TDS/SDS。
+- 检测报告库。
+- 认证证书库。
+
+建议：
+- 上传相关认证文件。
+- 扩大查询范围到历史项目案例。
+- 请产品经理确认是否存在未入库资料。</code></pre>
+<h2 id="9-异常与边界情况">9. 异常与边界情况</h2>
+<div class="table-wrap"><table><thead><tr><th>情况</th><th>系统处理</th></tr></thead><tbody><tr><td>产品名称模糊</td><td>返回候选产品列表，请用户选择</td></tr><tr><td>产品参数冲突</td><td>展示冲突来源，不给唯一结论</td></tr><tr><td>找到旧版本资料</td><td>提示版本过期，优先使用新版本</td></tr><tr><td>资料无权限</td><td>不展示具体内容，提示权限不足</td></tr><tr><td>用户问题超出资料依据</td><td>标记未找到依据，不编造</td></tr><tr><td>涉及安全环保</td><td>必须引用 SDS、认证或标准</td></tr><tr><td>涉及工程选型</td><td>输出假设条件和需人工确认项</td></tr><tr><td>上传临时文件</td><td>仅当前任务可用，不自动入库</td></tr></tbody></table></div>
+<h2 id="10-需要配置的后台能力">10. 需要配置的后台能力</h2>
+<h3 id="10-1-管理配置">10.1 管理配置</h3>
+<ul><li>产品主数据维护。</li><li>产品参数字段维护。</li><li>文件类型与解析模板配置。</li><li>产品-资料关联。</li><li>产品-体系关联。</li><li>产品-标准关联。</li><li>产品-案例关联。</li><li>权限标签配置。</li><li>版本状态配置。</li></ul>
+<h3 id="10-2-知识更新流程">10.2 知识更新流程</h3>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;新增或更新产品资料&quot;] --&gt; B[&quot;上传到产品资料库&quot;]
+    B --&gt; C[&quot;文档解析&quot;]
+    C --&gt; D[&quot;抽取产品型号和参数&quot;]
+    D --&gt; E[&quot;关联产品主数据&quot;]
+    E --&gt; F[&quot;专家校验&quot;]
+    F --&gt; G{&quot;是否通过&quot;}
+    G --&gt;|&quot;否&quot;| H[&quot;退回修改&quot;]
+    H --&gt; B
+    G --&gt;|&quot;是&quot;| I[&quot;发布到知识库&quot;]
+    I --&gt; J[&quot;建立索引和权限&quot;]
+    J --&gt; K[&quot;可供查询 Agent 使用&quot;]</pre></div>
+<h2 id="11-与其他任务的联动">11. 与其他任务的联动</h2>
+<div class="table-wrap"><table><thead><tr><th>查询结果</th><th>可联动任务</th></tr></thead><tbody><tr><td>产品参数</td><td>材料用量估算、工程参数计算</td></tr><tr><td>适用性依据</td><td>工程方案生成、技术符合性审核</td></tr><tr><td>TDS/SDS</td><td>作业指导书生成、安全环保章节生成</td></tr><tr><td>检测报告/认证</td><td>客户推广材料、审查报告</td></tr><tr><td>缺失资料</td><td>资料缺口审核、补件建议</td></tr><tr><td>产品对比</td><td>竞品替代方案、选型建议</td></tr></tbody></table></div>
+<h2 id="12-成功标准">12. 成功标准</h2>
+<p>该场景的产品成功标准：</p>
+<ul><li>用户能用自然语言查到可信产品资料。</li><li>事实性回答都有来源。</li><li>参数冲突、资料缺失、版本过期能被明确提示。</li><li>回答能直接引用到方案、指导书、审核报告或 PPT。</li><li>查询范围受我的项目、项目上下文和系统权限控制。</li><li>产品资料更新后，知识库能及时同步并可追溯。</li></ul></article>
+    </main>
+  </div>
+</body>
+</html>

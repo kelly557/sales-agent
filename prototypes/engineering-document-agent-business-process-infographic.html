@@ -1,0 +1,539 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工程文档 Agent 业务流程 - 流程地图</title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --panel: rgba(255,255,255,.92);
+      --line: #cfd6d6;
+      --line-soft: #dfe4e2;
+      --ink: #344246;
+      --muted: #6e7d80;
+      --teal: #1f9aae;
+      --teal-dark: #2f7f8e;
+      --aqua: #86c8c7;
+      --orange: #f0ba58;
+      --red: #ef604d;
+      --green: #74b7a7;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #dadfdd;
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+    }
+
+    .stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      margin: 0 auto;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(74,91,94,.055) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(rgba(74,91,94,.045) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(180deg, #f7f7f4 0%, #eeeeea 100%);
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 44% 45%, rgba(31,154,174,.11), transparent 30%),
+        radial-gradient(circle at 78% 70%, rgba(240,186,88,.09), transparent 24%);
+      pointer-events: none;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .topbar {
+      position: absolute;
+      left: 40px;
+      top: 20px;
+      width: 1840px;
+      height: 74px;
+      display: grid;
+      grid-template-columns: 560px 1fr 360px;
+      align-items: center;
+      gap: 28px;
+      border-bottom: 1px solid #c9d0cf;
+    }
+
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .mark {
+      width: 50px;
+      height: 50px;
+      border: 2px solid var(--teal);
+      border-radius: 50%;
+      position: relative;
+      background: #fff;
+    }
+    .mark::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border: 1px dashed rgba(31,154,174,.46);
+      border-radius: 50%;
+    }
+    .mark::after {
+      content: "";
+      position: absolute;
+      inset: 17px;
+      background: var(--teal);
+      border-radius: 50%;
+    }
+    .brand h1 { font-size: 25px; line-height: 1.1; font-weight: 850; }
+    .brand p { margin-top: 6px; color: var(--muted); font-size: 12px; letter-spacing: .3px; }
+    .top-title { text-align: center; color: var(--teal-dark); font-size: 17px; font-weight: 850; }
+    .top-meta { justify-self: end; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; }
+    .pill { padding: 8px 12px; border: 1px solid #bfc8c6; background: #fff; color: var(--teal-dark); font-weight: 800; }
+
+    .canvas {
+      position: absolute;
+      left: 40px;
+      top: 116px;
+      width: 1840px;
+      height: 930px;
+    }
+
+    .node,
+    .cluster,
+    .decision,
+    .side-card,
+    .artifact,
+    .source,
+    .legend {
+      border: 1px solid #d5dcda;
+      background: rgba(255,255,255,.86);
+    }
+
+    .node {
+      position: absolute;
+      width: 168px;
+      min-height: 74px;
+      padding: 9px 10px;
+      z-index: 3;
+    }
+    .node b,
+    .cluster h3,
+    .side-card b,
+    .artifact b,
+    .source b {
+      display: block;
+      margin-bottom: 5px;
+      color: var(--teal-dark);
+      font-size: 13px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+    .node span,
+    .cluster p,
+    .side-card span,
+    .artifact span,
+    .source span {
+      display: block;
+      color: var(--muted);
+      font-size: 9.8px;
+      line-height: 1.24;
+    }
+    .node .num {
+      position: absolute;
+      right: 8px;
+      top: 7px;
+      color: #a6b0b0;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .n1 { left: 18px; top: 42px; }
+    .n2 { left: 216px; top: 42px; }
+    .n3 { left: 414px; top: 42px; }
+    .n4 { left: 612px; top: 42px; }
+    .n5 { left: 810px; top: 42px; }
+    .n6 { left: 1008px; top: 42px; }
+    .n7 { left: 1206px; top: 42px; }
+    .n8 { left: 1404px; top: 42px; }
+    .n9 { left: 1602px; top: 42px; }
+
+    .n10 { left: 1602px; top: 196px; }
+    .n11 { left: 1404px; top: 196px; }
+    .n12 { left: 1206px; top: 196px; }
+    .n13 { left: 1008px; top: 196px; }
+    .n14 { left: 810px; top: 196px; }
+    .n15 { left: 612px; top: 196px; }
+    .n16 { left: 414px; top: 196px; }
+
+    .n17 { left: 414px; top: 342px; }
+    .n18 { left: 612px; top: 342px; }
+    .n19 { left: 810px; top: 342px; }
+    .n20 { left: 1008px; top: 342px; }
+    .n21 { left: 1206px; top: 342px; }
+    .n22 { left: 1404px; top: 342px; }
+
+    .decision {
+      position: absolute;
+      left: 806px;
+      top: 326px;
+      width: 126px;
+      height: 126px;
+      transform: rotate(45deg);
+      z-index: 5;
+      background: #fff;
+      border-color: var(--teal);
+    }
+    .decision div {
+      width: 126px;
+      height: 126px;
+      transform: rotate(-45deg);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      padding: 19px;
+    }
+    .decision b { display: block; color: var(--ink); font-size: 13px; line-height: 1.15; }
+    .decision span { display: block; margin-top: 5px; color: var(--red); font-size: 9px; font-weight: 900; }
+
+    .flow-svg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+      pointer-events: none;
+    }
+    .flow-svg path,
+    .flow-svg line {
+      fill: none;
+      stroke: rgba(47,127,142,.45);
+      stroke-width: 1.8;
+    }
+    .flow-svg .back { stroke: rgba(239,96,77,.55); stroke-dasharray: 7 6; }
+    .flow-svg .soft { stroke: rgba(47,127,142,.24); }
+    .flow-svg text {
+      fill: var(--red);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .cluster {
+      position: absolute;
+      z-index: 2;
+      background: rgba(255,255,255,.52);
+      border-style: dashed;
+      padding: 10px;
+    }
+    .cluster h3 { font-size: 12px; margin-bottom: 2px; }
+    .cluster p { font-size: 9px; }
+    .c-context { left: 0; top: 0; width: 586px; height: 140px; }
+    .c-execute { left: 592px; top: 0; width: 988px; height: 140px; }
+    .c-review { left: 394px; top: 176px; width: 1384px; height: 140px; }
+    .c-delivery { left: 394px; top: 322px; width: 1190px; height: 140px; }
+
+    .task-switch {
+      position: absolute;
+      left: 18px;
+      top: 520px;
+      width: 720px;
+      height: 174px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+      z-index: 4;
+    }
+    .side-card {
+      padding: 10px;
+      position: relative;
+    }
+    .side-card::before {
+      content: "";
+      position: absolute;
+      left: 10px;
+      top: 10px;
+      width: 9px;
+      height: 9px;
+      background: var(--teal);
+    }
+    .side-card b { padding-left: 16px; }
+    .side-card em {
+      position: absolute;
+      left: 10px;
+      bottom: 8px;
+      color: var(--red);
+      font-size: 9px;
+      font-style: normal;
+      font-weight: 850;
+    }
+
+    .sources {
+      position: absolute;
+      left: 18px;
+      top: 716px;
+      width: 720px;
+      height: 142px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+    .source {
+      padding: 10px 8px;
+      text-align: center;
+    }
+
+    .artifacts {
+      position: absolute;
+      right: 18px;
+      top: 520px;
+      width: 528px;
+      height: 174px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+    .artifact {
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 10px;
+      align-items: center;
+      padding: 10px;
+    }
+    .doc {
+      width: 38px;
+      height: 44px;
+      display: grid;
+      place-items: end center;
+      padding-bottom: 7px;
+      background: #eef3f3;
+      color: var(--teal-dark);
+      font-size: 9px;
+      font-weight: 900;
+      position: relative;
+    }
+    .doc::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      border-top: 13px solid #d5dedc;
+      border-left: 13px solid transparent;
+    }
+
+    .integration {
+      position: absolute;
+      right: 18px;
+      top: 716px;
+      width: 528px;
+      height: 142px;
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 10px;
+    }
+
+    .asset-line {
+      position: absolute;
+      left: 760px;
+      top: 548px;
+      width: 514px;
+      height: 338px;
+      z-index: 3;
+    }
+    .asset-node {
+      position: absolute;
+      width: 148px;
+      min-height: 58px;
+      padding: 8px;
+      border: 1px solid #d5dcda;
+      background: rgba(255,255,255,.88);
+    }
+    .asset-node b { display: block; color: var(--teal-dark); font-size: 11px; margin-bottom: 4px; }
+    .asset-node span { color: var(--muted); font-size: 8.8px; line-height: 1.18; }
+    .a1 { left: 0; top: 0; }
+    .a2 { left: 180px; top: 0; }
+    .a3 { right: 0; top: 0; }
+    .a4 { right: 0; top: 112px; }
+    .a5 { left: 180px; top: 112px; }
+    .a6 { left: 0; top: 112px; }
+    .asset-svg { position: absolute; inset: 0; z-index: 1; }
+    .asset-svg path, .asset-svg line { fill: none; stroke: rgba(47,127,142,.42); stroke-width: 1.5; }
+
+    .legend {
+      position: absolute;
+      left: 18px;
+      bottom: 18px;
+      width: 1760px;
+      height: 40px;
+      display: grid;
+      grid-template-columns: 230px 300px 280px 1fr;
+      align-items: center;
+      gap: 18px;
+      padding: 0 14px;
+      color: var(--muted);
+      font-size: 11px;
+    }
+    .legend b { color: var(--ink); }
+    .legend i {
+      display: inline-block;
+      width: 34px;
+      height: 0;
+      border-top: 2px solid rgba(47,127,142,.45);
+      margin-right: 8px;
+      vertical-align: middle;
+    }
+    .legend .dash { border-top-color: rgba(239,96,77,.65); border-top-style: dashed; }
+
+    .foot {
+      position: absolute;
+      bottom: 8px;
+      color: #8a9698;
+      font-size: 10px;
+      letter-spacing: .8px;
+    }
+    .left-note { left: 40px; }
+    .right-note { right: 40px; }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="工程文档 Agent 业务流程地图">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>工程文档 Agent 业务流程地图</h1>
+          <p>MY PROJECTS · PROJECT CONTEXT · TASK EXECUTION · REVIEW · DELIVERY TRACEABILITY</p>
+        </div>
+      </div>
+      <div class="top-title">把 Mermaid 流程转成一张可读的任务闭环地图，而不是模块堆叠</div>
+      <div class="top-meta">
+        <span>1920×1080 流程地图</span>
+        <span class="pill">主链路 · 分支 · 返工 · 沉淀</span>
+      </div>
+    </header>
+
+    <section class="canvas">
+      <svg class="flow-svg" viewBox="0 0 1840 930" preserveAspectRatio="none" aria-hidden="true">
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="rgba(47,127,142,.62)"></path>
+          </marker>
+          <marker id="arrow-red" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="rgba(239,96,77,.72)"></path>
+          </marker>
+        </defs>
+        <path d="M186 78 H216" marker-end="url(#arrow)"></path>
+        <path d="M384 78 H414" marker-end="url(#arrow)"></path>
+        <path d="M582 78 H612" marker-end="url(#arrow)"></path>
+        <path d="M780 78 H810" marker-end="url(#arrow)"></path>
+        <path d="M978 78 H1008" marker-end="url(#arrow)"></path>
+        <path d="M1176 78 H1206" marker-end="url(#arrow)"></path>
+        <path d="M1374 78 H1404" marker-end="url(#arrow)"></path>
+        <path d="M1572 78 H1602" marker-end="url(#arrow)"></path>
+        <path d="M1686 116 V196" marker-end="url(#arrow)"></path>
+        <path d="M1602 232 H1572" marker-end="url(#arrow)"></path>
+        <path d="M1404 232 H1374" marker-end="url(#arrow)"></path>
+        <path d="M1206 232 H1176" marker-end="url(#arrow)"></path>
+        <path d="M1008 232 H978" marker-end="url(#arrow)"></path>
+        <path d="M810 232 H780" marker-end="url(#arrow)"></path>
+        <path d="M612 232 H582" marker-end="url(#arrow)"></path>
+        <path d="M498 270 V342" marker-end="url(#arrow)"></path>
+        <path d="M582 378 H612" marker-end="url(#arrow)"></path>
+        <path d="M780 378 H810" marker-end="url(#arrow)"></path>
+        <path d="M978 378 H1008" marker-end="url(#arrow)"></path>
+        <path d="M1176 378 H1206" marker-end="url(#arrow)"></path>
+        <path d="M1374 378 H1404" marker-end="url(#arrow)"></path>
+        <path class="back" d="M850 468 C560 500 420 432 488 270" marker-end="url(#arrow-red)"></path>
+        <path class="back" d="M910 468 C1240 500 1550 450 1686 270" marker-end="url(#arrow-red)"></path>
+        <text x="690" y="498">缺资料 / 未通过：追问、补充、重执行</text>
+      </svg>
+
+      <div class="cluster c-context"><h3>项目准备区</h3><p>从用户可见入口形成 Agent 可执行上下文</p></div>
+      <div class="cluster c-execute"><h3>任务执行区</h3><p>行业场景、任务能力、资料来源共同决定执行路径</p></div>
+      <div class="cluster c-review"><h3>审阅与风险区</h3><p>风险、缺失、引用来源和人工确认决定是否进入正式交付</p></div>
+      <div class="cluster c-delivery"><h3>交付沉淀区</h3><p>导出、回写、归档之后再判断是否进入知识底座复用</p></div>
+
+      <div class="node n1"><span class="num">01</span><b>进入 Agent 首页</b><span>判断是否已有可用项目。</span></div>
+      <div class="node n2"><span class="num">02</span><b>我的项目</b><span>选择已有项目，或创建轻量项目。</span></div>
+      <div class="node n3"><span class="num">03</span><b>项目基本信息</b><span>名称、行业、类型、阶段、客户/场景。</span></div>
+      <div class="node n4"><span class="num">04</span><b>项目上下文</b><span>资料范围、工程对象、输出归属和权限。</span></div>
+      <div class="node n5"><span class="num">05</span><b>行业场景包</b><span>术语、模板、规则和 Agent 工作流。</span></div>
+      <div class="node n6"><span class="num">06</span><b>任务能力</b><span>查找、生成、计算、审核。</span></div>
+      <div class="node n7"><span class="num">07</span><b>任务输入</b><span>选择或输入任务、模板、输出格式。</span></div>
+      <div class="node n8"><span class="num">08</span><b>资料来源</b><span>项目资料、集成源、本地上传、知识库。</span></div>
+      <div class="node n9"><span class="num">09</span><b>文档解析</b><span>文件、版本、签章、表格、参数、条款。</span></div>
+
+      <div class="node n10"><span class="num">10</span><b>工程对象识别</b><span>专业/系统、设备/材料、工艺/部位。</span></div>
+      <div class="node n11"><span class="num">11</span><b>Agent 执行</b><span>检索依据、生成、计算或审核。</span></div>
+      <div class="node n12"><span class="num">12</span><b>中间结果</b><span>大纲、正文、结果值、审核矩阵。</span></div>
+      <div class="node n13"><span class="num">13</span><b>风险与引用</b><span>缺失、风险、来源、需确认项。</span></div>
+      <div class="node n14"><span class="num">14</span><b>人工审阅</b><span>查看依据、改表达、查参数、判风险。</span></div>
+      <div class="node n15"><span class="num">15</span><b>确认/驳回</b><span>通过则正式交付，驳回则返回执行。</span></div>
+      <div class="node n16"><span class="num">16</span><b>正式交付物</b><span>生成可编辑、可导出成果。</span></div>
+
+      <div class="node n17"><span class="num">17</span><b>交付方式</b><span>导出、回写、归档。</span></div>
+      <div class="node n18"><span class="num">18</span><b>导出</b><span>Word、PPT、PDF、Excel。</span></div>
+      <div class="node n19"><span class="num">19</span><b>回写/通知</b><span>网盘、API、邮件、企微/飞书/钉钉。</span></div>
+      <div class="node n20"><span class="num">20</span><b>保存到项目</b><span>交付物、引用来源、人工确认记录。</span></div>
+      <div class="node n21"><span class="num">21</span><b>复用判断</b><span>案例、模板、规则或仅保留项目资产。</span></div>
+      <div class="node n22"><span class="num">22</span><b>专家发布</b><span>进入知识底座待审核后发布。</span></div>
+
+      <div class="decision"><div><b>信息完整？<br>审阅通过？</b><span>否：回到资料或执行</span></div></div>
+
+      <div class="task-switch">
+        <div class="side-card"><b>查找</b><span>标准、设备资料、项目资料、历史案例、相似方案。结果必须能引用到任务。</span><em>资料列表 / 引用位置</em></div>
+        <div class="side-card"><b>生成</b><span>方案、指导书、技术说明、推广材料、交付报告。先查依据，再确认大纲。</span><em>正文 / 证据包</em></div>
+        <div class="side-card"><b>计算</b><span>参数、用量、完整率、差异、设备对比。缺参数需补充或确认假设。</span><em>结果 / 过程 / 异常</em></div>
+        <div class="side-card"><b>审核</b><span>符合性、缺口、完整性、变更影响、版本签章异常。输出矩阵和补件建议。</span><em>矩阵 / 缺口 / 风险</em></div>
+      </div>
+
+      <div class="sources">
+        <div class="source"><b>项目资料</b><span>项目文件、交付包目录、上传材料。</span></div>
+        <div class="source"><b>集成资料源</b><span>网盘、项目系统、对象存储、API。</span></div>
+        <div class="source"><b>本地上传</b><span>Word、Excel、PDF、PPT、OCR、图片。</span></div>
+        <div class="source"><b>知识/标准库</b><span>标准条款、产品资料、设备台账、案例。</span></div>
+      </div>
+
+      <div class="artifacts">
+        <div class="artifact"><div class="doc">DOC</div><div><b>方案/指导书</b><span>正文、章节、引用、风险提示。</span></div></div>
+        <div class="artifact"><div class="doc">PPT</div><div><b>PPT/PDF</b><span>方案材料、推广内容、客户场景。</span></div></div>
+        <div class="artifact"><div class="doc">XLS</div><div><b>审核矩阵</b><span>符合性、缺口、补件建议。</span></div></div>
+        <div class="artifact"><div class="doc">ZIP</div><div><b>交付包</b><span>设备档案、目录、版本和证据。</span></div></div>
+      </div>
+
+      <div class="integration">
+        <div class="source"><b>连接器预配置</b><span>消息协同、API 查询、文件源、输出回写。</span></div>
+        <div class="source"><b>任务中调用</b><span>查询数据、读取文件、推送通知、回写结果。</span></div>
+        <div class="source"><b>权限与映射</b><span>任务页只展示可引用资料源/API。</span></div>
+        <div class="source"><b>记录来源</b><span>保留调用记录、引用来源和权限边界。</span></div>
+      </div>
+
+      <div class="asset-line">
+        <svg class="asset-svg" viewBox="0 0 514 338" preserveAspectRatio="none" aria-hidden="true">
+          <path d="M148 30 H180" marker-end="url(#arrow)"></path>
+          <path d="M328 30 H366" marker-end="url(#arrow)"></path>
+          <path d="M440 58 V112" marker-end="url(#arrow)"></path>
+          <path d="M366 142 H328" marker-end="url(#arrow)"></path>
+          <path d="M180 142 H148" marker-end="url(#arrow)"></path>
+        </svg>
+        <div class="asset-node a1"><b>保存到项目</b><span>交付物、引用来源、人工确认。</span></div>
+        <div class="asset-node a2"><b>版本记录</b><span>生成时间、资料版本、任务过程。</span></div>
+        <div class="asset-node a3"><b>复用判断</b><span>案例、模板、规则或项目资产。</span></div>
+        <div class="asset-node a4"><b>知识底座待审</b><span>专家确认后发布。</span></div>
+        <div class="asset-node a5"><b>任务关闭</b><span>导出、回写、归档完成。</span></div>
+        <div class="asset-node a6"><b>持续复用</b><span>进入后续查找、生成、审核任务。</span></div>
+      </div>
+
+      <div class="legend">
+        <div><b>阅读顺序：</b>上方主链路从左到右，再折返到审阅与交付。</div>
+        <div><i></i>正常流转：上下文 → 执行 → 审阅 → 交付。</div>
+        <div><i class="dash"></i>返工流转：缺资料、未通过、规则不足。</div>
+        <div><b>核心判断：</b>每次正式交付前必须经过风险、引用和人工确认。</div>
+      </div>
+    </section>
+
+    <div class="foot left-note">SOURCE: engineering-document-agent-business-process.md</div>
+    <div class="foot right-note">FLOW MAP · CONTENT-LED VISUALIZATION · 1920×1080</div>
+  </main>
+</body>
+</html>

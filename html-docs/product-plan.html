@@ -1,0 +1,147 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>销售助手Agent 产品方案</title>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      securityLevel: "loose",
+      flowchart: { curve: "basis", nodeSpacing: 42, rankSpacing: 52 },
+      themeVariables: {
+        fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        primaryColor: "#eef6ff",
+        primaryTextColor: "#12314d",
+        primaryBorderColor: "#79a9da",
+        lineColor: "#6d8298",
+        secondaryColor: "#f5f7fb",
+        tertiaryColor: "#fff7ed",
+        edgeLabelBackground: "#ffffff",
+        textColor: "#23384d"
+      }
+    });
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">A</div>
+        <div><strong>销售助手 Agent</strong><span>设计文档库</span></div>
+      </a>
+      <nav class="doc-nav"><a class="doc-link active" href="product-plan.html"><span>销售助手Agent 产品方案</span><small>面向工程行业的 Agent Native 文档任务产品设计。</small></a><a class="doc-link" href="research-notes.html"><span>行业调研与场景分析</span><small>行业痛点、适合场景、典型输入输出和案例。</small></a><a class="doc-link" href="business-process.html"><span>业务流程图</span><small>从我的项目、项目上下文、资料集成、任务执行、人工审阅到交付沉淀的端到端流程。</small></a><a class="doc-link" href="custom-solution-ppt.html"><span>定制方案生成（PPT）详细流程</span><small>定制方案 PPT 的输入输出、数据、知识库、模板、规则、流程与异常处理。</small></a><a class="doc-link" href="product-data-qa.html"><span>产品资料查询（问答）详细流程</span><small>产品资料问答的输入输出、数据、知识库、规则、权限、流程与成功标准。</small></a></nav>
+      <div class="toc-card"><div class="toc-title">本页目录</div><a class="toc-l1" href="#工程行业文档-agent-产品方案">工程行业文档 Agent 产品方案</a><a class="toc-l2" href="#1-产品定位">1. 产品定位</a><a class="toc-l2" href="#2-用户与价值">2. 用户与价值</a><a class="toc-l2" href="#3-产品全景架构图">3. 产品全景架构图</a><a class="toc-l2" href="#4-我的项目与项目上下文">4. 我的项目与项目上下文</a><a class="toc-l2" href="#5-四类能力设计">5. 四类能力设计</a><a class="toc-l3" href="#5-1-能力总览">5.1 能力总览</a><a class="toc-l3" href="#5-2-任务执行页">5.2 任务执行页</a><a class="toc-l2" href="#6-核心任务清单">6. 核心任务清单</a><a class="toc-l2" href="#7-行业场景包">7. 行业场景包</a><a class="toc-l2" href="#8-工程知识底座">8. 工程知识底座</a><a class="toc-l2" href="#9-文档解析与多格式输入">9. 文档解析与多格式输入</a><a class="toc-l2" href="#10-集成中心">10. 集成中心</a><a class="toc-l2" href="#11-配置中心">11. 配置中心</a><a class="toc-l3" href="#11-1-模板配置">11.1 模板配置</a><a class="toc-l3" href="#11-2-行业包配置">11.2 行业包配置</a><a class="toc-l3" href="#11-3-规则配置">11.3 规则配置</a><a class="toc-l3" href="#11-4-可追溯生成">11.4 可追溯生成</a><a class="toc-l2" href="#12-人机协同审阅">12. 人机协同审阅</a></div>
+    </aside>
+    <main class="content">
+      <header class="hero">
+        <div class="eyebrow">Design Docs</div>
+        <h1>销售助手Agent 产品方案</h1>
+        <p>面向工程行业的 Agent Native 文档任务产品设计。</p>
+      </header>
+      <article class="article"><h1 id="工程行业文档-agent-产品方案">工程行业文档 Agent 产品方案</h1>
+<h2 id="1-产品定位">1. 产品定位</h2>
+<p>本产品面向建筑、基建、装备制造、能源、轨道交通、化工、电力、矿山、水利、涂料等工程行业，提供 Agent Native 的工程文档任务能力。</p>
+<h2 id="2-用户与价值">2. 用户与价值</h2>
+<div class="table-wrap"><table><thead><tr><th>用户角色</th><th>典型目标</th><th>主要产品价值</th></tr></thead><tbody><tr><td>一线工程技术人员</td><td>写方案、指导书、技术说明，查标准和资料</td><td>降低编写和查证成本，减少模板套用错误</td></tr><tr><td>项目交付与资料人员</td><td>检查资料缺口，整理交付包，追踪异常资料</td><td>提高资料完整率，减少交付前集中补资料</td></tr><tr><td>技术销售与解决方案人员</td><td>生成解决方案、推广材料、技术答复</td><td>快速把产品/设备资料转化为客户可用材料</td></tr><tr><td>企业知识与标准负责人</td><td>维护模板、规则、标准、行业包和知识源</td><td>约束 Agent 输出，保证可追溯和可复核</td></tr><tr><td>管理员/实施人员</td><td>配置集成、权限、行业包、知识源</td><td>让产品接入既有系统并符合企业权限边界</td></tr></tbody></table></div>
+<h2 id="3-产品全景架构图">3. 产品全景架构图</h2>
+<div class="architecture-map"><section class="arch-row"><div class="arch-label">用户层</div><div class="arch-modules"><span>工程技术人员</span><span>交付资料人员</span><span>技术销售与方案人员</span><span>知识标准负责人</span><span>管理员与实施人员</span></div></section><section class="arch-row"><div class="arch-label">入口层</div><div class="arch-modules"><span>独立终端：网页版</span><span>小程序</span><span>协同端：企业微信</span><span>CRM</span></div></section><section class="arch-row"><div class="arch-label">业务价值层</div><div class="arch-modules"><span>快速查找资料依据</span><span>高质量生成交付文档</span><span>工程参数与资料完整率计算</span><span>技术符合性与资料缺口审核</span></div></section><section class="arch-row"><div class="arch-label">能力层</div><div class="arch-modules"><span>查找规范</span><span>查找产品资料</span><span>查找案例</span><span>生成方案 PPT</span><span>生成作业指导书</span><span>生成技术说明</span><span>计算工程参数</span><span>计算资料完整率</span><span>审核技术符合性</span><span>审核资料缺口</span></div></section><section class="arch-row"><div class="arch-label">任务执行层</div><div class="arch-modules"><span>项目上下文</span><span>资料引用</span><span>过程透明</span><span>中间结果</span><span>风险提示</span><span>人工确认</span><span>导出回写</span></div></section><section class="arch-row"><div class="arch-label">工程知识资产中心</div><div class="arch-modules"><span>标准规范</span><span>案例经验</span><span>模版资产</span><span>规则资产</span><span>项目成果</span></div></section><section class="arch-row"><div class="arch-label">工具集成层</div><div class="arch-modules"><span>企业内部 API 连接器</span><span>MCP 工具注册中心</span><span>多源异构数据抓取引擎</span></div></section><section class="arch-row"><div class="arch-label">交付成果层</div><div class="arch-modules"><span>方案与指导书</span><span>PPT 与推广材料</span><span>审核矩阵</span><span>缺口清单</span><span>设备档案</span><span>引用证据包</span></div></section><section class="arch-row"><div class="arch-label">治理保障层</div><div class="arch-modules"><span>系统权限</span><span>引用溯源</span><span>规则校验</span><span>人工复核</span><span>审计日志</span></div></section></div>
+<p>工程知识驱动的可信交付闭环：</p>
+<p>&gt; 让工程资料从“存起来”，变成能持续产出方案、审核和交付成果的 AI 能力。</p>
+<div class="value-chain"><section class="chain-step"><div class="chain-num">1</div><h4>资料接入</h4><p>分散资料统一可用</p><strong>多源资料接入</strong></section><section class="chain-step"><div class="chain-num">2</div><h4>知识资产化</h4><p>历史经验可复用</p><strong>行业场景包</strong></section><section class="chain-step"><div class="chain-num">3</div><h4>Agent 执行</h4><p>文档任务自动完成</p><strong>任务型 Agent</strong></section><section class="chain-step"><div class="chain-num">4</div><h4>人工确认</h4><p>关键风险可控</p><strong>人机协同</strong></section><section class="chain-step"><div class="chain-num">5</div><h4>成果交付</h4><p>交付物快速产出</p><strong>可追溯生成</strong></section><section class="chain-step"><div class="chain-num">6</div><h4>反哺沉淀</h4><p>企业能力越用越强</p><strong>知识资产闭环</strong></section></div>
+<h2 id="4-我的项目与项目上下文">4. 我的项目与项目上下文</h2>
+<p>系统权限负责控制用户能看到哪些项目、资料源、知识库和交付物；“我的项目”只是把这些权限结果以项目列表的方式呈现。</p>
+<p>用户侧建议展示：</p>
+<ul><li>最近访问。</li><li>我参与的。</li><li>我创建的。</li><li>已收藏。</li><li>全部项目（按权限）。</li></ul>
+<p>项目详情页保持轻量：</p>
+<div class="table-wrap"><table><thead><tr><th>模块</th><th>内容</th></tr></thead><tbody><tr><td>项目概览</td><td>项目名称、行业、阶段、客户/场景、最近更新时间</td></tr><tr><td>项目资料</td><td>上传文件、引用资料源、关联知识库</td></tr><tr><td>Agent 任务</td><td>查找、生成、计算、审核任务记录</td></tr><tr><td>交付物</td><td>PPT、Word、Excel、审核报告、缺口清单</td></tr><tr><td>项目设置</td><td>基础信息、资料范围、行业场景包、权限继承</td></tr></tbody></table></div>
+<p>项目上下文是 Agent 执行任务时真正使用的上下文，包含：</p>
+<ul><li>当前项目。</li><li>行业场景包。</li><li>工程对象。</li><li>可引用资料范围。</li><li>输出归属。</li><li>权限约束。</li><li>已确认的参数、风险项和引用依据。</li></ul>
+<h2 id="5-四类能力设计">5. 四类能力设计</h2>
+<h3 id="5-1-能力总览">5.1 能力总览</h3>
+<div class="table-wrap"><table><thead><tr><th>能力</th><th>用户问题</th><th>典型任务</th><th>主要输出</th></tr></thead><tbody><tr><td>查找</td><td>资料在哪里，依据是什么，有没有相似案例</td><td>标准规范查找、设备资料定位、历史案例检索、相似方案复用</td><td>资料列表、引用依据、相似案例、定位结果</td></tr><tr><td>生成</td><td>如何快速形成可交付文档</td><td>方案生成、作业指导书、技术说明书、推广材料、交付报告</td><td>Word、PPT、PDF、报告初稿、证据包</td></tr><tr><td>计算</td><td>数值是否合理，工程量/用量/完整率是多少</td><td>材料用量估算、工程参数计算、资料完整率计算、版本差异统计</td><td>计算结果、过程说明、参数来源、异常提示</td></tr><tr><td>审核</td><td>是否满足要求，是否缺失，是否有风险</td><td>技术符合性审核、资料缺口审核、设备资料完整性审核、变更影响审核</td><td>审核矩阵、缺口清单、风险清单、补件建议</td></tr></tbody></table></div>
+<p>四类能力不是割裂的。一个完整任务经常会串联多个能力：</p>
+<ul><li>生成方案前，先查找产品资料、标准规范和历史案例。</li><li>生成方案后，计算材料用量、工程量或关键参数。</li><li>交付前，审核资料完整性、引用依据和风险项。</li><li>审核发现缺失后，反向触发查找或生成补充材料。</li></ul>
+<h3 id="5-2-任务执行页">5.2 任务执行页</h3>
+<p>任务执行页不是普通聊天页，也不是结果页，而是单次 Agent 任务的作业台。它负责把“任务目标、项目上下文、资料引用、Agent 执行过程、人工确认、结果审阅、导出回写”串成一个可追溯的闭环。</p>
+<p>任务执行页的作用：</p>
+<ul><li>上下文确认：确认当前项目、行业场景、资料范围、输出格式。</li><li>资料引用：选择项目资料、知识库、API 查询结果、本地上传文件。</li><li>过程透明：展示 Agent 正在查找、解析、生成、计算或审核什么。</li><li>人工介入：对缺失信息、风险项、关键参数和假设条件进行确认。</li><li>结果审阅：审阅大纲、正文、计算结果、审核矩阵或缺口清单。</li><li>交付回写：导出 Word/PPT/PDF/Excel，或推送到企业微信、邮件、网盘、API。</li></ul>
+<p>任务执行页结构：</p>
+<div class="three-panel"><section class="panel-col"><h4>左侧：任务上下文</h4><ul><li>当前项目</li><li>项目上下文</li><li>行业场景包</li><li>工程对象</li><li>已上传资料</li><li>已引用资料源</li><li>已选模板</li><li>输出格式</li></ul></section><section class="panel-col"><h4>中间：Agent 执行区</h4><ul><li>正在解析资料</li><li>已识别关键对象</li><li>已提取关键参数</li><li>已生成大纲</li><li>待确认问题</li><li>正文生成中</li><li>审核矩阵生成中</li><li>缺口清单生成中</li></ul></section><section class="panel-col"><h4>右侧：结果与风险</h4><ul><li>输出文档</li><li>引用来源</li><li>风险提示</li><li>缺失信息</li><li>需人工确认项</li><li>导出 Word/PPT/PDF/Excel</li><li>回写到集成系统</li><li>任务记录与版本</li></ul></section></div>
+<h2 id="6-核心任务清单">6. 核心任务清单</h2>
+<div class="table-wrap"><table><thead><tr><th>任务</th><th>所属能力</th><th>适用行业</th><th>输入</th><th>输出</th></tr></thead><tbody><tr><td>标准规范查找</td><td>查找</td><td>全行业</td><td>标准库、项目条件、关键词</td><td>条款位置、引用依据、适用性说明</td></tr><tr><td>项目资料定位</td><td>查找</td><td>全行业</td><td>我的项目、文件库、工程对象</td><td>相关文件、版本、来源链接</td></tr><tr><td>历史案例检索</td><td>查找</td><td>涂料、装备制造、电力、化工、基建</td><td>历史项目、产品/设备、场景条件</td><td>相似案例、可复用片段</td></tr><tr><td>工程方案生成</td><td>生成</td><td>涂料、装备制造、电力设备、化工材料、水利、基建</td><td>需求、产品/设备资料、标准、案例、模板</td><td>方案 Word/PDF、引用证据包</td></tr><tr><td>作业指导书生成</td><td>生成</td><td>建筑、电力、化工、矿山、水利、涂料</td><td>作业对象、工艺、材料/设备、安全要求、模板</td><td>作业指导书 Word</td></tr><tr><td>产品推广材料生成</td><td>生成</td><td>涂料、装备制造、材料、设备厂商</td><td>产品资料、案例、客户对象、模板</td><td>PPT/PDF、话术、证据包</td></tr><tr><td>工程参数计算</td><td>计算</td><td>涂料、电力、化工、装备、基建</td><td>参数、公式、标准、产品资料</td><td>计算结果、参数来源、异常提示</td></tr><tr><td>材料用量估算</td><td>计算</td><td>涂料、建筑、基建、水利</td><td>面积、膜厚/工程量、损耗率、产品参数</td><td>用量、材料清单、假设条件</td></tr><tr><td>资料完整率计算</td><td>计算</td><td>建筑、基建、电力、能源、轨交、化工、水利</td><td>应交资料目录、已有文件</td><td>完整率、缺口数量、异常统计</td></tr><tr><td>技术符合性审核</td><td>审核</td><td>轨交、化工、电力、装备、涂料、建筑机电</td><td>技术要求、标准、提交资料</td><td>符合性矩阵、风险项、引用页码</td></tr><tr><td>资料缺口审核</td><td>审核</td><td>建筑、基建、电力、能源、轨交、化工、水利、矿山</td><td>资料目录、项目资料、验收规则</td><td>缺失资料、异常资料、补件建议</td></tr><tr><td>设备资料完整性审核</td><td>审核</td><td>能源、电力、化工、轨交、矿山、装备制造、水利</td><td>设备资料、清单、说明书、报告</td><td>设备档案、缺失资料、移交清单</td></tr><tr><td>变更影响审核</td><td>审核</td><td>化工、电力、轨交、建筑、基建、水利、装备制造</td><td>新旧文件、变更单、图纸、设备清单</td><td>影响范围、需更新文档、风险项</td></tr></tbody></table></div>
+<h2 id="7-行业场景包">7. 行业场景包</h2>
+<p>行业场景包是对同一套 Agent 底座的行业化配置，不是为每个行业做一套独立软件。</p>
+<p>每个行业包包含：</p>
+<ul><li>行业术语库。</li><li>工程对象模型。</li><li>文档模板。</li><li>资料目录规则。</li><li>标准规范映射。</li><li>审核规则。</li><li>Agent 工作流。</li><li>输出格式。</li></ul>
+<p>行业包优先级：</p>
+<div class="table-wrap"><table><thead><tr><th>优先级</th><th>行业</th><th>产品理由</th></tr></thead><tbody><tr><td>第一梯队</td><td>涂料、装备制造、电力设备、化工设备</td><td>文档生成价值强，产品/设备资料相对可结构化，销售和交付都有需求</td></tr><tr><td>第二梯队</td><td>能源、电力、轨道交通、化工</td><td>交付资料和合规审核价值高，但行业门槛更高</td></tr><tr><td>第三梯队</td><td>建筑、基建、水利、矿山</td><td>资料量大，但现场数据更脏、流程依赖更重</td></tr></tbody></table></div>
+<p>行业包示例：</p>
+<div class="table-wrap"><table><thead><tr><th>行业包</th><th>关键对象</th><th>高频任务</th></tr></thead><tbody><tr><td>涂料</td><td>底材、环境、涂层体系、TDS/SDS、检测报告、施工工艺</td><td>解决方案生成、施工指导书、推广材料、技术符合性审核</td></tr><tr><td>装备制造</td><td>设备、部件、BOM、图纸、检验规程、说明书、维护手册</td><td>技术方案、说明书、检验规程、设备交付包</td></tr><tr><td>电力</td><td>一次/二次设备、试验报告、定值单、调试记录、移交目录</td><td>作业指导书、试验资料整理、竣工移交审核</td></tr><tr><td>化工</td><td>P&amp;ID、设备数据表、管道表、仪表表、HAZOP、MOC</td><td>变更影响审核、试压方案、设备资料审核</td></tr><tr><td>轨道交通</td><td>系统接口、规格书、联调联试、验收资料</td><td>接口文件审核、技术符合性审核、调试验收资料</td></tr><tr><td>建筑/基建</td><td>分部分项、检验批、隐蔽验收、检测报告、交付目录</td><td>施工方案、资料缺口审核、交付包目录</td></tr></tbody></table></div>
+<h2 id="8-工程知识底座">8. 工程知识底座</h2>
+<p>工程知识底座不是普通文件夹或通用知识库，而是面向 Agent 任务的工程对象化知识层。</p>
+<p>核心对象：</p>
+<ul><li>项目。</li><li>专业。</li><li>系统。</li><li>设备。</li><li>材料。</li><li>产品。</li><li>标准。</li><li>工艺。</li><li>图纸。</li><li>检测报告。</li><li>施工记录。</li><li>验收资料。</li><li>历史案例。</li></ul>
+<p>使用原则：</p>
+<ul><li>普通用户不直接维护知识底座，只在任务中引用资料源。</li><li>专家和管理员维护知识源、规则、模板和行业包。</li><li>Agent 输出必须保留引用来源和可追溯路径。</li><li>项目上下文中的确认结果可以沉淀回知识底座，但需要人工审核。</li></ul>
+<h2 id="9-文档解析与多格式输入">9. 文档解析与多格式输入</h2>
+<p>必须支持的输入：</p>
+<ul><li>Word。</li><li>Excel。</li><li>PDF。</li><li>PPT。</li><li>扫描件 OCR。</li><li>图片。</li><li>CAD/PDF 图纸索引。</li><li>P&amp;ID 初步索引。</li><li>表格抽取。</li><li>文件元数据识别。</li></ul>
+<p>重点识别内容：</p>
+<ul><li>文件类型。</li><li>文件编号。</li><li>版本。</li><li>日期。</li><li>签章状态。</li><li>标题栏。</li><li>页眉页脚。</li><li>表格字段。</li><li>设备位号。</li><li>材料/产品型号。</li><li>标准条款。</li><li>检测结论。</li></ul>
+<h2 id="10-集成中心">10. 集成中心</h2>
+<p>集成中心是轻量连接器，不是重型系统集成平台。当前阶段重点是让 Agent 能从外部拿数据、向外部推消息、把结果回写出去。</p>
+<p>优先集成类型：</p>
+<div class="table-wrap"><table><thead><tr><th>优先级</th><th>集成类型</th><th>产品用途</th></tr></thead><tbody><tr><td>P0</td><td>企业微信/飞书/钉钉</td><td>发起任务、推送待确认项、补件提醒、发送交付物链接</td></tr><tr><td>P0</td><td>API 查询</td><td>查询产品参数、标准条款、项目资料、设备台账、物料/BOM、历史案例</td></tr><tr><td>P0</td><td>文件源</td><td>读取用户上传文件、企业网盘、对象存储、知识库目录</td></tr><tr><td>P1</td><td>输出回写</td><td>回写到企业微信、邮件、网盘、对象存储、自定义 API</td></tr><tr><td>P1</td><td>Office/WPS 导出</td><td>生成 Word、PPT、Excel、PDF</td></tr><tr><td>P2</td><td>工程系统连接</td><td>按客户需要接入 PDM/PLM、EAM/CMMS、DMS、CDE 等</td></tr></tbody></table></div>
+<p>API 查询配置项：</p>
+<div class="table-wrap"><table><thead><tr><th>配置项</th><th>说明</th></tr></thead><tbody><tr><td>API 名称</td><td>产品资料查询、设备台账查询、标准条款查询</td></tr><tr><td>请求方式</td><td>GET/POST</td></tr><tr><td>鉴权方式</td><td>API Key、OAuth、企业内部 Token</td></tr><tr><td>输入字段</td><td>产品型号、项目编号、设备编号、标准编号</td></tr><tr><td>返回字段映射</td><td>参数名、单位、来源、更新时间、置信等级</td></tr><tr><td>可用任务</td><td>查找、生成、计算、审核</td></tr><tr><td>权限范围</td><td>哪些角色、项目、行业包可调用</td></tr><tr><td>失败处理</td><td>超时、无结果、字段缺失时的提示策略</td></tr></tbody></table></div>
+<p>集成原则：</p>
+<ul><li>优先读现有系统，不强制迁移。</li><li>优先做任务级调用，不重做原系统功能。</li><li>在任务页只暴露“可引用资料源/API”，隐藏复杂配置。</li><li>生成结果支持导出、消息推送和 API 回写。</li><li>保留来源链接、调用记录和权限边界。</li></ul>
+<h2 id="11-配置中心">11. 配置中心</h2>
+<p>配置中心用于管理模板、行业包、规则和知识源。配置必须支持自定义，但应按权限分层：平台默认配置、企业级自定义、项目级轻量覆盖、任务级临时选择。</p>
+<h3 id="11-1-模板配置">11.1 模板配置</h3>
+<p>模板包括结构模板、内容模板和输出模板。</p>
+<div class="table-wrap"><table><thead><tr><th>模板类型</th><th>示例</th><th>用途</th></tr></thead><tbody><tr><td>PPT 模板</td><td>产品方案 PPT、项目汇报 PPT、技术交流 PPT</td><td>控制页面结构和视觉样式</td></tr><tr><td>Word 模板</td><td>作业指导书、施工方案、审查报告</td><td>控制章节结构</td></tr><tr><td>Excel 模板</td><td>符合性矩阵、资料缺口清单、设备参数表</td><td>控制表头和字段</td></tr><tr><td>内容模板</td><td>风险提示、施工步骤、产品推荐理由</td><td>控制专业表达</td></tr><tr><td>交付包模板</td><td>竣工资料目录、设备移交目录</td><td>控制资料清单结构</td></tr></tbody></table></div>
+<p>可自定义内容：</p>
+<ul><li>模板名称。</li><li>适用行业。</li><li>适用任务。</li><li>章节结构或页面结构。</li><li>字段占位符。</li><li>样式规范。</li><li>必填内容。</li><li>引用格式。</li><li>导出格式。</li></ul>
+<p>应用方式：</p>
+<ul><li>系统根据行业包和任务类型推荐模板。</li><li>用户在任务执行页选择或切换模板。</li><li>Agent 按模板生成大纲、正文、表格或 PPT 页面。</li><li>缺少必填字段时，Agent 追问用户或标记缺失。</li></ul>
+<h3 id="11-2-行业包配置">11.2 行业包配置</h3>
+<p>行业包是让 Agent 理解行业语境的配置集合。</p>
+<div class="table-wrap"><table><thead><tr><th>配置项</th><th>示例</th></tr></thead><tbody><tr><td>行业术语</td><td>C5-M、P&amp;ID、FAT/SAT、继保、检验批</td></tr><tr><td>工程对象</td><td>产品、设备、系统、管线、涂层体系、分部分项</td></tr><tr><td>文档类型</td><td>TDS、SDS、设备说明书、试验报告、竣工图</td></tr><tr><td>默认模板</td><td>涂装方案 PPT、设备移交清单、作业指导书</td></tr><tr><td>默认规则</td><td>参数必须溯源、外发案例需授权、缺依据需确认</td></tr><tr><td>示例任务</td><td>生成沿海钢结构防腐方案、检查设备资料缺口</td></tr></tbody></table></div>
+<p>自定义方式：</p>
+<ul><li>平台提供基础行业包。</li><li>企业管理员可复制行业包并自定义。</li><li>项目/任务层只允许选择行业包和少量覆盖，不建议普通用户修改行业核心规则。</li></ul>
+<p>应用方式：</p>
+<ul><li>用户选择行业场景。</li><li>Agent 加载术语、对象、文档类型、默认模板和默认规则。</li><li>查找、生成、计算、审核都按该行业包执行。</li></ul>
+<h3 id="11-3-规则配置">11.3 规则配置</h3>
+<p>规则用于约束 Agent 行为和结果质量。</p>
+<div class="table-wrap"><table><thead><tr><th>规则类型</th><th>示例</th></tr></thead><tbody><tr><td>数据来源规则</td><td>产品参数必须来自产品库、TDS 或 API</td></tr><tr><td>引用规则</td><td>技术结论必须带来源文件和页码</td></tr><tr><td>生成规则</td><td>缺少依据时不得生成确定性结论</td></tr><tr><td>审核规则</td><td>VOC 超过客户要求时标记不符合</td></tr><tr><td>权限规则</td><td>内部案例不能用于客户外发 PPT</td></tr><tr><td>风险规则</td><td>涉及寿命、质保、安全必须人工确认</td></tr><tr><td>格式规则</td><td>审查报告必须输出“符合/不符合/需确认”</td></tr><tr><td>计算规则</td><td>材料用量必须显示公式、参数和假设</td></tr></tbody></table></div>
+<p>规则层级：</p>
+<div class="table-wrap"><table><thead><tr><th>层级</th><th>谁能改</th><th>示例</th></tr></thead><tbody><tr><td>平台规则</td><td>产品团队</td><td>通用溯源、权限、安全规则</td></tr><tr><td>企业规则</td><td>企业管理员/专家</td><td>产品参数来源、外发限制、模板规范</td></tr><tr><td>行业规则</td><td>行业专家/管理员</td><td>涂料、电力、化工等专业规则</td></tr><tr><td>项目规则</td><td>项目负责人</td><td>本项目资料目录、客户特殊要求</td></tr><tr><td>任务规则</td><td>普通用户</td><td>本次输出页数、语言、格式、侧重点</td></tr></tbody></table></div>
+<p>应用链路：</p>
+<pre class="code"><code>任务创建
+→ 选择行业包
+→ 选择模板
+→ 读取项目上下文
+→ 调用知识库/API
+→ 执行规则校验
+→ 生成中间结果
+→ 标记风险
+→ 人工确认
+→ 输出交付物</code></pre>
+<h3 id="11-4-可追溯生成">11.4 可追溯生成</h3>
+<p>生成内容分两类：</p>
+<ul><li>事实内容：必须来自资料库、标准、产品资料、历史文档或人工确认。</li><li>表达内容：允许 Agent 重组、润色、扩写。</li></ul>
+<p>输出文档应保留：</p>
+<ul><li>引用来源。</li><li>可信度。</li><li>需人工确认项。</li><li>缺失信息。</li><li>风险提示。</li><li>生成时间和任务记录。</li></ul>
+<h2 id="12-人机协同审阅">12. 人机协同审阅</h2>
+<p>Agent 不替代专家审批，只承担初稿生成、自动初审、资料整理和风险提示。</p>
+<p>关键能力：</p>
+<ul><li>高风险内容标红。</li><li>缺失条件追问。</li><li>引用来源查看。</li><li>专家批注。</li><li>人工确认后再生成。</li><li>版本对比。</li><li>审核矩阵导出。</li><li>Word/PPT/PDF/Excel 导出。</li><li>任务结果回写。</li></ul></article>
+    </main>
+  </div>
+</body>
+</html>

@@ -1,0 +1,670 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工程行业文档 Agent 产品设计纵览图 V2</title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --panel: rgba(255,255,255,.9);
+      --line: #cfd6d6;
+      --line-soft: #dfe4e2;
+      --ink: #344246;
+      --muted: #6e7d80;
+      --faint: #94a0a1;
+      --teal: #1f9aae;
+      --teal-dark: #2f7f8e;
+      --blue: #2d7892;
+      --aqua: #86c8c7;
+      --orange: #f0ba58;
+      --red: #ef604d;
+      --green: #74b7a7;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #dadfdd;
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+    }
+
+    .stage {
+      position: relative;
+      width: 1920px;
+      height: 1080px;
+      margin: 0 auto;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(74,91,94,.055) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(rgba(74,91,94,.045) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(180deg, #f7f7f4 0%, #eeeeea 100%);
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 45% 48%, rgba(31,154,174,.09), transparent 30%),
+        radial-gradient(circle at 78% 25%, rgba(240,186,88,.08), transparent 22%);
+      pointer-events: none;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .topbar {
+      position: absolute;
+      left: 40px;
+      top: 20px;
+      width: 1840px;
+      height: 74px;
+      display: grid;
+      grid-template-columns: 580px 1fr 370px;
+      align-items: center;
+      gap: 24px;
+      border-bottom: 1px solid #c9d0cf;
+    }
+
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .mark {
+      width: 50px;
+      height: 50px;
+      border: 2px solid var(--teal);
+      border-radius: 50%;
+      position: relative;
+      background: #fff;
+    }
+    .mark::before {
+      content: "";
+      position: absolute;
+      inset: 9px;
+      border: 1px dashed rgba(31,154,174,.46);
+      border-radius: 50%;
+    }
+    .mark::after {
+      content: "";
+      position: absolute;
+      inset: 17px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+    .brand h1 { font-size: 25px; line-height: 1.1; font-weight: 850; }
+    .brand p { margin-top: 6px; color: var(--muted); font-size: 12px; letter-spacing: .3px; }
+    .top-title { text-align: center; color: var(--teal-dark); font-size: 17px; font-weight: 850; }
+    .top-meta { justify-self: end; display: flex; align-items: center; gap: 10px; color: var(--muted); font-size: 12px; white-space: nowrap; }
+    .pill { padding: 8px 12px; border: 1px solid #bfc8c6; background: #fff; color: var(--teal-dark); font-weight: 800; }
+
+    .canvas {
+      position: absolute;
+      left: 40px;
+      top: 116px;
+      width: 1840px;
+      height: 930px;
+    }
+
+    .panel,
+    .layer,
+    .card,
+    .cap,
+    .loop-node,
+    .govern-row,
+    .delivery-card,
+    .task-card {
+      border: 1px solid #d5dcda;
+      background: rgba(255,255,255,.88);
+    }
+
+    .panel {
+      position: absolute;
+      overflow: hidden;
+    }
+    .panel-head {
+      height: 34px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 14px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(250,250,248,.76);
+    }
+    .panel-head h2 { font-size: 15px; line-height: 1; font-weight: 850; }
+    .panel-head span { color: var(--teal); font-size: 10px; font-weight: 900; letter-spacing: .6px; }
+    .panel-body { padding: 8px 12px; }
+
+    .definition {
+      left: 0;
+      top: 0;
+      width: 430px;
+      height: 166px;
+    }
+    .definition .body-grid {
+      display: grid;
+      grid-template-columns: 76px 1fr;
+      gap: 12px;
+      align-items: center;
+    }
+    .core-badge {
+      width: 76px;
+      height: 76px;
+      border: 1px solid var(--teal);
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(from 20deg, var(--teal), var(--aqua), var(--orange), var(--red), var(--teal));
+      position: relative;
+      color: var(--teal-dark);
+      font-weight: 900;
+      font-size: 13px;
+    }
+    .core-badge::before {
+      content: "Agent";
+      position: absolute;
+      inset: 15px;
+      display: grid;
+      place-items: center;
+      border-radius: 50%;
+      background: #fff;
+    }
+    .definition h3 { margin-bottom: 5px; font-size: 16px; line-height: 1.14; font-weight: 900; }
+    .definition p { color: var(--muted); font-size: 10.4px; line-height: 1.24; }
+    .tags {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .tags span {
+      min-height: 22px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d5dcda;
+      color: var(--teal-dark);
+      font-size: 9.5px;
+      font-weight: 850;
+    }
+
+    .users {
+      left: 0;
+      top: 180px;
+      width: 430px;
+      height: 158px;
+    }
+    .user-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+    .user {
+      min-height: 78px;
+      padding: 7px 5px;
+      border: 1px solid #d5dcda;
+      background: rgba(250,250,248,.76);
+      text-align: center;
+    }
+    .user b { display: block; margin-bottom: 5px; color: var(--teal-dark); font-size: 10px; line-height: 1.15; }
+    .user span { color: var(--muted); font-size: 8.2px; line-height: 1.12; }
+
+    .project {
+      left: 0;
+      top: 352px;
+      width: 430px;
+      height: 224px;
+    }
+    .project-map {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+    .card {
+      min-height: 62px;
+      padding: 7px;
+    }
+    .card b { display: block; margin-bottom: 4px; color: var(--teal-dark); font-size: 10.8px; font-weight: 900; }
+    .card span { color: var(--muted); font-size: 8.4px; line-height: 1.1; }
+
+    .industry {
+      left: 0;
+      top: 590px;
+      width: 430px;
+      height: 260px;
+    }
+    .industry-row {
+      display: grid;
+      grid-template-columns: 70px 92px 1fr;
+      align-items: center;
+      gap: 7px;
+      min-height: 31px;
+      margin-bottom: 5px;
+      padding: 5px 7px;
+      border: 1px solid #d5dcda;
+      color: var(--muted);
+      font-size: 8.8px;
+      line-height: 1.12;
+    }
+    .industry-row b { color: var(--ink); font-size: 9.7px; }
+    .industry-row strong { color: var(--red); font-size: 9px; }
+
+    .architecture {
+      left: 462px;
+      top: 0;
+      width: 766px;
+      height: 430px;
+    }
+    .layer-stack {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 7px;
+    }
+    .layer {
+      min-height: 35px;
+      display: grid;
+      grid-template-columns: 104px 1fr;
+      align-items: center;
+      gap: 10px;
+      padding: 5px 9px;
+      position: relative;
+    }
+    .layer::before {
+      content: "";
+      position: absolute;
+      left: 0;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      background: var(--teal);
+      opacity: .8;
+    }
+    .layer b { color: var(--teal-dark); font-size: 11px; line-height: 1.15; font-weight: 900; }
+    .layer span { color: var(--muted); font-size: 9.2px; line-height: 1.14; }
+
+    .capability {
+      left: 462px;
+      top: 444px;
+      width: 766px;
+      height: 180px;
+    }
+    .cap-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .cap {
+      min-height: 110px;
+      padding: 9px 8px;
+      position: relative;
+    }
+    .cap b { display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 900; }
+    .cap b::before { content: ""; width: 9px; height: 9px; background: var(--teal); }
+    .cap span { display: block; margin-top: 7px; color: var(--muted); font-size: 9.2px; line-height: 1.22; }
+    .cap em { position: absolute; left: 9px; bottom: 8px; color: var(--red); font-size: 9px; font-style: normal; font-weight: 850; }
+
+    .execution {
+      left: 462px;
+      top: 638px;
+      width: 766px;
+      height: 212px;
+    }
+    .execution-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .task-card {
+      min-height: 58px;
+      padding: 7px;
+    }
+    .task-card b { display: block; margin-bottom: 4px; color: var(--teal-dark); font-size: 10.5px; font-weight: 900; }
+    .task-card span { color: var(--muted); font-size: 8.5px; line-height: 1.1; }
+
+    .loop {
+      right: 0;
+      top: 0;
+      width: 580px;
+      height: 318px;
+    }
+    .loop .panel-body {
+      position: relative;
+      height: 284px;
+      padding: 0;
+    }
+    .loop-svg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+    .loop-svg path {
+      fill: none;
+      stroke: rgba(47,127,142,.45);
+      stroke-width: 1.7;
+    }
+    .loop-node {
+      position: absolute;
+      z-index: 2;
+      width: 128px;
+      min-height: 52px;
+      padding: 7px 8px;
+      background: rgba(255,255,255,.9);
+    }
+    .loop-node b { display: block; margin-bottom: 4px; color: var(--teal-dark); font-size: 10.6px; font-weight: 900; }
+    .loop-node span { color: var(--muted); font-size: 8.4px; line-height: 1.15; }
+    .l1 { left: 226px; top: 18px; }
+    .l2 { right: 32px; top: 78px; }
+    .l3 { right: 52px; bottom: 46px; }
+    .l4 { left: 226px; bottom: 18px; }
+    .l5 { left: 52px; bottom: 46px; }
+    .l6 { left: 32px; top: 78px; }
+    .loop-core {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      width: 118px;
+      height: 118px;
+      transform: translate(-50%, -50%);
+      border: 1px solid var(--teal);
+      border-radius: 50%;
+      background: #fff;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      z-index: 3;
+      box-shadow: 0 0 0 10px rgba(31,154,174,.06);
+    }
+    .loop-core b { display: block; font-size: 14px; line-height: 1.15; }
+    .loop-core span { display: block; margin-top: 5px; color: var(--muted); font-size: 8.5px; line-height: 1.18; }
+
+    .knowledge {
+      right: 0;
+      top: 332px;
+      width: 580px;
+      height: 176px;
+    }
+    .knowledge-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+    }
+    .knowledge-item {
+      min-height: 86px;
+      padding: 8px 6px;
+      text-align: center;
+      border: 1px solid #d5dcda;
+      background: rgba(250,250,248,.76);
+    }
+    .knowledge-item b { display: block; color: var(--teal-dark); font-size: 10px; margin-bottom: 5px; }
+    .knowledge-item span { color: var(--muted); font-size: 8.3px; line-height: 1.14; }
+
+    .integration {
+      right: 0;
+      top: 522px;
+      width: 580px;
+      height: 154px;
+    }
+    .integration-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+
+    .delivery {
+      right: 0;
+      top: 690px;
+      width: 580px;
+      height: 160px;
+    }
+    .delivery-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 8px;
+    }
+    .delivery-card {
+      min-height: 80px;
+      display: grid;
+      grid-template-columns: 34px 1fr;
+      gap: 8px;
+      align-items: center;
+      padding: 8px;
+    }
+    .doc {
+      width: 32px;
+      height: 38px;
+      display: grid;
+      place-items: end center;
+      padding-bottom: 6px;
+      background: #eef3f3;
+      color: var(--teal-dark);
+      font-size: 8px;
+      font-weight: 900;
+      position: relative;
+    }
+    .doc::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      border-top: 11px solid #d5dedc;
+      border-left: 11px solid transparent;
+    }
+    .delivery-card b { display: block; margin-bottom: 4px; font-size: 10.6px; font-weight: 900; }
+    .delivery-card span { color: var(--muted); font-size: 8.4px; line-height: 1.12; }
+
+    .governance {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      width: 1840px;
+      height: 62px;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid #d5dcda;
+      background: rgba(255,255,255,.82);
+    }
+    .govern-row {
+      display: grid;
+      grid-template-columns: 72px 1fr;
+      align-items: center;
+      gap: 8px;
+      padding: 6px 8px;
+    }
+    .govern-row b { color: var(--teal-dark); font-size: 10.5px; font-weight: 900; }
+    .govern-row span { color: var(--muted); font-size: 8.6px; line-height: 1.12; }
+
+    .foot {
+      position: absolute;
+      bottom: 8px;
+      color: #8a9698;
+      font-size: 10px;
+      letter-spacing: .8px;
+    }
+    .left-note { left: 40px; }
+    .right-note { right: 40px; }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="工程行业文档 Agent 产品设计纵览图 V2">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark" aria-hidden="true"></div>
+        <div>
+          <h1>工程行业文档 Agent 产品设计纵览图 V2</h1>
+          <p>PRODUCT OVERVIEW · ARCHITECTURE · TRUSTED DELIVERY LOOP · GOVERNANCE</p>
+        </div>
+      </div>
+      <div class="top-title">工程知识驱动的可信交付闭环：从资料接入到成果沉淀</div>
+      <div class="top-meta">
+        <span>1920×1080 产品纵览</span>
+        <span class="pill">架构 · 能力 · 闭环 · 治理</span>
+      </div>
+    </header>
+
+    <section class="canvas">
+      <article class="panel definition">
+        <div class="panel-head"><h2>01 产品定义</h2><span>DEFINITION</span></div>
+        <div class="panel-body">
+          <div class="body-grid">
+            <div class="core-badge"></div>
+            <div>
+              <h3>面向工程行业的文档任务 Agent</h3>
+              <p>把分散工程资料转化为可查找、可生成、可计算、可审核、可交付、可追溯的企业 AI 能力。</p>
+            </div>
+          </div>
+          <div class="tags"><span>我的项目</span><span>项目上下文</span><span>行业场景包</span><span>可信交付</span></div>
+        </div>
+      </article>
+
+      <article class="panel users">
+        <div class="panel-head"><h2>02 用户与价值</h2><span>USERS</span></div>
+        <div class="panel-body">
+          <div class="user-grid">
+            <div class="user"><b>工程技术</b><span>写方案、指导书、技术说明，查证依据。</span></div>
+            <div class="user"><b>交付资料</b><span>检查缺口，整理交付包，追踪异常。</span></div>
+            <div class="user"><b>技术销售</b><span>生成解决方案、推广材料、技术答复。</span></div>
+            <div class="user"><b>知识标准</b><span>维护模板、规则、标准、行业包。</span></div>
+            <div class="user"><b>实施管理</b><span>配置集成、权限、知识源和边界。</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel project">
+        <div class="panel-head"><h2>03 我的项目与项目上下文</h2><span>CONTEXT</span></div>
+        <div class="panel-body">
+          <div class="project-map">
+            <div class="card"><b>我的项目</b><span>最近访问、我参与的、我创建的、已收藏、全部项目按权限展示。</span></div>
+            <div class="card"><b>项目详情</b><span>项目概览、项目资料、Agent 任务、交付物、项目设置。</span></div>
+            <div class="card"><b>项目上下文</b><span>当前项目、行业场景包、工程对象、资料范围、输出归属。</span></div>
+            <div class="card"><b>权限约束</b><span>系统权限控制项目、资料源、知识库、交付物和可调用 API。</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel industry">
+        <div class="panel-head"><h2>04 行业场景包优先级</h2><span>SCENARIOS</span></div>
+        <div class="panel-body">
+          <div class="industry-row"><b>第一梯队</b><strong>涂料 / 装备 / 电力设备 / 化工设备</strong><span>生成价值强，资料相对结构化，销售和交付都有明确需求。</span></div>
+          <div class="industry-row"><b>第二梯队</b><strong>能源 / 电力 / 轨交 / 化工</strong><span>交付资料和合规审核价值高，行业门槛更高。</span></div>
+          <div class="industry-row"><b>第三梯队</b><strong>建筑 / 基建 / 水利 / 矿山</strong><span>资料量大但现场数据更脏，流程依赖更重。</span></div>
+          <div class="industry-row"><b>行业包</b><strong>术语 / 对象 / 模板 / 规则</strong><span>加载文档类型、默认模板、默认规则和 Agent 工作流。</span></div>
+          <div class="industry-row"><b>关键对象</b><strong>设备 / 材料 / 图纸 / 报告</strong><span>BOM、P&ID、TDS/SDS、试验报告、检验批、验收资料。</span></div>
+        </div>
+      </article>
+
+      <article class="panel architecture">
+        <div class="panel-head"><h2>05 产品全景架构</h2><span>ARCHITECTURE</span></div>
+        <div class="panel-body">
+          <div class="layer-stack">
+            <div class="layer"><b>用户层</b><span>工程技术人员 / 交付资料人员 / 技术销售与方案人员 / 知识标准负责人 / 管理员与实施人员</span></div>
+            <div class="layer"><b>入口层</b><span>独立终端：网页版、小程序；协同端：企业微信、CRM</span></div>
+            <div class="layer"><b>业务价值层</b><span>快速查找依据 / 高质量生成文档 / 工程参数与完整率计算 / 技术符合性与缺口审核</span></div>
+            <div class="layer"><b>能力层</b><span>查找规范、资料和案例；生成 PPT、指导书、技术说明；计算参数和完整率；审核符合性和缺口</span></div>
+            <div class="layer"><b>任务执行层</b><span>项目上下文 / 资料引用 / 过程透明 / 中间结果 / 风险提示 / 人工确认 / 导出回写</span></div>
+            <div class="layer"><b>知识资产中心</b><span>标准规范 / 案例经验 / 模版资产 / 规则资产 / 项目成果</span></div>
+            <div class="layer"><b>工具集成层</b><span>企业内部 API 连接器 / MCP 工具注册中心 / 多源异构数据抓取引擎</span></div>
+            <div class="layer"><b>交付成果层</b><span>方案与指导书 / PPT 与推广材料 / 审核矩阵 / 缺口清单 / 设备档案 / 引用证据包</span></div>
+            <div class="layer"><b>治理保障层</b><span>系统权限 / 引用溯源 / 规则校验 / 人工复核 / 审计日志</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel capability">
+        <div class="panel-head"><h2>06 四类能力地图</h2><span>CAPABILITY</span></div>
+        <div class="panel-body">
+          <div class="cap-grid">
+            <div class="cap"><b>查找</b><span>标准规范、设备资料、历史案例、项目资料定位。</span><em>资料列表 / 引用依据</em></div>
+            <div class="cap"><b>生成</b><span>方案、作业指导书、技术说明、推广材料、交付报告。</span><em>Word / PPT / PDF</em></div>
+            <div class="cap"><b>计算</b><span>材料用量、工程参数、资料完整率、版本差异。</span><em>过程 / 来源 / 异常</em></div>
+            <div class="cap"><b>审核</b><span>技术符合性、资料缺口、设备完整性、变更影响。</span><em>矩阵 / 风险 / 补件</em></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel execution">
+        <div class="panel-head"><h2>07 任务执行页作业台</h2><span>WORKBENCH</span></div>
+        <div class="panel-body">
+          <div class="execution-grid">
+            <div class="task-card"><b>左侧：任务上下文</b><span>当前项目、行业场景包、工程对象、上传资料、引用源、模板、输出格式。</span></div>
+            <div class="task-card"><b>中间：Agent 执行区</b><span>解析资料、识别对象、提取参数、生成大纲、生成正文、生成矩阵。</span></div>
+            <div class="task-card"><b>右侧：结果与风险</b><span>输出文档、引用来源、风险提示、缺失信息、确认项、导出回写。</span></div>
+            <div class="task-card"><b>资料引用</b><span>项目资料、知识库、API 查询结果、本地上传文件。</span></div>
+            <div class="task-card"><b>人工介入</b><span>对缺失信息、风险项、关键参数和假设条件进行确认。</span></div>
+            <div class="task-card"><b>交付回写</b><span>导出 Office/PDF，或推送到企微、邮件、网盘、API。</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel loop">
+        <div class="panel-head"><h2>08 可信交付闭环</h2><span>TRUSTED LOOP</span></div>
+        <div class="panel-body">
+          <svg class="loop-svg" viewBox="0 0 580 284" preserveAspectRatio="none" aria-hidden="true">
+            <defs>
+              <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+                <path d="M0,0 L8,4 L0,8 Z" fill="rgba(47,127,142,.62)"></path>
+              </marker>
+            </defs>
+            <path d="M292 45 C422 40 510 90 505 142 C500 205 414 246 292 238 C168 246 76 204 74 142 C72 88 162 40 292 45" marker-end="url(#arrow)"></path>
+            <path d="M354 58 C412 76 444 108 442 142"></path>
+            <path d="M433 188 C404 222 356 236 292 238"></path>
+            <path d="M226 238 C164 224 120 194 112 154"></path>
+            <path d="M118 104 C144 70 184 52 226 46"></path>
+          </svg>
+          <div class="loop-core"><div><b>工程知识<br>驱动交付</b><span>资料从存储变成持续产出能力</span></div></div>
+          <div class="loop-node l1"><b>资料接入</b><span>分散资料统一可用，多源接入。</span></div>
+          <div class="loop-node l2"><b>知识资产化</b><span>历史经验可复用，行业场景包。</span></div>
+          <div class="loop-node l3"><b>Agent 执行</b><span>文档任务自动完成，任务型 Agent。</span></div>
+          <div class="loop-node l4"><b>人工确认</b><span>关键风险可控，人机协同。</span></div>
+          <div class="loop-node l5"><b>成果交付</b><span>交付物快速产出，可追溯生成。</span></div>
+          <div class="loop-node l6"><b>反哺沉淀</b><span>案例、模板、规则越用越强。</span></div>
+        </div>
+      </article>
+
+      <article class="panel knowledge">
+        <div class="panel-head"><h2>09 工程知识底座</h2><span>KNOWLEDGE</span></div>
+        <div class="panel-body">
+          <div class="knowledge-grid">
+            <div class="knowledge-item"><b>工程对象</b><span>项目、专业、系统、设备、材料、产品。</span></div>
+            <div class="knowledge-item"><b>标准工艺</b><span>标准、工艺、图纸、检测报告。</span></div>
+            <div class="knowledge-item"><b>项目记录</b><span>施工记录、验收资料、历史案例。</span></div>
+            <div class="knowledge-item"><b>模板规则</b><span>结构模板、内容模板、审核与计算规则。</span></div>
+            <div class="knowledge-item"><b>沉淀机制</b><span>项目确认结果经人工审核后入库。</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel integration">
+        <div class="panel-head"><h2>10 轻量集成中心</h2><span>INTEGRATION</span></div>
+        <div class="panel-body">
+          <div class="integration-grid">
+            <div class="card"><b>P0：消息协同</b><span>企业微信、飞书、钉钉：发起任务、补件提醒、发送交付链接。</span></div>
+            <div class="card"><b>P0：API 查询</b><span>产品参数、标准条款、项目资料、设备台账、BOM、案例。</span></div>
+            <div class="card"><b>P0：文件源</b><span>上传文件、企业网盘、对象存储、知识库目录。</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel delivery">
+        <div class="panel-head"><h2>11 交付成果</h2><span>DELIVERY</span></div>
+        <div class="panel-body">
+          <div class="delivery-grid">
+            <div class="delivery-card"><div class="doc">DOC</div><div><b>方案/指导书</b><span>工程方案、作业指导书、交付报告。</span></div></div>
+            <div class="delivery-card"><div class="doc">PPT</div><div><b>PPT/推广材料</b><span>解决方案、技术交流、推广材料。</span></div></div>
+            <div class="delivery-card"><div class="doc">XLS</div><div><b>矩阵/清单</b><span>审核矩阵、缺口清单、设备参数表。</span></div></div>
+          </div>
+        </div>
+      </article>
+
+      <section class="governance" aria-label="治理保障">
+        <div class="govern-row"><b>系统权限</b><span>控制项目、资料源、知识库、API 与交付物访问。</span></div>
+        <div class="govern-row"><b>引用溯源</b><span>技术结论带来源文件、页码、调用记录和版本。</span></div>
+        <div class="govern-row"><b>规则校验</b><span>数据来源、引用、生成、审核、权限、风险和计算规则。</span></div>
+        <div class="govern-row"><b>人工复核</b><span>寿命、质保、安全、缺依据和高风险内容必须确认。</span></div>
+        <div class="govern-row"><b>审计日志</b><span>记录任务、资料版本、生成时间、修改与导出回写。</span></div>
+      </section>
+    </section>
+
+    <div class="foot left-note">SOURCE: engineering-document-agent-product-plan.md</div>
+    <div class="foot right-note">VISUAL STANDARD: infographic-product-design-playbook.md · V2 PRODUCT OVERVIEW</div>
+  </main>
+</body>
+</html>

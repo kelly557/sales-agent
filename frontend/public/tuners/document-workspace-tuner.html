@@ -1,0 +1,631 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document Workspace Tuner</title>
+    <style>
+      :root {
+        --page-max-width: 1180px;
+        --section-padding: 28px;
+        --grid-gap: 14px;
+        --card-padding: 18px;
+        --radius: 8px;
+        --heading-size: 26px;
+        --body-size: 14px;
+        --line-height: 1.6;
+        --border-alpha: 0.1;
+        --panel-width: 320px;
+        --font-family-ui: SF Pro Text, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+        --font-size-xs: 12px;
+        --font-size-sm: 13px;
+        --font-size-md: 14px;
+        --font-size-lg: 16px;
+        --font-size-xl: 20px;
+        --font-size-title: 24px;
+        --font-size-display: 30px;
+        --font-weight-regular: 400;
+        --font-weight-semibold: 600;
+        --line-height-tight: 1.2;
+        --line-height-body: 1.6;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      body {
+        margin: 0;
+        font-family: var(--font-family-ui);
+        font-size: var(--font-size-md);
+        font-weight: var(--font-weight-regular);
+        line-height: var(--line-height-body);
+        background: #f5f5f7;
+        color: #1d1d1f;
+      }
+
+      .workspace {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) var(--panel-width);
+        min-height: 100vh;
+      }
+
+      .preview {
+        padding: 28px;
+        overflow: auto;
+      }
+
+      .page {
+        display: grid;
+        grid-template-columns: 220px minmax(0, 1fr);
+        max-width: var(--page-max-width);
+        min-height: 680px;
+        margin: 0 auto;
+        overflow: hidden;
+        background: #ffffff;
+        border: 1px solid rgba(0, 0, 0, var(--border-alpha));
+        border-radius: var(--radius);
+      }
+
+      .side {
+        padding: var(--card-padding);
+        border-right: 1px solid rgba(0, 0, 0, var(--border-alpha));
+      }
+
+      .brand {
+        display: flex;
+        gap: 10px;
+        align-items: center;
+        margin-bottom: 28px;
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .mark {
+        display: grid;
+        width: 28px;
+        height: 28px;
+        place-items: center;
+        border-radius: 7px;
+        background: #0066cc;
+        color: #ffffff;
+      }
+
+      .nav {
+        display: grid;
+        gap: 6px;
+      }
+
+      .nav span {
+        padding: 11px 12px;
+        border-radius: var(--radius);
+        color: #6e6e73;
+      }
+
+        .nav .new {
+        background: #0066cc;
+        color: #ffffff;
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .nav .group {
+        padding: 8px 10px;
+        color: #333333;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .nav .sub {
+        padding: 8px 10px 8px 22px;
+        font-size: var(--font-size-sm);
+      }
+
+      .nav .link {
+        color: #0066cc;
+      }
+
+      .nav .divider {
+        height: 1px;
+        margin: 8px 4px;
+        padding: 0;
+        background: rgba(0, 0, 0, var(--border-alpha));
+      }
+
+      .nav .active {
+        background: #f0f6ff;
+        color: #0066cc;
+      }
+
+      .main {
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        padding: var(--section-padding);
+        background: #f4f4f5;
+      }
+
+      .topbar {
+        display: flex;
+        justify-content: flex-end;
+        gap: 18px;
+        align-items: center;
+        margin-bottom: 22px;
+      }
+
+      .enterprise {
+        color: #1d1d1f;
+      }
+
+      .avatar {
+        display: grid;
+        width: 32px;
+        height: 32px;
+        place-items: center;
+        border-radius: 50%;
+        background: #e8eef7;
+        color: #0066cc;
+        font-weight: var(--font-weight-semibold);
+      }
+
+      h1 {
+        margin: 0 0 6px;
+        font-size: var(--heading-size);
+        line-height: var(--line-height-tight);
+        letter-spacing: 0;
+      }
+
+      p {
+        margin: 0;
+        color: #6e6e73;
+        font-size: var(--body-size);
+        line-height: var(--line-height);
+      }
+
+      .button {
+        min-height: 36px;
+        padding: 0 14px;
+        border: 0;
+        border-radius: var(--radius);
+        background: #0066cc;
+        color: #ffffff;
+        white-space: nowrap;
+      }
+
+      .proposal {
+        display: grid;
+        grid-template-columns: 210px minmax(0, 1fr);
+        gap: var(--grid-gap);
+        min-height: 560px;
+      }
+
+      .project-panel {
+        padding: var(--card-padding);
+        border-radius: var(--radius);
+        background: #ffffff;
+      }
+
+      .project-panel {
+        display: grid;
+        align-content: start;
+        gap: var(--grid-gap);
+      }
+
+      .new-project {
+        min-height: 44px;
+        border: 1px solid #5468ff;
+        border-radius: 999px;
+        color: #4058ff;
+        font-weight: var(--font-weight-semibold);
+        text-align: center;
+      }
+
+      .project-search {
+        padding: 10px 0;
+        border-bottom: 1px solid rgba(0, 0, 0, var(--border-alpha));
+        color: #9aa0aa;
+      }
+
+      .project-item {
+        color: #6e6e73;
+        font-size: var(--font-size-sm);
+      }
+
+      .chat-panel {
+        position: relative;
+        display: grid;
+        grid-template-rows: auto minmax(0, 1fr);
+        gap: var(--grid-gap);
+        min-width: 0;
+        padding-bottom: 96px;
+      }
+
+      .notice {
+        width: fit-content;
+        margin: 0 auto;
+        padding: 8px 18px;
+        border-radius: 999px;
+        background: #ffffff;
+        color: #6e6e73;
+        font-size: var(--font-size-sm);
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .message-row {
+        display: grid;
+        grid-template-columns: 34px minmax(0, 1fr);
+        gap: 12px;
+        align-items: start;
+        margin-top: 14px;
+      }
+
+      .bot-avatar {
+        width: 34px;
+        height: 34px;
+        border-radius: 50%;
+        background: #ffffff;
+      }
+
+      .sender {
+        margin-bottom: 6px;
+        color: #a8adb8;
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .message {
+        padding: var(--card-padding);
+        border-radius: var(--radius);
+        background: #ffffff;
+        color: #333333;
+        font-size: var(--body-size);
+        font-weight: var(--font-weight-regular);
+        line-height: var(--line-height);
+      }
+
+      .composer-wrap {
+        position: absolute;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        display: grid;
+        justify-items: end;
+        gap: 10px;
+        min-width: 0;
+      }
+
+      .form-button {
+        min-width: 110px;
+        min-height: 38px;
+        border-radius: 999px;
+        background: #6672ff;
+        color: #ffffff;
+        text-align: center;
+      }
+
+      .composer {
+        display: grid;
+        grid-template-columns: minmax(0, 1fr) 28px 28px 34px;
+        gap: 10px;
+        align-items: center;
+        width: 100%;
+        min-width: 0;
+        height: 48px;
+        padding: 6px 8px 6px 16px;
+        border-radius: 999px;
+        background: #ffffff;
+      }
+
+      .input {
+        min-width: 0;
+        overflow: hidden;
+        color: #6e6e73;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+      }
+
+      .round-icon {
+        display: grid;
+        flex: none;
+        place-items: center;
+        width: 28px;
+        height: 28px;
+        border-radius: 50%;
+        color: #9aa0aa;
+      }
+
+      .send {
+        background: #6672ff;
+        color: #ffffff;
+      }
+
+      .form-preview {
+        display: grid;
+        gap: var(--grid-gap);
+        margin-top: var(--grid-gap);
+        padding: var(--card-padding);
+        border-radius: var(--radius);
+        background: #ffffff;
+      }
+
+      .form-preview-title {
+        color: #333333;
+        font-weight: var(--font-weight-semibold);
+      }
+
+      .form-table {
+        display: grid;
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+        border: 1px solid rgba(0, 0, 0, var(--border-alpha));
+      }
+
+      .form-table span {
+        min-height: 38px;
+        padding: 10px;
+        border-right: 1px solid rgba(0, 0, 0, var(--border-alpha));
+        border-bottom: 1px solid rgba(0, 0, 0, var(--border-alpha));
+        text-align: center;
+      }
+
+      .form-table .label {
+        background: #dfe3ea;
+        color: #333333;
+        font-weight: var(--font-weight-semibold);
+      }
+
+
+      .controls {
+        padding: 20px;
+        overflow: auto;
+        border-left: 1px solid rgba(0, 0, 0, 0.1);
+        background: #ffffff;
+      }
+
+      .controls h2 {
+        margin: 0 0 16px;
+        font-size: var(--font-size-xl);
+      }
+
+      .control {
+        display: grid;
+        gap: 8px;
+        margin-bottom: 18px;
+      }
+
+      .control label {
+        display: flex;
+        justify-content: space-between;
+        gap: 12px;
+        color: #333333;
+        font-size: var(--font-size-sm);
+      }
+
+      .actions {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .secondary {
+        min-height: 40px;
+        border: 1px solid rgba(0, 0, 0, 0.14);
+        border-radius: 8px;
+        background: #ffffff;
+        cursor: pointer;
+      }
+
+      pre {
+        margin: 16px 0 0;
+        white-space: pre-wrap;
+        word-break: break-word;
+        padding: 12px;
+        background: #f5f5f7;
+        border-radius: 8px;
+        font-size: var(--font-size-xs);
+      }
+
+      @media (max-width: 980px) {
+        .workspace {
+          grid-template-columns: 1fr;
+        }
+
+        .controls {
+          border-top: 1px solid rgba(0, 0, 0, 0.1);
+          border-left: 0;
+        }
+      }
+
+      @media (max-width: 720px) {
+        .preview {
+          padding: 14px;
+        }
+
+        .page {
+          grid-template-columns: 1fr;
+        }
+
+        .side {
+          border-right: 0;
+          border-bottom: 1px solid rgba(0, 0, 0, var(--border-alpha));
+        }
+
+        .proposal {
+          grid-template-columns: 1fr;
+        }
+
+        .chat-panel {
+          grid-template-rows: auto auto;
+          padding-bottom: 94px;
+        }
+
+        .composer {
+          grid-template-columns: minmax(0, 1fr) 28px 28px 34px;
+          gap: 8px;
+          padding-left: 14px;
+        }
+
+        .topbar {
+          flex-direction: column;
+          grid-template-columns: 1fr;
+        }
+      }
+    </style>
+  </head>
+  <body>
+    <main class="workspace">
+      <section class="preview" aria-label="页面实时预览">
+        <div class="page">
+          <aside class="side">
+            <div class="brand"><span class="mark">D</span><span>DocTech Agent</span></div>
+            <div class="nav">
+              <span class="new">+ 新对话</span>
+              <span class="group">最近对话 ˄</span>
+              <span class="sub">华东轨交调试方案</span>
+              <span class="sub">桥梁挂篮方案审查</span>
+              <span class="sub">水处理资料检查</span>
+              <span class="sub link">查看全部</span>
+              <span class="divider"></span>
+              <span class="active">定制方案生成</span>
+              <span>施工作业指导书</span>
+              <span>模版</span>
+              <span>更多应用</span>
+              <span class="divider"></span>
+              <span>我的项目</span>
+              <span>知识库</span>
+            </div>
+          </aside>
+          <section class="main">
+            <div class="topbar">
+              <span class="enterprise">企业管理</span>
+              <span class="avatar">风</span>
+            </div>
+            <div class="proposal">
+              <aside class="project-panel">
+                <div class="new-project">+ 新项目</div>
+                <div class="project-search">搜索相关项目</div>
+                <div class="project-item">立邦外墙涂装翻新方案</div>
+                <div class="project-item">工业地坪涂装建议书</div>
+              </aside>
+              <main class="chat-panel">
+                <div class="notice">推荐使用表单一次录入项目参数，也可通过对话补充基层、面积和性能诉求。</div>
+                <div class="message-row">
+                  <div class="bot-avatar"></div>
+                  <div>
+                    <div class="sender">方案助手</div>
+                    <div class="message">
+                      <p>建议优先点击“填写项目参数”，用表单录入完整信息；也可以在对话中补充关键条件。</p>
+                      <p>我将为“立邦外墙涂装翻新方案”生成初步推荐书，请确认以下内容：</p>
+                      <p>1. 项目概况：建筑类型、涂装面积、施工区域、现场照片和当前基层状态。</p>
+                      <p>2. 性能诉求：耐候年限、抗污等级、色彩要求、低气味要求和质保口径。</p>
+                      <p>3. 施工边界：脚手架或吊篮条件、工期窗口、雨季限制和成品保护要求。</p>
+                      <p>4. 交付材料：涂装体系建议、材料用量估算、施工工艺、验收标准和风险提示。</p>
+                    </div>
+                  </div>
+                </div>
+                <div class="composer-wrap">
+                  <div class="form-button">填写表单</div>
+                  <div class="composer">
+                    <div class="input">例如：主楼外墙约 8200 m2，旧涂层粉化，业主希望提升耐候和抗污...</div>
+                    <div class="round-icon">▤</div>
+                    <div class="round-icon">◉</div>
+                    <div class="round-icon send">➤</div>
+                  </div>
+                </div>
+                <div class="form-preview">
+                  <div class="form-preview-title">项目参数弹窗预览</div>
+                  <div class="form-table">
+                    <span class="label">* 项目名称</span><span>浦东商业综合体外墙翻新</span><span class="label">* 项目位置</span><span>上海市浦东新区</span>
+                    <span class="label">* 涂装面积</span><span>约 18,600 m2</span><span class="label">基层情况</span><span>旧涂层局部粉化、开裂</span>
+                    <span class="label">推荐体系</span><span>立邦外墙耐候涂装体系</span><span class="label">* 交付周期</span><span>7 个工作日</span>
+                  </div>
+                </div>
+              </main>
+              </div>
+          </section>
+        </div>
+      </section>
+
+      <aside class="controls" aria-label="视觉参数调节">
+        <h2>参数微调</h2>
+        <div id="controls"></div>
+        <div class="actions">
+          <button class="secondary" id="copy" type="button">复制 JSON</button>
+          <button class="secondary" id="reset" type="button">恢复默认</button>
+        </div>
+        <pre id="output"></pre>
+      </aside>
+    </main>
+
+    <script>
+      const params = [
+        { key: "--page-max-width", label: "页面最大宽度", value: 1180, min: 820, max: 1440, unit: "px" },
+        { key: "--section-padding", label: "主内容内边距", value: 28, min: 16, max: 56, unit: "px" },
+        { key: "--grid-gap", label: "栅格间距", value: 14, min: 8, max: 32, unit: "px" },
+        { key: "--card-padding", label: "模块内边距", value: 18, min: 10, max: 34, unit: "px" },
+        { key: "--radius", label: "圆角", value: 8, min: 0, max: 16, unit: "px" },
+        { key: "--heading-size", label: "标题字号", value: 26, min: 20, max: 38, unit: "px" },
+        { key: "--body-size", label: "正文字号", value: 14, min: 12, max: 18, unit: "px" },
+        { key: "--line-height", label: "行高", value: 1.6, min: 1.2, max: 2, step: 0.01, unit: "" },
+        { key: "--border-alpha", label: "边框透明度", value: 0.1, min: 0.04, max: 0.24, step: 0.01, unit: "" },
+        { key: "--panel-width", label: "控制面板宽度", value: 320, min: 280, max: 420, unit: "px" }
+      ];
+
+      const defaults = params.map((param) => ({ ...param }));
+      const controls = document.querySelector("#controls");
+      const output = document.querySelector("#output");
+
+      function applyParam(param) {
+        document.documentElement.style.setProperty(param.key, `${param.value}${param.unit}`);
+      }
+
+      function renderOutput() {
+        const values = Object.fromEntries(params.map((param) => [param.key, `${param.value}${param.unit}`]));
+        output.textContent = JSON.stringify(values, null, 2);
+      }
+
+      function renderControls() {
+        controls.innerHTML = "";
+        params.forEach((param, index) => {
+          const row = document.createElement("div");
+          row.className = "control";
+          row.innerHTML = `
+            <label>
+              <span>${param.label}</span>
+              <strong data-value>${param.value}${param.unit}</strong>
+            </label>
+            <input
+              type="range"
+              min="${param.min}"
+              max="${param.max}"
+              step="${param.step || 1}"
+              value="${param.value}"
+              aria-label="${param.label}"
+            />
+          `;
+
+          const input = row.querySelector("input");
+          const value = row.querySelector("[data-value]");
+          input.addEventListener("input", (event) => {
+            params[index].value = Number(event.target.value);
+            value.textContent = `${params[index].value}${params[index].unit}`;
+            applyParam(params[index]);
+            renderOutput();
+          });
+
+          controls.appendChild(row);
+          applyParam(param);
+        });
+        renderOutput();
+      }
+
+      document.querySelector("#copy").addEventListener("click", async () => {
+        await navigator.clipboard.writeText(output.textContent);
+      });
+
+      document.querySelector("#reset").addEventListener("click", () => {
+        defaults.forEach((item, index) => {
+          params[index] = { ...item };
+        });
+        renderControls();
+      });
+
+      renderControls();
+    </script>
+  </body>
+</html>

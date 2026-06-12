@@ -1,0 +1,966 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 销售助手竞品分析</title>
+  <style>
+    :root {
+      --bg: #f7f7f3;
+      --paper: rgba(255, 255, 255, .92);
+      --paper-soft: #f1f6f5;
+      --ink: #2e4044;
+      --muted: #637478;
+      --faint: #8b999b;
+      --line: #cbd4d2;
+      --line-soft: #e1e6e4;
+      --teal: #2498aa;
+      --teal-deep: #2b7684;
+      --aqua: #83c8c6;
+      --orange: #eab65b;
+      --red: #ea6657;
+      --green: #71ae9d;
+      --blue: #467d98;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      color: var(--ink);
+      background: #d9dfdd;
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+    }
+    h1, h2, h3, h4, p { margin: 0; }
+
+    .stage {
+      width: 1920px;
+      min-height: 2380px;
+      margin: 0 auto;
+      padding: 34px 44px 42px;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(61, 78, 82, .05) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(rgba(61, 78, 82, .04) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(180deg, #f8f8f4 0%, #eeeeea 100%);
+    }
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 0 33.2%, rgba(178,188,186,.48) 33.2% 33.26%, transparent 33.26% 66.5%, rgba(178,188,186,.48) 66.5% 66.56%, transparent 66.56%),
+        radial-gradient(circle at 18% 9%, rgba(36,152,170,.11), transparent 22%),
+        radial-gradient(circle at 84% 88%, rgba(234,182,91,.1), transparent 24%);
+      pointer-events: none;
+    }
+
+    .topbar {
+      position: relative;
+      z-index: 1;
+      min-height: 106px;
+      display: grid;
+      grid-template-columns: 510px 1fr 420px;
+      align-items: center;
+      gap: 32px;
+      border-bottom: 1px solid var(--line);
+    }
+    .brand { display: flex; align-items: center; gap: 18px; }
+    .agent-mark {
+      width: 76px;
+      height: 76px;
+      display: grid;
+      place-items: center;
+      position: relative;
+      flex: 0 0 auto;
+      border-radius: 50%;
+      background:
+        conic-gradient(from -40deg, var(--teal) 0 43%, #ffffff 43% 70%, var(--orange) 70% 100%);
+      box-shadow: inset 0 0 0 1px rgba(43,118,132,.28);
+    }
+    .agent-mark::before {
+      content: "";
+      position: absolute;
+      inset: 8px;
+      border-radius: 50%;
+      background: #fff;
+      border: 1px solid rgba(43,118,132,.26);
+    }
+    .agent-mark span {
+      position: relative;
+      color: var(--teal-deep);
+      font-size: 12px;
+      line-height: 1.1;
+      font-weight: 900;
+      text-align: center;
+    }
+    .brand h1 {
+      font-size: 34px;
+      line-height: 1.08;
+      font-weight: 950;
+      letter-spacing: 0;
+    }
+    .brand p {
+      margin-top: 8px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.35;
+    }
+    .thesis {
+      color: var(--teal-deep);
+      font-size: 19px;
+      line-height: 1.42;
+      font-weight: 900;
+      text-align: center;
+    }
+    .meta {
+      justify-self: end;
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+    .tag {
+      padding: 8px 11px;
+      color: var(--teal-deep);
+      background: rgba(255,255,255,.86);
+      border: 1px solid #bac7c5;
+      font-size: 12px;
+      font-weight: 900;
+      white-space: nowrap;
+    }
+
+    .canvas {
+      position: relative;
+      z-index: 1;
+      display: grid;
+      gap: 14px;
+      margin-top: 20px;
+    }
+    .panel {
+      position: relative;
+      overflow: hidden;
+      background: var(--paper);
+      border: 1px solid var(--line);
+    }
+    .panel::before,
+    .panel::after {
+      content: "";
+      position: absolute;
+      width: 30px;
+      height: 30px;
+      border-color: #aebcba;
+      pointer-events: none;
+    }
+    .panel::before {
+      top: -1px;
+      left: -1px;
+      border-top: 2px solid;
+      border-left: 2px solid;
+    }
+    .panel::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 2px solid;
+      border-bottom: 2px solid;
+    }
+    .panel-head {
+      height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(250,250,248,.82);
+    }
+    .panel-head h2 {
+      font-size: 17px;
+      line-height: 1;
+      font-weight: 950;
+    }
+    .panel-head span {
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 950;
+      letter-spacing: .9px;
+    }
+    .panel-body { padding: 14px 16px 16px; }
+
+    .score-strip {
+      display: grid;
+      grid-template-columns: 1.04fr 1fr .96fr;
+      gap: 14px;
+    }
+    .hero-metric {
+      min-height: 164px;
+      padding: 18px 18px 16px;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(255,255,255,.95), rgba(240,247,246,.86));
+    }
+    .metric-kicker {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      color: var(--faint);
+      font-size: 11px;
+      font-weight: 900;
+      letter-spacing: .7px;
+    }
+    .metric-title {
+      margin-top: 13px;
+      font-size: 24px;
+      line-height: 1.18;
+      font-weight: 950;
+    }
+    .metric-desc {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.48;
+    }
+    .mini-metrics {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 9px;
+      margin-top: 14px;
+    }
+    .mini-metric {
+      padding: 10px 11px;
+      border: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.72);
+    }
+    .mini-metric b {
+      display: block;
+      color: var(--teal-deep);
+      font-size: 20px;
+      line-height: 1;
+      font-weight: 950;
+    }
+    .mini-metric span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.25;
+    }
+
+    .summary-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 11px;
+      line-height: 1.34;
+    }
+    .summary-table th {
+      padding: 10px 7px;
+      color: #fff;
+      background: var(--teal-deep);
+      border-right: 1px solid rgba(255,255,255,.22);
+      font-size: 11px;
+      font-weight: 900;
+      text-align: left;
+    }
+    .summary-table td {
+      padding: 9px 7px;
+      vertical-align: top;
+      border-right: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.75);
+    }
+    .summary-table tr:nth-child(even) td { background: rgba(245,248,247,.88); }
+    .summary-table th:last-child,
+    .summary-table td:last-child { border-right: 0; }
+    .summary-table .name { color: var(--teal-deep); font-weight: 950; }
+    .stars { color: #d4962e; font-weight: 950; white-space: nowrap; }
+    .fit-high { color: var(--green); font-weight: 950; }
+    .fit-mid { color: var(--blue); font-weight: 950; }
+    .fit-low { color: var(--red); font-weight: 950; }
+    .focus-row td { box-shadow: inset 4px 0 0 var(--orange); }
+
+    .deep-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 12px;
+    }
+    .competitor-card {
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.88);
+    }
+    .competitor-top {
+      min-height: 178px;
+      padding: 15px;
+      position: relative;
+      border-bottom: 1px solid var(--line-soft);
+      background:
+        linear-gradient(90deg, rgba(36,152,170,.12), transparent 58%),
+        linear-gradient(180deg, #fff, #f5f8f7);
+    }
+    .rank {
+      position: absolute;
+      top: 14px;
+      right: 14px;
+      width: 42px;
+      height: 42px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: var(--teal);
+      border-radius: 50%;
+      font-size: 15px;
+      font-weight: 950;
+    }
+    .competitor-top h3 {
+      width: calc(100% - 58px);
+      font-size: 22px;
+      line-height: 1.15;
+      font-weight: 950;
+    }
+    .position {
+      margin-top: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+    .threat {
+      display: inline-flex;
+      margin-top: 12px;
+      padding: 6px 9px;
+      color: #fff;
+      background: var(--red);
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .threat.mid { background: var(--orange); color: #513719; }
+    .threat.low { background: var(--blue); }
+    .threat.high { background: #d94f43; }
+    .card-body {
+      display: grid;
+      gap: 9px;
+      padding: 11px;
+    }
+    .info-box {
+      padding: 11px;
+      border: 1px solid var(--line-soft);
+      background: rgba(249,250,248,.76);
+    }
+    .info-box h4 {
+      margin-bottom: 8px;
+      color: var(--teal-deep);
+      font-size: 13px;
+      line-height: 1;
+      font-weight: 950;
+    }
+    .info-box p,
+    .info-box li {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.46;
+    }
+    .info-box ul {
+      margin: 0;
+      padding-left: 16px;
+    }
+    .info-box li + li { margin-top: 4px; }
+    .keyline {
+      display: grid;
+      grid-template-columns: 70px 1fr;
+      gap: 8px;
+      align-items: start;
+      padding: 6px 0;
+      border-bottom: 1px dashed #d5dddb;
+    }
+    .keyline:last-child { border-bottom: 0; }
+    .keyline b {
+      color: var(--ink);
+      font-size: 11px;
+      font-weight: 950;
+    }
+    .keyline span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.4;
+    }
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+    }
+    .chip {
+      padding: 5px 7px;
+      color: var(--teal-deep);
+      border: 1px solid #c2d3d1;
+      background: #fff;
+      font-size: 10px;
+      font-weight: 850;
+    }
+
+    .insight-grid {
+      display: grid;
+      grid-template-columns: 1.04fr .96fr 1fr;
+      gap: 14px;
+    }
+    .maturity-grid {
+      display: grid;
+      grid-template-columns: .94fr 1.06fr 1fr;
+      gap: 14px;
+    }
+    .maturity-table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 13px;
+    }
+    .maturity-table th,
+    .maturity-table td {
+      padding: 10px 11px;
+      border-bottom: 1px solid var(--line-soft);
+      border-right: 1px solid var(--line-soft);
+      background: rgba(255,255,255,.78);
+    }
+    .maturity-table th {
+      color: var(--teal-deep);
+      background: #f2f7f6;
+      font-weight: 950;
+      text-align: left;
+    }
+    .maturity-table th:last-child,
+    .maturity-table td:last-child { border-right: 0; }
+    .maturity-table .stars { font-size: 13px; }
+    .blue-ocean {
+      box-shadow: inset 4px 0 0 var(--orange);
+    }
+    .gap-matrix {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+      font-size: 12px;
+    }
+    .gap-matrix th,
+    .gap-matrix td {
+      padding: 9px 8px;
+      border-bottom: 1px solid var(--line-soft);
+      border-right: 1px solid var(--line-soft);
+      text-align: center;
+      background: rgba(255,255,255,.78);
+    }
+    .gap-matrix th {
+      color: var(--teal-deep);
+      background: #f2f7f6;
+      font-weight: 950;
+    }
+    .gap-matrix td:first-child,
+    .gap-matrix th:first-child { text-align: left; }
+    .gap-matrix td:last-child,
+    .gap-matrix th:last-child { border-right: 0; }
+    .opp { color: var(--teal-deep); font-weight: 950; }
+    .check { color: var(--red); font-weight: 950; }
+    .delta { color: var(--orange); font-weight: 950; }
+
+    .battle-card {
+      min-height: 320px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.85);
+    }
+    .battle-card h3 {
+      margin-bottom: 10px;
+      color: var(--teal-deep);
+      font-size: 17px;
+      font-weight: 950;
+    }
+    .timeline {
+      display: grid;
+      gap: 9px;
+    }
+    .move {
+      display: grid;
+      grid-template-columns: 86px 1fr;
+      gap: 10px;
+      padding: 10px;
+      border: 1px solid var(--line-soft);
+      background: rgba(247,250,249,.78);
+    }
+    .move b {
+      color: var(--ink);
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .move span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.42;
+    }
+    .strategy-list {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 9px;
+    }
+    .threat-rank {
+      grid-template-columns: repeat(5, 1fr);
+      margin-top: 12px;
+    }
+    .strategy-item {
+      min-height: 84px;
+      padding: 10px;
+      border: 1px solid var(--line-soft);
+      background: rgba(247,250,249,.8);
+    }
+    .strategy-item b {
+      display: block;
+      color: var(--ink);
+      font-size: 13px;
+      font-weight: 950;
+    }
+    .strategy-item span {
+      display: block;
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.36;
+    }
+
+    .footer-note {
+      position: relative;
+      z-index: 1;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 14px;
+      padding-top: 12px;
+      color: var(--faint);
+      border-top: 1px solid var(--line);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: .3px;
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <header class="topbar">
+      <section class="brand">
+        <div class="agent-mark"><span>Hermes<br>Radar</span></div>
+        <div>
+          <h1>AI 销售助手竞品分析</h1>
+          <p>围绕销售初步沟通、客户需求理解、快速方案生成、Hermes 记忆与私有化交付能力，评估五类直接或潜在竞争者。</p>
+        </div>
+      </section>
+      <p class="thesis">从“通用问答”转向“销售沟通响应 + 快速方案/材料交付”。</p>
+      <section class="meta">
+        <span class="tag">5 个竞品</span>
+        <span class="tag">10 个行业成熟度</span>
+        <span class="tag">3 类竞争路径</span>
+        <span class="tag">Hermes 记忆设计</span>
+      </section>
+    </header>
+
+    <section class="canvas">
+      <section class="score-strip">
+        <article class="hero-metric">
+          <div class="metric-kicker"><span>MARKET LANDSCAPE</span><span>01</span></div>
+          <h2 class="metric-title">最强竞品在做“工程成果”交付，不做通用文档/材料交付</h2>
+          <p class="metric-desc">金口良策和品茗晓筑代表工程交付闭环；CAD-KB 则把竞争焦点推向 CAD/DWG/PDF 图纸、BIM 资料和工程知识库的联合理解。</p>
+          <div class="mini-metrics">
+            <div class="mini-metric"><b>3</b><span>S 级/S- 级威胁产品</span></div>
+            <div class="mini-metric"><b>5★</b><span>建筑行业成熟度最高</span></div>
+            <div class="mini-metric"><b>CAD-KB</b><span>专攻图纸深度理解</span></div>
+          </div>
+        </article>
+        <article class="hero-metric">
+          <div class="metric-kicker"><span>BUSINESS MODEL</span><span>02</span></div>
+          <h2 class="metric-title">蓝海行业仍集中在化工、涂料、零部件和通用制造</h2>
+          <p class="metric-desc">建筑施工、工程设计、法律、金融已经出现高成熟垂直 AI 交付资料生成产品；但多数工业企业仍停留在“通用大模型 + 知识库”方案。</p>
+          <div class="mini-metrics">
+            <div class="mini-metric"><b>2★</b><span>化工/涂料成熟度</span></div>
+            <div class="mini-metric"><b>2★</b><span>汽车零部件成熟度</span></div>
+            <div class="mini-metric"><b>2★</b><span>通用制造成熟度</span></div>
+          </div>
+        </article>
+        <article class="hero-metric">
+          <div class="metric-kicker"><span>STRATEGIC OPENING</span><span>03</span></div>
+          <h2 class="metric-title">Hermes 的差异化应落在“系统 + 知识 + 人”的长期记忆</h2>
+          <p class="metric-desc">Hermes 需要同时沉淀企业知识、项目上下文与工程师岗位习惯。</p>
+          <div class="mini-metrics">
+            <div class="mini-metric"><b>企业</b><span>规范版本与历史资产</span></div>
+            <div class="mini-metric"><b>项目</b><span>交付上下文与审批痕迹</span></div>
+            <div class="mini-metric"><b>个人</b><span>岗位偏好与写作标准</span></div>
+          </div>
+        </article>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>一、竞品汇总对比表</h2>
+          <span>PRODUCT MATRIX / DELIVERY / INDUSTRY FIT / HERMES IMPLICATION</span>
+        </div>
+        <div class="panel-body">
+          <table class="summary-table">
+            <colgroup>
+              <col style="width: 8.8%">
+              <col style="width: 14.8%">
+              <col style="width: 16.7%">
+              <col style="width: 5.8%">
+              <col style="width: 8.4%">
+              <col style="width: 14.4%">
+              <col style="width: 10.6%">
+              <col style="width: 10.8%">
+              <col style="width: 9.7%">
+            </colgroup>
+            <thead>
+              <tr>
+                <th>产品名称</th>
+                <th>市场定位</th>
+                <th>功能矩阵</th>
+                <th>交付评分</th>
+                <th>工程适配</th>
+                <th>定价模式概览</th>
+                <th>目标行业</th>
+                <th>专业内容生成</th>
+                <th>Hermes 设计启示</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr class="focus-row">
+                <td class="name">良策金宝AI</td>
+                <td>电力工程智能设计平台，强调自研工程大模型与多智能体协同，覆盖光伏、风电、储能、输变电、配电。</td>
+                <td>规范问答、工程计算、工程文档、工程审核、数据查询、CAD 图纸生成；包含建议书、立项申请书、可研报告、配电设计、端子排接线图。</td>
+                <td class="stars">★★★★☆</td>
+                <td class="fit-high">高<br>电力/新能源极强</td>
+                <td>公开价不透明；免费试用、商务咨询、私有化部署和生态合作明显，偏项目制/定制化销售。</td>
+                <td>电力设计院、新能源 EPC、配电设计、运维咨询；可外扩建筑电气、综合能源、工业电气。</td>
+                <td>强：可研、建议书、项目文档、CAD 图纸，偏工程交付物生成。</td>
+                <td>任务型多智能体强，个人记忆弱；可对标其“规范 + 计算 + 出图”闭环。</td>
+              </tr>
+              <tr class="focus-row">
+                <td class="name">品茗晓筑</td>
+                <td>建筑施工“总工智能体”，面向施工技术线，从岗位级、项目级到企业级推动 AI 与业务融合。</td>
+                <td>规范查询、图纸智能管理、方案编制、方案审核、智能巡检；覆盖规范库、图纸版本比对、施工方案和技术交底生成审查。</td>
+                <td class="stars">★★★★★</td>
+                <td class="fit-high">高<br>建筑施工极强</td>
+                <td>专业版 699 元/账号/年，推广期 499 元；企业定制/私有化差异化报价，单个合同约 50-100 万元。</td>
+                <td>建筑施工总包、专项施工、技术管理、监理、项目公司；可扩市政、基建、房建、安装。</td>
+                <td>强：施工方案、技术交底、审核意见、图纸关联材料，偏编审闭环。</td>
+                <td>持续学习表述更像知识增强；对 Hermes 的压力在“岗位入口”和“方案编审闭环”。</td>
+              </tr>
+              <tr class="focus-row">
+                <td class="name">CAD-KB 工程智能体平台</td>
+                <td>面向工程图纸、CAD 设计资料和企业工程知识资产的 AI 智能体平台，定位为工程知识管理 + 图纸智能理解 + 工程 Agent。</td>
+                <td>CAD/DWG/PDF 图纸问答、BIM 资料理解、工程知识查询、图纸 + 规范联合问答、图纸校核、合规检查、企业知识库与 Agent 插件。</td>
+                <td class="stars">★★★★☆</td>
+                <td class="fit-high">高<br>设计院/EPC/制造</td>
+                <td>未发现公开定价；推断标准版 3-10 万/年、企业版 10-30 万/年、私有化 30-100 万+，工程知识中台项目 50-300 万。</td>
+                <td>建筑/市政/规划设计院，电力/化工/工业 EPC，装备、电气、涂料制造企业。</td>
+                <td>中-强：图纸问答和工程知识查询强；技术方案、设计说明、项目汇报生成可能支持但弱于品茗/良策。</td>
+                <td>Hermes 应学习其图纸级知识库，把常查规范、专业方向、模板和项目类型沉淀为工程师数字分身。</td>
+              </tr>
+              <tr>
+                <td class="name">文信软件<br>AI 文档平台</td>
+                <td>ECM/企业内容管理厂商 AI 化升级，覆盖工程信息管理、工程文件一体化、配置、合同、项目管理。</td>
+                <td>AI 知识服务、AI 问数、AI 审核、AI 生成；专利和案例指向工程能源设备文档、图纸位号提取与 AI 造价匡算。</td>
+                <td class="stars">★★★★☆</td>
+                <td class="fit-high">高<br>工程能源文档密集</td>
+                <td>无公开 SKU；AI 智慧平台建设报价线索 665,000 元，偏平台授权 + 实施 + 定制 + 维保。</td>
+                <td>工程能源、制造、核电、汽车、物流、生命科学、金融；适合大型央国企知识/文件中台。</td>
+                <td>强于审核、问数、生成和位号提取；更偏文档管理 + AI 改造。</td>
+                <td>ECM 黏性强但个人记忆弱；Hermes 要避开纯文控，抢工程成果生产链。</td>
+              </tr>
+              <tr>
+                <td class="name">开目软件</td>
+                <td>工业软件厂商，核心为 PLM/CAPP/MOM/3DDFM/3DDFC/3DAST，叠加 AI Agent“小沐”。</td>
+                <td>可制造性审查、制造成本估算、三维工艺规划与仿真、工艺文件编制输出、PLM/CAD/MES 集成。</td>
+                <td class="stars">★★★★☆</td>
+                <td class="fit-mid">中-高<br>制造工程极强</td>
+                <td>正式版多为咨询报价；3DDFM 官方测试版公开标价 10,000 元/年，可作标准 SKU 锚点。</td>
+                <td>高端装备、航空航天、船舶、能源电力、制造业；可扩化工装备、流程工业、机加/装配。</td>
+                <td>强：工艺审查报告、成本分析、工艺文件、过程卡、装配工艺输出成熟。</td>
+                <td>最接近“生长型 AI 伙伴”叙事；Hermes 可借鉴用户参与、自主更新进化。</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>二、逐产品深度分析</h2>
+          <span>DEEP DIVE / DELIVERY LOOP / PRICING / LIMITS / THREAT</span>
+        </div>
+        <div class="panel-body">
+          <div class="deep-grid">
+            <article class="competitor-card">
+              <div class="competitor-top">
+                <div class="rank">01</div>
+                <h3>金口良策AI</h3>
+                <p class="position">电力工程智能设计平台。最危险的能力不是“会答”，而是把电力类工程交付物直接做出来。</p>
+                <span class="threat high">威胁：高</span>
+              </div>
+              <div class="card-body">
+                <section class="info-box">
+                  <h4>闭环能力</h4>
+                  <div class="keyline"><b>路径</b><span>规范查询 → 工程计算 → 项目建议书/可研报告 → CAD 图纸 → 工程审核。</span></div>
+                  <div class="keyline"><b>场景</b><span>光伏、风电、储能、输变电、配电，官方已把负荷计算、配电设计、深化出图串成方案。</span></div>
+                  <div class="keyline"><b>风险</b><span>若复制到建筑电气、综合能源、工业电气，将形成垂直降维压力。</span></div>
+                </section>
+                <section class="info-box">
+                  <h4>价格与销售</h4>
+                  <p>公开 SKU 不清晰，官网更多是免费试用、商务咨询、企业智能体定制、私有化部署和生态合作。可信推断为 B2B 项目制/定制化路线。</p>
+                </section>
+                <section class="info-box">
+                  <h4>优势与局限</h4>
+                  <ul>
+                    <li>优势：垂直深、交付物完整，电力工程“文档-计算-出图”雏形已形成。</li>
+                    <li>局限：行业集中在电力/新能源，个人记忆机制不明显。</li>
+                  </ul>
+                </section>
+              </div>
+            </article>
+
+            <article class="competitor-card">
+              <div class="competitor-top">
+                <div class="rank">02</div>
+                <h3>品茗晓筑</h3>
+                <p class="position">建筑施工技术线“总工智能体”。最贴近工程材料交付闭环，也是建筑施工市场必须正面应对的竞品。</p>
+                <span class="threat high">威胁：极高</span>
+              </div>
+              <div class="card-body">
+                <section class="info-box">
+                  <h4>闭环能力</h4>
+                  <div class="keyline"><b>路径</b><span>查规范/图集/造价/图纸 → 方案编制 → 方案审核 → 图纸关联 → 智能巡检。</span></div>
+                  <div class="keyline"><b>资产</b><span>1 万多本现行规范、图纸版本比对、智能分图、图纸问答、方案知识库。</span></div>
+                  <div class="keyline"><b>入口</b><span>占住施工技术人群日常工作台，比单点材料生成更难替代。</span></div>
+                </section>
+                <section class="info-box">
+                  <h4>价格与销售</h4>
+                  <p>标准版价格公开：专业版 699 元/账号/年，推广期 499 元/年。企业定制和私有化按场景报价，公开线索约 50-100 万元/单。</p>
+                </section>
+                <section class="info-box">
+                  <h4>优势与局限</h4>
+                  <ul>
+                    <li>优势：建筑施工深度强，方案编审闭环明确，客户进入门槛低。</li>
+                    <li>局限：行业边界集中在建筑施工，跨化工、电力制造需要重建专业规则。</li>
+                  </ul>
+                </section>
+              </div>
+            </article>
+
+            <article class="competitor-card">
+              <div class="competitor-top">
+                <div class="rank">03</div>
+                <h3>CAD-KB 工程智能体</h3>
+                <p class="position">CAD + Knowledge Base + Agent。更偏工程企业知识中台，核心变量是图纸语义理解，而不是普通 Office 文档问答。</p>
+                <span class="threat mid">威胁：中高</span>
+              </div>
+              <div class="card-body">
+                <section class="info-box">
+                  <h4>闭环能力</h4>
+                  <div class="keyline"><b>路径</b><span>CAD/DWG/PDF 图纸与 BIM 资料解析 → 工程知识库检索 → 图纸问答 → 图纸 + 规范联合判断 → 图纸校核/合规检查。</span></div>
+                  <div class="keyline"><b>场景</b><span>定位泵房、设备、管线、图元、图层、块参照和标注；关联规范、设计说明和历史项目，回答设计依据与合规问题。</span></div>
+                  <div class="keyline"><b>集成</b><span>预计对接 AutoCAD、天正 CAD、Revit、BIM 平台、OA、PLM、ERP、PM；私有化、API 和 Agent 插件支持度更高。</span></div>
+                </section>
+                <section class="info-box">
+                  <h4>价格与销售</h4>
+                  <p>未发现公开定价，推断偏企业知识库平台和工程知识中台销售：标准版 3-10 万/年，企业版 10-30 万/年，私有化 30-100 万+；工程知识中台 50-300 万/项目，设计院专属 Agent 可能达到 100-500 万+。隐藏成本包括 CAD 解析引擎、图纸向量化、GPU 服务器和年度维保。</p>
+                </section>
+                <section class="info-box">
+                  <h4>优势与局限</h4>
+                  <ul>
+                    <li>优势：图纸级知识库、CAD 解析、图纸 + 规范联合推理和企业工程经验沉淀能力强，明显强于通用 RAG。</li>
+                    <li>局限：完整交付闭环、专业计算、工程文档自动生成、项目管理和归档闭环可能弱于品茗晓筑、良策金宝和文信软件。</li>
+                  </ul>
+                </section>
+              </div>
+            </article>
+
+            <article class="competitor-card">
+              <div class="competitor-top">
+                <div class="rank">04</div>
+                <h3>文信软件</h3>
+                <p class="position">ECM 老牌能力叠加 AI。最大威胁是从大型企业既有文控、归档、权限和流程系统里顺势升级。</p>
+                <span class="threat mid">威胁：中高</span>
+              </div>
+              <div class="card-body">
+                <section class="info-box">
+                  <h4>闭环能力</h4>
+                  <div class="keyline"><b>底座</b><span>企业内容管理、工程信息管理、工程文件一体化、配置、合同、项目管理。</span></div>
+                  <div class="keyline"><b>AI</b><span>AI 知识服务、AI 问数、AI 审核、AI 生成，含设备文档/图纸位号提取与 AI 造价匡算案例。</span></div>
+                  <div class="keyline"><b>入口</b><span>大型工程企业原本就需要文控系统，AI 升级采购阻力较低。</span></div>
+                </section>
+                <section class="info-box">
+                  <h4>价格与销售</h4>
+                  <p>公开 SKU 不明显。AI 智慧平台建设报价线索 665,000 元，更像平台授权、项目实施、定制开发和后续维保组合。</p>
+                </section>
+                <section class="info-box">
+                  <h4>优势与局限</h4>
+                  <ul>
+                    <li>优势：权限、流程、归档、合规和既有系统兼容性更容易落地。</li>
+                    <li>局限：专业内容生成闭环不如品茗/金口良策，更强在文档治理。</li>
+                  </ul>
+                </section>
+              </div>
+            </article>
+
+            <article class="competitor-card">
+              <div class="competitor-top">
+                <div class="rank">05</div>
+                <h3>开目软件</h3>
+                <p class="position">设计-工艺-制造一体化工业软件厂商。对带制造属性的工程客户，是横向切入的高威胁者。</p>
+                <span class="threat mid">威胁：中高</span>
+              </div>
+              <div class="card-body">
+                <section class="info-box">
+                  <h4>闭环能力</h4>
+                  <div class="keyline"><b>路径</b><span>设计模型 → 可制造性审查 → 成本估算 → 三维工艺规划 → 工艺文件/过程卡输出。</span></div>
+                  <div class="keyline"><b>资产</b><span>MBD 模型、工艺知识库、规则推理、制造特征识别、CAD/PLM/MES 集成。</span></div>
+                  <div class="keyline"><b>AI</b><span>AI Agent“小沐”强调用户深度参与、自主更新进化，接近生长型 AI 伙伴叙事。</span></div>
+                </section>
+                <section class="info-box">
+                  <h4>价格与销售</h4>
+                  <p>正式商业版多为咨询报价。3DDFM 官方测试版有 10,000 元/年的公开锚点，同时保留软件交付 + 人工交付的企业项目逻辑。</p>
+                </section>
+                <section class="info-box">
+                  <h4>优势与局限</h4>
+                  <ul>
+                    <li>优势：制造工程规则库、工艺库、成本模型和系统集成扎实。</li>
+                    <li>局限：通用查询、知识生成和归档闭环弱于平台型竞品。</li>
+                  </ul>
+                </section>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>三、垂直产品行业成熟度</h2>
+          <span>INDUSTRY MATURITY / BLUE OCEAN / COMMERCIAL OPENING</span>
+        </div>
+        <div class="panel-body">
+          <div class="maturity-grid">
+            <article class="battle-card">
+              <h3>已出现垂直产品的行业</h3>
+              <table class="maturity-table">
+                <colgroup>
+                  <col style="width: 45%">
+                  <col style="width: 55%">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>行业</th>
+                    <th>成熟度</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>建筑施工</td><td class="stars">★★★★★</td></tr>
+                  <tr><td>工程设计</td><td class="stars">★★★★★</td></tr>
+                  <tr><td>电力能源</td><td class="stars">★★★★☆</td></tr>
+                  <tr><td>法律</td><td class="stars">★★★★★</td></tr>
+                  <tr><td>医疗</td><td class="stars">★★★★☆</td></tr>
+                  <tr><td>金融</td><td class="stars">★★★★★</td></tr>
+                  <tr class="blue-ocean"><td>化工</td><td class="stars">★★☆☆☆</td></tr>
+                  <tr class="blue-ocean"><td>涂料</td><td class="stars">★★☆☆☆</td></tr>
+                  <tr class="blue-ocean"><td>汽车零部件</td><td class="stars">★★☆☆☆</td></tr>
+                  <tr class="blue-ocean"><td>通用制造</td><td class="stars">★★☆☆☆</td></tr>
+                </tbody>
+              </table>
+            </article>
+
+            <article class="battle-card">
+              <h3>成熟市场与蓝海市场</h3>
+              <div class="timeline">
+                <div class="move"><b>高成熟</b><span>建筑施工、工程设计、法律、金融已经出现高成熟垂直 AI 文档产品，行业模板、专业知识和工作流沉淀更充分。</span></div>
+                <div class="move"><b>中成熟</b><span>电力能源和医疗已经有较强垂直产品，但专业细分、数据权限、合规流程仍会影响平台化速度。</span></div>
+                <div class="move"><b>蓝海</b><span>化工、涂料、汽车零部件、通用制造仍处于低成熟阶段，多数企业还在使用“通用大模型 + 知识库”。</span></div>
+                <div class="move"><b>机会</b><span>真正做到行业深度模板化、专业知识沉淀、图纸/工艺/规范联合理解的厂商仍然不多。</span></div>
+              </div>
+            </article>
+
+            <article class="battle-card">
+              <h3>商业机会判断</h3>
+              <div class="strategy-list">
+                <div class="strategy-item"><b>涂料</b><span>产品资料、配方规则、检测报告、施工说明和客户项目经验可模板化沉淀。</span></div>
+                <div class="strategy-item"><b>化工</b><span>规范、工艺包、HAZOP、设备位号、SDS、验收资料具备强知识治理需求。</span></div>
+                <div class="strategy-item"><b>汽车零部件</b><span>APQP、PPAP、8D、工艺文件、质量文档和客户标准高度文档密集。</span></div>
+                <div class="strategy-item"><b>通用制造</b><span>工艺、质量、设备、供应链和客户交付资料分散，适合从知识中台切入。</span></div>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head">
+          <h2>四、对我们平台的直接策略启示</h2>
+          <span>OPPORTUNITY / DEFENSIBILITY / PRICING / HERMES MEMORY</span>
+        </div>
+        <div class="panel-body">
+          <div class="insight-grid">
+            <article class="battle-card">
+              <h3>竞争能力缺口矩阵</h3>
+              <table class="gap-matrix">
+                <colgroup>
+                  <col style="width: 23%">
+                  <col style="width: 15%">
+                  <col style="width: 15%">
+                  <col style="width: 15%">
+                  <col style="width: 32%">
+                </colgroup>
+                <thead>
+                  <tr>
+                    <th>关键能力</th>
+                    <th>垂直工程</th>
+                    <th>图纸知识中台</th>
+                    <th>ECM/工业</th>
+                    <th>我方机会</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr><td>工程交付物生成</td><td class="check">强</td><td class="delta">中</td><td class="delta">局部强</td><td class="opp">做成跨行业标准工作流</td></tr>
+                  <tr><td>图纸语义理解</td><td class="delta">局部强</td><td class="check">强</td><td class="delta">行业绑定</td><td class="opp">把 CAD/BIM/PDF 图纸变成核心壁垒</td></tr>
+                  <tr><td>图纸/规范/计算闭环</td><td class="check">强</td><td class="delta">强图纸弱计算</td><td class="delta">行业绑定</td><td class="opp">沉淀可迁移工程规则层</td></tr>
+                  <tr><td>企业文控与归档</td><td class="delta">中</td><td class="delta">中</td><td class="check">强</td><td class="opp">把成果生产和归档连成一条链</td></tr>
+                  <tr><td>项目/岗位/个人记忆</td><td class="delta">弱显式</td><td class="delta">推断较强</td><td class="delta">系统知识</td><td class="opp">做 Hermes 三层长期记忆</td></tr>
+                </tbody>
+              </table>
+            </article>
+
+            <article class="battle-card">
+              <h3>最直接的三条判断</h3>
+              <div class="timeline">
+                <div class="move"><b>护城河</b><span>不是“会回答”，而是能把规范查询、专业计算、文档生成、图纸语义、审核校验、归档闭环串成可验收成果。</span></div>
+                <div class="move"><b>定价</b><span>前台应有低门槛试用/轻量订阅，后台承接私有化、知识库建设、数据治理、系统集成和持续运维。</span></div>
+                <div class="move"><b>Hermes</b><span>聊天记忆不够。要沉淀企业工程知识、岗位习惯、项目上下文、常查规范、常用模板和规范版本演进。</span></div>
+                <div class="move"><b>防守</b><span>面对品茗守建筑施工，面对金口良策守电力设计，面对 CAD-KB 守图纸语义，面对开目守制造工程链路。</span></div>
+              </div>
+            </article>
+
+            <article class="battle-card">
+              <h3>我方应抢占的产品制高点</h3>
+              <div class="strategy-list">
+                <div class="strategy-item"><b>交付物工厂</b><span>把可研、方案、技术交底、审查意见、报告归档做成端到端成果流。</span></div>
+                <div class="strategy-item"><b>多行业规则层</b><span>将化工、涂料、电力、建筑、制造等规范、图纸语义和模板作为可治理资产。</span></div>
+                <div class="strategy-item"><b>协同与审批</b><span>覆盖编制、校审、总工复核、外部顾问、留痕和企业 BPM 对接。</span></div>
+                <div class="strategy-item"><b>Hermes 记忆</b><span>同时记住企业知识、项目状态、岗位职责、个人偏好、常用图纸和历史反馈。</span></div>
+                <div class="strategy-item"><b>开放集成</b><span>连接 CAD/PLM/ECM/ERP/档案系统，避免只成为孤立文档工具。</span></div>
+                <div class="strategy-item"><b>清晰商业层级</b><span>用标准版获客，用团队版协同，用企业版治理，用私有化做高客单。</span></div>
+              </div>
+            </article>
+          </div>
+          <div class="timeline threat-rank">
+            <div class="move"><b>品茗晓筑</b><span><strong>S</strong>：建筑施工方案编审闭环和岗位入口最强。</span></div>
+            <div class="move"><b>良策金宝</b><span><strong>S</strong>：电力设计“规范 + 计算 + 文档 + 出图”闭环完整。</span></div>
+            <div class="move"><b>CAD-KB</b><span><strong>S-</strong>：图纸语义理解是未来工程 AI 的核心壁垒。</span></div>
+            <div class="move"><b>开目软件</b><span><strong>A+</strong>：设计、工艺、制造和成本链路扎实。</span></div>
+            <div class="move"><b>文信软件</b><span><strong>A</strong>：ECM、权限、归档和大型企业文控入口强。</span></div>
+          </div>
+        </div>
+      </section>
+    </section>
+
+    <footer class="footer-note">
+      <span>ENGINEERING DOCUMENT INTELLIGENCE PLATFORM · COMPETITOR ANALYSIS</span>
+      <span>VISUAL SYSTEM: GRID / PANEL / TECHNICAL TEAL / DELIVERY RADAR</span>
+    </footer>
+  </main>
+</body>
+</html>

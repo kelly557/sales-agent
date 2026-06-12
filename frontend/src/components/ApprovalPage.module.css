@@ -1,0 +1,85 @@
+.page {
+  display: grid;
+  gap: 22px;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 24px;
+}
+
+.header h1 {
+  margin: 0 0 8px;
+  color: var(--color-ink);
+  font-size: var(--font-size-title);
+  line-height: var(--line-height-tight);
+}
+
+.header p {
+  max-width: 760px;
+  margin: 0;
+  color: var(--color-muted);
+  line-height: var(--line-height-body);
+}
+
+.summaryGrid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.summaryCard {
+  min-height: 92px;
+  padding: 18px;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  background: #ffffff;
+}
+
+.summaryCard span {
+  color: var(--color-muted);
+  font-weight: var(--font-weight-semibold);
+}
+
+.summaryCard strong {
+  margin-left: auto;
+  color: var(--color-ink);
+  font-size: var(--font-size-title);
+  font-weight: var(--font-weight-semibold);
+}
+
+.summaryIcon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 8px;
+  background: #eaf4ff;
+  color: var(--color-primary) !important;
+}
+
+.nameCell {
+  display: grid;
+  gap: 4px;
+}
+
+.nameCell strong {
+  color: var(--color-ink);
+}
+
+.nameCell span {
+  color: var(--color-muted);
+  font-size: var(--font-size-sm);
+}
+
+@media (max-width: 820px) {
+  .header {
+    display: grid;
+  }
+
+  .summaryGrid {
+    grid-template-columns: 1fr;
+  }
+}

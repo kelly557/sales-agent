@@ -1,0 +1,946 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>工程文档 Agent 业务流程图</title>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      securityLevel: "loose",
+      flowchart: {
+        curve: "basis",
+        padding: 16,
+        nodeSpacing: 42,
+        rankSpacing: 52
+      },
+      themeVariables: {
+        fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        primaryColor: "#eef6ff",
+        primaryTextColor: "#12314d",
+        primaryBorderColor: "#79a9da",
+        lineColor: "#6d8298",
+        secondaryColor: "#f5f7fb",
+        tertiaryColor: "#fff7ed",
+        clusterBkg: "#f8fafc",
+        clusterBorder: "#d9e2ec",
+        edgeLabelBackground: "#ffffff",
+        nodeBorder: "#9eb9d5",
+        mainBkg: "#ffffff",
+        textColor: "#23384d"
+      }
+    });
+  </script>
+  <style>
+    :root {
+      --bg: #f4f7fb;
+      --panel: #ffffff;
+      --panel-2: #f8fbff;
+      --ink: #172a3a;
+      --muted: #65758a;
+      --line: #dbe5ef;
+      --blue: #1f6feb;
+      --blue-2: #e8f2ff;
+      --cyan: #0f8ca8;
+      --green: #14845f;
+      --orange: #c46a18;
+      --shadow: 0 18px 50px rgba(22, 43, 67, 0.10);
+      --radius: 14px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        radial-gradient(circle at 12% -8%, rgba(31, 111, 235, 0.12), transparent 28%),
+        linear-gradient(180deg, #f8fbff 0%, var(--bg) 46%, #eef3f8 100%);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+      line-height: 1.55;
+    }
+
+    .shell {
+      display: grid;
+      grid-template-columns: 280px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    aside {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      padding: 26px 20px;
+      overflow: auto;
+      background: rgba(255, 255, 255, 0.78);
+      border-right: 1px solid var(--line);
+      backdrop-filter: blur(18px);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .brand-mark {
+      width: 38px;
+      height: 38px;
+      display: grid;
+      place-items: center;
+      border-radius: 11px;
+      color: #fff;
+      font-weight: 800;
+      background: linear-gradient(135deg, #1f6feb, #0f8ca8);
+      box-shadow: 0 10px 24px rgba(31, 111, 235, 0.25);
+    }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 16px;
+      line-height: 1.25;
+    }
+
+    .brand p {
+      margin: 2px 0 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    nav {
+      display: grid;
+      gap: 6px;
+    }
+
+    nav a {
+      display: block;
+      padding: 10px 12px;
+      color: #31485f;
+      text-decoration: none;
+      border-radius: 10px;
+      font-size: 14px;
+    }
+
+    nav a:hover {
+      color: var(--blue);
+      background: var(--blue-2);
+    }
+
+    .legend {
+      margin-top: 28px;
+      padding: 14px;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      background: #fff;
+    }
+
+    .legend-title {
+      margin: 0 0 10px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin: 8px 0;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .dot {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+    }
+
+    .dot.blue { background: var(--blue); }
+    .dot.green { background: var(--green); }
+    .dot.orange { background: var(--orange); }
+    .dot.cyan { background: var(--cyan); }
+
+    main {
+      min-width: 0;
+      padding: 38px clamp(22px, 4vw, 56px) 64px;
+    }
+
+    .hero {
+      padding: 34px;
+      margin-bottom: 24px;
+      border: 1px solid rgba(121, 169, 218, 0.35);
+      border-radius: 22px;
+      background:
+        linear-gradient(135deg, rgba(255,255,255,0.94), rgba(232,242,255,0.84)),
+        linear-gradient(90deg, rgba(31,111,235,0.08), rgba(15,140,168,0.08));
+      box-shadow: var(--shadow);
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      padding: 6px 10px;
+      color: #164f90;
+      background: #e8f2ff;
+      border: 1px solid #cfe4ff;
+      border-radius: 999px;
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .hero h2 {
+      margin: 0 0 12px;
+      max-width: 900px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    .hero p {
+      max-width: 920px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 14px;
+      margin: 22px 0 32px;
+    }
+
+    .summary-card {
+      padding: 18px;
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      background: rgba(255, 255, 255, 0.86);
+      box-shadow: 0 10px 28px rgba(22, 43, 67, 0.06);
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 18px;
+    }
+
+    .summary-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    section {
+      margin: 28px 0;
+      padding: 24px;
+      border: 1px solid var(--line);
+      border-radius: 18px;
+      background: rgba(255, 255, 255, 0.92);
+      box-shadow: 0 16px 44px rgba(22, 43, 67, 0.07);
+    }
+
+    .section-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+      padding-bottom: 16px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .section-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .index {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      flex: 0 0 auto;
+      color: #fff;
+      border-radius: 10px;
+      background: #1f6feb;
+      font-weight: 800;
+    }
+
+    section h3 {
+      margin: 0;
+      font-size: 22px;
+      letter-spacing: 0;
+    }
+
+    .section-head p {
+      margin: 6px 0 0;
+      max-width: 780px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      white-space: nowrap;
+      padding: 6px 10px;
+      border-radius: 999px;
+      color: #164f90;
+      background: #e8f2ff;
+      font-size: 12px;
+      font-weight: 700;
+    }
+
+    .diagram-wrap {
+      overflow: auto;
+      padding: 18px;
+      border-radius: 14px;
+      border: 1px solid #e1e9f2;
+      background: linear-gradient(180deg, #ffffff, #fbfdff);
+    }
+
+    .mermaid {
+      min-width: 760px;
+      margin: 0 auto;
+    }
+
+    footer {
+      margin: 36px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+
+    @media (max-width: 1080px) {
+      .shell {
+        grid-template-columns: 1fr;
+      }
+
+      aside {
+        position: relative;
+        height: auto;
+      }
+
+      nav {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .summary-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+
+    @media (max-width: 720px) {
+      main {
+        padding: 20px 14px 42px;
+      }
+
+      .hero,
+      section {
+        padding: 18px;
+      }
+
+      .section-head {
+        display: block;
+      }
+
+      .tag {
+        margin-top: 12px;
+      }
+
+      .summary-grid,
+      nav {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media print {
+      body {
+        background: #fff;
+      }
+
+      .shell {
+        display: block;
+      }
+
+      aside {
+        display: none;
+      }
+
+      main {
+        padding: 0;
+      }
+
+      .hero,
+      section {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <div class="brand-mark">A</div>
+        <div>
+          <h1>工程文档 Agent</h1>
+          <p>业务流程图</p>
+        </div>
+      </div>
+      <nav aria-label="页面目录">
+        <a href="#flow-1">1. 总体业务流程</a>
+        <a href="#flow-2">2. 我的项目与项目上下文</a>
+        <a href="#flow-3">3. 查找类流程</a>
+        <a href="#flow-4">4. 生成类流程</a>
+        <a href="#flow-5">5. 计算类流程</a>
+        <a href="#flow-6">6. 审核类流程</a>
+        <a href="#flow-7">7. 集成与回写</a>
+        <a href="#flow-8">8. 人工审阅与追溯</a>
+        <a href="#flow-9">9. 交付与沉淀</a>
+      </nav>
+      <div class="legend">
+        <p class="legend-title">阅读提示</p>
+        <div class="legend-item"><span class="dot blue"></span>蓝色节点表示主流程动作</div>
+        <div class="legend-item"><span class="dot green"></span>分支表示用户选择或系统判断</div>
+        <div class="legend-item"><span class="dot orange"></span>风险、确认、回写节点需重点关注</div>
+        <div class="legend-item"><span class="dot cyan"></span>每张图可横向滚动查看</div>
+      </div>
+    </aside>
+
+    <main>
+      <header class="hero">
+        <div class="eyebrow">Agent Native · 工程文档任务流程</div>
+        <h2>工程文档 Agent 业务流程图</h2>
+        <p>基于产品方案梳理从“我的项目”、项目上下文、资料集成、任务执行、人工审阅到交付沉淀的端到端业务流程。</p>
+      </header>
+
+      <div class="summary-grid">
+        <div class="summary-card">
+          <strong>4 类能力</strong>
+          <span>查找、生成、计算、审核</span>
+        </div>
+        <div class="summary-card">
+          <strong>9 个流程</strong>
+          <span>覆盖任务前中后全链路</span>
+        </div>
+        <div class="summary-card">
+          <strong>项目上下文</strong>
+          <span>约束资料范围与输出归属</span>
+        </div>
+        <div class="summary-card">
+          <strong>可追溯交付</strong>
+          <span>引用、确认、版本、沉淀闭环</span>
+        </div>
+      </div>
+
+      <section id="flow-1">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="index">1</div>
+            <div>
+              <h3>总体业务流程</h3>
+              <p>从 Agent 首页进入任务，选择项目和行业场景，完成资料引用、Agent 执行、人工确认、交付和沉淀。</p>
+            </div>
+          </div>
+          <span class="tag">端到端主流程</span>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">flowchart TD
+    A["用户进入 Agent 首页"] --> B{"是否已有可用项目"}
+    B -->|"是"| C["从我的项目选择项目"]
+    B -->|"否"| D["创建轻量项目"]
+    D --> C
+
+    C --> E["形成项目上下文"]
+    E --> F["选择行业场景包"]
+    F --> G["选择任务能力"]
+
+    G --> G1["查找"]
+    G --> G2["生成"]
+    G --> G3["计算"]
+    G --> G4["审核"]
+
+    G1 --> H["选择或输入任务"]
+    G2 --> H
+    G3 --> H
+    G4 --> H
+
+    H --> I["选择资料来源"]
+    I --> I1["项目资料"]
+    I --> I2["集成资料源"]
+    I --> I3["本地上传"]
+    I --> I4["知识库/标准库"]
+
+    I1 --> J["文档解析与工程对象识别"]
+    I2 --> J
+    I3 --> J
+    I4 --> J
+
+    J --> K["Agent 执行任务"]
+    K --> L{"是否缺少关键信息"}
+    L -->|"是"| M["追问用户/请求补充资料"]
+    M --> I
+    L -->|"否"| N["生成中间结果"]
+
+    N --> O["风险、缺失、引用来源标记"]
+    O --> P["人工审阅与确认"]
+    P --> Q{"是否通过确认"}
+    Q -->|"否"| R["修改条件/调整资料/重新执行"]
+    R --> K
+    Q -->|"是"| S["生成正式交付物"]
+
+    S --> T{"交付方式"}
+    T -->|"导出"| U["导出 Word/PPT/PDF/Excel"]
+    T -->|"回写"| V["回写到集成系统"]
+    T -->|"归档"| W["沉淀到项目"]
+
+    U --> X["任务完成"]
+    V --> X
+    W --> X
+
+    X --> Y["沉淀为项目资产/案例/模板/规则"]</pre>
+        </div>
+      </section>
+
+      <section id="flow-2">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="index">2</div>
+            <div>
+              <h3>我的项目与项目上下文准备流程</h3>
+              <p>我的项目是轻量入口，项目上下文是 Agent 执行任务时的资料范围、工程对象和输出归属。</p>
+            </div>
+          </div>
+          <span class="tag">任务前置</span>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">flowchart TD
+    A["进入我的项目"] --> B{"是否创建新项目"}
+    B -->|"否"| C["选择已有项目"]
+    B -->|"是"| D["创建轻量项目"]
+    D --> E["填写项目基本信息"]
+    C --> F["确认资料范围"]
+    E --> F
+    E --> E1["项目名称"]
+    E --> E2["行业"]
+    E --> E3["工程类型"]
+    E --> E4["项目阶段"]
+    E --> E5["客户/场景"]
+
+    E1 --> G["选择行业场景包"]
+    E2 --> G
+    E3 --> G
+    E4 --> G
+    E5 --> G
+
+    F --> H["引用项目资料来源"]
+    G --> H
+    H --> H1["本地上传"]
+    H --> H2["文档库/网盘"]
+    H --> H3["项目系统"]
+    H --> H4["标准规范库"]
+    H --> H5["产品/设备资料库"]
+
+    H1 --> I["资料索引"]
+    H2 --> I
+    H3 --> I
+    H4 --> I
+    H5 --> I
+
+    I --> J["识别工程对象"]
+    J --> J1["专业/系统"]
+    J --> J2["设备/材料/产品"]
+    J --> J3["工艺/工程部位"]
+    J --> J4["图纸/文件/报告"]
+
+    J1 --> K["形成项目上下文"]
+    J2 --> K
+    J3 --> K
+    J4 --> K
+
+    K --> L["用于 Agent 任务"]</pre>
+        </div>
+      </section>
+
+      <section id="flow-3">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="index">3</div>
+            <div>
+              <h3>查找类业务流程</h3>
+              <p>用于标准规范、产品资料、项目资料、历史案例和相似方案的定位与引用。</p>
+            </div>
+          </div>
+          <span class="tag">查找</span>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">flowchart TD
+    A["用户选择查找"] --> B{"查找对象"}
+    B --> B1["标准规范"]
+    B --> B2["设备/产品资料"]
+    B --> B3["项目资料"]
+    B --> B4["历史案例"]
+    B --> B5["相似方案"]
+
+    B1 --> C["输入关键词/工程条件"]
+    B2 --> C
+    B3 --> C
+    B4 --> C
+    B5 --> C
+
+    C --> D["限定查找范围"]
+    D --> D1["当前项目上下文"]
+    D --> D2["企业知识库"]
+    D --> D3["行业场景包"]
+    D --> D4["集成资料源"]
+
+    D1 --> E["检索与语义匹配"]
+    D2 --> E
+    D3 --> E
+    D4 --> E
+
+    E --> F["工程对象关联"]
+    F --> G["生成查找结果"]
+    G --> G1["相关资料列表"]
+    G --> G2["引用位置"]
+    G --> G3["适用性说明"]
+    G --> G4["相似案例"]
+
+    G1 --> H["用户选择引用到任务"]
+    G2 --> H
+    G3 --> H
+    G4 --> H</pre>
+        </div>
+      </section>
+
+      <section id="flow-4">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="index">4</div>
+            <div>
+              <h3>生成类业务流程</h3>
+              <p>用于工程方案、作业指导书、技术说明书、推广材料和交付报告的生成。</p>
+            </div>
+          </div>
+          <span class="tag">生成</span>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">flowchart TD
+    A["用户选择生成"] --> B{"生成类型"}
+    B --> B1["工程方案"]
+    B --> B2["作业指导书"]
+    B --> B3["技术说明书"]
+    B --> B4["推广材料"]
+    B --> B5["交付报告"]
+
+    B1 --> C["选择项目和行业场景包"]
+    B2 --> C
+    B3 --> C
+    B4 --> C
+    B5 --> C
+
+    C --> D["选择模板和输出格式"]
+    D --> D1["Word"]
+    D --> D2["PPT"]
+    D --> D3["PDF"]
+    D --> D4["Excel"]
+
+    D1 --> E["引用资料和知识源"]
+    D2 --> E
+    D3 --> E
+    D4 --> E
+
+    E --> F["Agent 查找依据"]
+    F --> G{"信息是否完整"}
+    G -->|"否"| H["追问缺失条件"]
+    H --> E
+    G -->|"是"| I["生成大纲"]
+
+    I --> J["用户确认大纲"]
+    J --> K["生成正文"]
+    K --> L["插入引用来源和风险提示"]
+    L --> M["生成可编辑交付物"]
+    M --> N["人工审阅"]
+    N --> O{"是否需要修改"}
+    O -->|"是"| P["调整要求后重新生成"]
+    P --> K
+    O -->|"否"| Q["导出/回写/沉淀"]</pre>
+        </div>
+      </section>
+
+      <section id="flow-5">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="index">5</div>
+            <div>
+              <h3>计算类业务流程</h3>
+              <p>用于工程参数、材料用量、资料完整率、版本差异和设备参数对比计算。</p>
+            </div>
+          </div>
+          <span class="tag">计算</span>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">flowchart TD
+    A["用户选择计算"] --> B{"计算类型"}
+    B --> B1["工程参数计算"]
+    B --> B2["材料用量估算"]
+    B --> B3["资料完整率计算"]
+    B --> B4["版本差异统计"]
+    B --> B5["设备参数对比"]
+
+    B1 --> C["收集输入参数"]
+    B2 --> C
+    B3 --> C
+    B4 --> C
+    B5 --> C
+
+    C --> D["确认参数来源"]
+    D --> D1["项目资料"]
+    D --> D2["产品/设备资料"]
+    D --> D3["标准规范"]
+    D --> D4["用户手动输入"]
+
+    D1 --> E["校验参数完整性"]
+    D2 --> E
+    D3 --> E
+    D4 --> E
+
+    E --> F{"是否缺少参数"}
+    F -->|"是"| G["提示补充参数或采用假设"]
+    G --> H["用户确认假设"]
+    H --> I["执行计算"]
+    F -->|"否"| I
+
+    I --> J["生成计算结果"]
+    J --> J1["结果值"]
+    J --> J2["计算过程"]
+    J --> J3["参数来源"]
+    J --> J4["异常提示"]
+
+    J1 --> K["人工确认"]
+    J2 --> K
+    J3 --> K
+    J4 --> K
+
+    K --> L["引用到生成/审核任务或导出"]</pre>
+        </div>
+      </section>
+
+      <section id="flow-6">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="index">6</div>
+            <div>
+              <h3>审核类业务流程</h3>
+              <p>用于技术符合性、资料缺口、设备资料完整性、变更影响和版本签章编号异常审核。</p>
+            </div>
+          </div>
+          <span class="tag">审核</span>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">flowchart TD
+    A["用户选择审核"] --> B{"审核类型"}
+    B --> B1["技术符合性审核"]
+    B --> B2["资料缺口审核"]
+    B --> B3["设备资料完整性审核"]
+    B --> B4["变更影响审核"]
+    B --> B5["版本/签章/编号异常审核"]
+
+    B1 --> C["选择审核依据"]
+    B2 --> C
+    B3 --> C
+    B4 --> C
+    B5 --> C
+
+    C --> C1["标准规范"]
+    C --> C2["技术要求"]
+    C --> C3["资料目录规则"]
+    C --> C4["企业模板"]
+    C --> C5["行业场景包规则"]
+
+    C1 --> D["选择待审核资料"]
+    C2 --> D
+    C3 --> D
+    C4 --> D
+    C5 --> D
+
+    D --> E["文档解析与条款抽取"]
+    E --> F["规则匹配与比对"]
+    F --> G["生成审核结果"]
+
+    G --> G1["符合"]
+    G --> G2["不符合"]
+    G --> G3["需人工确认"]
+    G --> G4["缺失资料"]
+    G --> G5["风险项"]
+
+    G1 --> H["生成审核矩阵/缺口清单"]
+    G2 --> H
+    G3 --> H
+    G4 --> H
+    G5 --> H
+
+    H --> I["人工复核"]
+    I --> J{"是否确认"}
+    J -->|"否"| K["调整规则/补充资料/重新审核"]
+    K --> F
+    J -->|"是"| L["导出审核报告或补件建议"]</pre>
+        </div>
+      </section>
+
+      <section id="flow-7">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="index">7</div>
+            <div>
+              <h3>集成与回写流程</h3>
+              <p>管理员预配置连接器，用户在任务执行页选择可引用资料源或 API，结果可导出、通知、回写或沉淀。</p>
+            </div>
+          </div>
+          <span class="tag">集成</span>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">flowchart TD
+    A["管理员预配置连接器"] --> A1["企业微信/飞书/钉钉"]
+    A --> A2["API 查询"]
+    A --> A3["文件源"]
+    A --> A4["输出回写"]
+    A --> A5["Office/WPS 导出"]
+
+    A1 --> B["权限与字段映射"]
+    A2 --> B
+    A3 --> B
+    A4 --> B
+    A5 --> B
+
+    B --> C["任务执行页展示可引用资料源/API"]
+    C --> D{"用户选择集成能力"}
+    D -->|"查询"| E["调用 API 获取结构化数据"]
+    D -->|"引用"| F["读取文件源/知识源"]
+    D -->|"通知"| G["推送企业微信/飞书/钉钉"]
+    D -->|"回写"| H["回写到网盘/API/邮件"]
+
+    E --> I["Agent 执行任务"]
+    F --> I
+    I --> J["生成结果"]
+    J --> K{"结果处理方式"}
+
+    K -->|"导出"| L["下载 Word/PPT/PDF/Excel"]
+    K -->|"通知"| G
+    K -->|"回写"| H
+    K -->|"沉淀"| M["保存到项目"]
+
+    G --> N["保留任务记录和引用来源"]
+    H --> N
+    L --> N
+    M --> N</pre>
+        </div>
+      </section>
+
+      <section id="flow-8">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="index">8</div>
+            <div>
+              <h3>人工审阅与追溯流程</h3>
+              <p>将 Agent 中间结果转化为可确认、可修改、可追溯的正式交付物。</p>
+            </div>
+          </div>
+          <span class="tag">审阅</span>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">flowchart TD
+    A["Agent 生成中间结果"] --> B["系统标记风险和引用"]
+    B --> C["进入人工审阅"]
+
+    C --> D{"审阅对象"}
+    D --> D1["事实内容"]
+    D --> D2["表达内容"]
+    D --> D3["计算结果"]
+    D --> D4["审核判断"]
+    D --> D5["缺失信息"]
+
+    D1 --> E["查看来源依据"]
+    D2 --> F["直接修改表达"]
+    D3 --> G["检查参数和公式"]
+    D4 --> H["确认符合/不符合/需补充"]
+    D5 --> I["补充资料或确认缺失"]
+
+    E --> J["确认或驳回"]
+    F --> J
+    G --> J
+    H --> J
+    I --> J
+
+    J --> K{"是否通过"}
+    K -->|"否"| L["返回 Agent 重新执行"]
+    L --> A
+    K -->|"是"| M["生成正式交付物"]
+
+    M --> N["保存审阅记录"]
+    N --> O["形成可追溯证据链"]</pre>
+        </div>
+      </section>
+
+      <section id="flow-9">
+        <div class="section-head">
+          <div class="section-title">
+            <div class="index">9</div>
+            <div>
+              <h3>交付与沉淀流程</h3>
+              <p>正式交付物保存项目归属、引用来源、确认记录和版本信息，并按需沉淀为案例、模板或规则。</p>
+            </div>
+          </div>
+          <span class="tag">交付</span>
+        </div>
+        <div class="diagram-wrap">
+          <pre class="mermaid">flowchart TD
+    A["正式交付物生成"] --> B{"交付物类型"}
+    B --> B1["方案/指导书"]
+    B --> B2["PPT/PDF"]
+    B --> B3["审核报告"]
+    B --> B4["缺口清单"]
+    B --> B5["设备档案"]
+    B --> B6["交付包目录"]
+
+    B1 --> C["导出或回写"]
+    B2 --> C
+    B3 --> C
+    B4 --> C
+    B5 --> C
+    B6 --> C
+
+    C --> D["保存到项目"]
+    D --> E["记录引用来源"]
+    E --> F["记录人工确认"]
+    F --> G["记录版本和生成时间"]
+
+    G --> H{"是否可复用"}
+    H -->|"是"| I["沉淀为案例/模板/规则"]
+    H -->|"否"| J["仅保留项目资产"]
+
+    I --> K["进入知识底座待审核"]
+    K --> L["专家确认后发布"]
+    J --> M["任务关闭"]
+    L --> M</pre>
+        </div>
+      </section>
+
+      <footer>Generated from engineering-document-agent-business-process.md</footer>
+    </main>
+  </div>
+</body>
+</html>

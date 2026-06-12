@@ -1,0 +1,239 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>定制方案生成（PPT）详细流程</title>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      securityLevel: "loose",
+      flowchart: { curve: "basis", nodeSpacing: 42, rankSpacing: 52 },
+      themeVariables: {
+        fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        primaryColor: "#eef6ff",
+        primaryTextColor: "#12314d",
+        primaryBorderColor: "#79a9da",
+        lineColor: "#6d8298",
+        secondaryColor: "#f5f7fb",
+        tertiaryColor: "#fff7ed",
+        edgeLabelBackground: "#ffffff",
+        textColor: "#23384d"
+      }
+    });
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">A</div>
+        <div><strong>工程文档 Agent</strong><span>设计文档库</span></div>
+      </a>
+      <nav class="doc-nav"><a class="doc-link" href="product-plan.html"><span>工程行业文档 Agent 产品方案</span><small>面向工程行业的 Agent Native 文档任务产品设计。</small></a><a class="doc-link" href="research-notes.html"><span>行业调研与场景分析</span><small>行业痛点、适合场景、典型输入输出和案例。</small></a><a class="doc-link" href="business-process.html"><span>业务流程图</span><small>从我的项目、项目上下文、资料集成、任务执行、人工审阅到交付沉淀的端到端流程。</small></a><a class="doc-link active" href="custom-solution-ppt.html"><span>定制方案生成（PPT）详细流程</span><small>定制方案 PPT 的输入输出、数据、知识库、模板、规则、流程与异常处理。</small></a><a class="doc-link" href="product-data-qa.html"><span>产品资料查询（问答）详细流程</span><small>产品资料问答的输入输出、数据、知识库、规则、权限、流程与成功标准。</small></a></nav>
+      <div class="toc-card"><div class="toc-title">本页目录</div><a class="toc-l1" href="#定制方案生成-ppt-agent-详细流程">定制方案生成（PPT）Agent 详细流程</a><a class="toc-l2" href="#1-场景定义">1. 场景定义</a><a class="toc-l2" href="#2-典型用户">2. 典型用户</a><a class="toc-l2" href="#3-输入细节">3. 输入细节</a><a class="toc-l3" href="#3-1-用户自然语言输入">3.1 用户自然语言输入</a><a class="toc-l3" href="#3-2-结构化输入">3.2 结构化输入</a><a class="toc-l3" href="#3-3-文件输入">3.3 文件输入</a><a class="toc-l2" href="#4-所需数据">4. 所需数据</a><a class="toc-l3" href="#4-1-项目与客户数据">4.1 项目与客户数据</a><a class="toc-l3" href="#4-2-产品-设备数据">4.2 产品/设备数据</a><a class="toc-l3" href="#4-3-方案知识数据">4.3 方案知识数据</a><a class="toc-l3" href="#4-4-案例数据">4.4 案例数据</a><a class="toc-l3" href="#4-5-品牌与模板数据">4.5 品牌与模板数据</a><a class="toc-l2" href="#5-知识库设计">5. 知识库设计</a><a class="toc-l3" href="#5-1-知识库分层">5.1 知识库分层</a><a class="toc-l3" href="#5-2-检索方式">5.2 检索方式</a><a class="toc-l3" href="#5-3-索引字段">5.3 索引字段</a><a class="toc-l2" href="#6-模板设计">6. 模板设计</a><a class="toc-l3" href="#6-1-ppt-结构模板">6.1 PPT 结构模板</a><a class="toc-l3" href="#6-2-按客户对象调整模板">6.2 按客户对象调整模板</a><a class="toc-l3" href="#6-3-页面组件模板">6.3 页面组件模板</a><a class="toc-l2" href="#7-规则设计">7. 规则设计</a><a class="toc-l3" href="#7-1-内容规则">7.1 内容规则</a><a class="toc-l3" href="#7-2-ppt-结构规则">7.2 PPT 结构规则</a><a class="toc-l3" href="#7-3-风格规则">7.3 风格规则</a><a class="toc-l3" href="#7-4-权限规则">7.4 权限规则</a><a class="toc-l3" href="#7-5-质量规则">7.5 质量规则</a><a class="toc-l2" href="#8-详细流程">8. 详细流程</a><a class="toc-l3" href="#8-1-端到端流程图">8.1 端到端流程图</a><a class="toc-l3" href="#8-2-处理步骤">8.2 处理步骤</a><a class="toc-l2" href="#9-输出细节">9. 输出细节</a><a class="toc-l3" href="#9-1-大纲输出">9.1 大纲输出</a><a class="toc-l3" href="#9-2-单页内容输出">9.2 单页内容输出</a><a class="toc-l3" href="#9-3-ppt-交付物输出">9.3 PPT 交付物输出</a><a class="toc-l2" href="#10-异常与边界情况">10. 异常与边界情况</a><a class="toc-l2" href="#11-后台配置能力">11. 后台配置能力</a><a class="toc-l3" href="#11-1-模板配置">11.1 模板配置</a><a class="toc-l3" href="#11-2-数据配置">11.2 数据配置</a><a class="toc-l3" href="#11-3-规则配置">11.3 规则配置</a><a class="toc-l2" href="#12-知识更新流程">12. 知识更新流程</a><a class="toc-l2" href="#13-与其他任务联动">13. 与其他任务联动</a><a class="toc-l2" href="#14-成功标准">14. 成功标准</a></div>
+    </aside>
+    <main class="content">
+      <header class="hero">
+        <div class="eyebrow">Design Docs</div>
+        <h1>定制方案生成（PPT）详细流程</h1>
+        <p>定制方案 PPT 的输入输出、数据、知识库、模板、规则、流程与异常处理。</p>
+      </header>
+      <article class="article"><h1 id="定制方案生成-ppt-agent-详细流程">定制方案生成（PPT）Agent 详细流程</h1>
+<p>本文档以“定制方案生成 PPT”为例，拆解工程文档 Agent 在生成类任务中的输入、输出、数据、知识库、规则、模板和详细流程。</p>
+<h2 id="1-场景定义">1. 场景定义</h2>
+<p>定制方案生成 PPT 是指：用户输入客户需求、项目场景、产品/设备资料、行业约束和输出对象，Agent 自动查找依据、组织方案逻辑、生成 PPT 大纲和页面内容，并输出可编辑、可追溯、可审阅的方案演示文稿。</p>
+<p>该场景不是通用 PPT 生成。它的重点是：</p>
+<ul><li>基于真实产品/设备资料生成内容。</li><li>根据行业场景定制方案结构。</li><li>针对不同客户对象调整表达方式。</li><li>引用 TDS、SDS、说明书、检测报告、认证、案例、标准规范等依据。</li><li>标记缺失信息、参数风险和需人工确认项。</li></ul>
+<p>适用行业：</p>
+<ul><li>涂料</li><li>装备制造</li><li>电力设备</li><li>化工设备</li><li>水处理设备</li><li>能源设备</li><li>矿山设备</li><li>建筑材料</li></ul>
+<h2 id="2-典型用户">2. 典型用户</h2>
+<div class="table-wrap"><table><thead><tr><th>用户</th><th>典型目标</th></tr></thead><tbody><tr><td>技术销售</td><td>为客户快速生成项目解决方案 PPT</td></tr><tr><td>解决方案工程师</td><td>把技术路线、产品组合和案例组织成方案</td></tr><tr><td>产品经理</td><td>生成面向行业客户的产品推广方案</td></tr><tr><td>应用工程师</td><td>根据工况和施工条件生成应用方案</td></tr><tr><td>售前负责人</td><td>统一方案结构、风格和技术口径</td></tr></tbody></table></div>
+<h2 id="3-输入细节">3. 输入细节</h2>
+<h3 id="3-1-用户自然语言输入">3.1 用户自然语言输入</h3>
+<p>示例：</p>
+<ul><li>“给沿海钢结构厂房生成一份防腐涂装方案 PPT，客户是业主方，重点讲耐久性和施工可控。”</li><li>“为矿山破碎站除尘系统改造生成一个技术方案 PPT，突出降尘效果、设备可靠性和改造周期。”</li><li>“基于我们 A 系列水处理设备，给化工园区循环水项目生成一份解决方案。”</li><li>“生成一份面向设计院的电力设备技术推荐 PPT，重点讲标准符合性和项目案例。”</li></ul>
+<p>需要解析的字段：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>示例</th></tr></thead><tbody><tr><td>行业</td><td>涂料、装备制造、电力设备、化工设备</td></tr><tr><td>项目类型</td><td>沿海钢结构厂房、矿山破碎站、化工园区循环水</td></tr><tr><td>客户对象</td><td>业主、设计院、总包、施工单位、经销商</td></tr><tr><td>工程对象</td><td>钢结构、除尘系统、水处理设备、电力设备</td></tr><tr><td>使用环境</td><td>C5-M、粉尘、高湿、化工腐蚀、高温</td></tr><tr><td>方案目标</td><td>耐久性、可靠性、节能、降本、合规、快速施工</td></tr><tr><td>输出要求</td><td>页数、语言、风格、模板、是否含案例</td></tr><tr><td>约束条件</td><td>预算、工期、标准、产品范围、竞品替代</td></tr></tbody></table></div>
+<h3 id="3-2-结构化输入">3.2 结构化输入</h3>
+<div class="table-wrap"><table><thead><tr><th>输入项</th><th>是否必填</th><th>说明</th></tr></thead><tbody><tr><td>我的项目</td><td>建议必填</td><td>选择当前项目入口</td></tr><tr><td>项目上下文</td><td>自动形成</td><td>限定资料范围、输出归属和权限约束</td></tr><tr><td>行业场景包</td><td>必填</td><td>决定术语、模板、规则和方案结构</td></tr><tr><td>客户对象</td><td>必填</td><td>决定表达角度和重点</td></tr><tr><td>项目/应用场景</td><td>必填</td><td>决定方案逻辑</td></tr><tr><td>产品/设备范围</td><td>条件必填</td><td>指定可用产品或设备</td></tr><tr><td>技术要求</td><td>可选</td><td>用于方案匹配和风险提示</td></tr><tr><td>标准规范</td><td>可选</td><td>用于合规依据</td></tr><tr><td>历史案例</td><td>可选</td><td>用于案例页和背书</td></tr><tr><td>输出模板</td><td>可选</td><td>企业 PPT 模板或行业模板</td></tr><tr><td>页数范围</td><td>可选</td><td>例如 8 页、12 页、20 页</td></tr><tr><td>输出语言</td><td>可选</td><td>中文、英文、中英双语</td></tr></tbody></table></div>
+<h3 id="3-3-文件输入">3.3 文件输入</h3>
+<p>用户可上传或引用：</p>
+<ul><li>客户需求说明。</li><li>项目背景资料。</li><li>技术规格书。</li><li>产品 TDS/SDS。</li><li>设备说明书。</li><li>检测报告。</li><li>认证证书。</li><li>产品手册。</li><li>历史方案 PPT。</li><li>历史项目案例。</li><li>企业 PPT 模板。</li><li>品牌规范。</li></ul>
+<p>系统需要识别：</p>
+<ul><li>文件类型。</li><li>适用产品/设备。</li><li>关键技术参数。</li><li>认证和检测结论。</li><li>项目案例信息。</li><li>可复用页面结构。</li><li>品牌模板和版式规则。</li><li>文件版本和有效性。</li></ul>
+<h2 id="4-所需数据">4. 所需数据</h2>
+<h3 id="4-1-项目与客户数据">4.1 项目与客户数据</h3>
+<div class="table-wrap"><table><thead><tr><th>数据项</th><th>示例</th></tr></thead><tbody><tr><td>项目名称</td><td>某沿海钢结构厂房防腐项目</td></tr><tr><td>行业</td><td>涂料</td></tr><tr><td>工程对象</td><td>钢结构厂房</td></tr><tr><td>使用环境</td><td>沿海、C5-M、高湿、紫外</td></tr><tr><td>客户对象</td><td>业主方</td></tr><tr><td>客户关注点</td><td>使用寿命、施工周期、维护成本、质保</td></tr><tr><td>项目阶段</td><td>技术交流、方案推荐、深化设计、交付准备</td></tr><tr><td>输出目的</td><td>技术交流、客户汇报、方案评审、内部评审</td></tr></tbody></table></div>
+<h3 id="4-2-产品-设备数据">4.2 产品/设备数据</h3>
+<div class="table-wrap"><table><thead><tr><th>数据项</th><th>示例</th></tr></thead><tbody><tr><td>产品/设备 ID</td><td>PROD-A-102</td></tr><tr><td>名称</td><td>A-102 环氧底漆</td></tr><tr><td>类别</td><td>底漆、设备、系统、材料</td></tr><tr><td>适用场景</td><td>钢结构、混凝土、化工腐蚀、矿山粉尘</td></tr><tr><td>关键参数</td><td>VOC、固含、膜厚、功率、处理量、效率</td></tr><tr><td>推荐组合</td><td>底漆+中间漆+面漆，主机+过滤单元+控制系统</td></tr><tr><td>认证/检测</td><td>耐盐雾、VOC、能效、行业认证</td></tr><tr><td>状态</td><td>在售、停用、替代、受限</td></tr><tr><td>替代关系</td><td>A-102 可替代旧型号 A-101</td></tr></tbody></table></div>
+<h3 id="4-3-方案知识数据">4.3 方案知识数据</h3>
+<div class="table-wrap"><table><thead><tr><th>数据项</th><th>示例</th></tr></thead><tbody><tr><td>方案类型</td><td>防腐涂装方案、除尘改造方案、水处理方案</td></tr><tr><td>标准章节结构</td><td>背景、痛点、方案、产品、施工、案例、收益</td></tr><tr><td>典型技术路线</td><td>表面处理+涂层体系+质量控制</td></tr><tr><td>常见客户关注点</td><td>成本、寿命、可靠性、合规、交付周期</td></tr><tr><td>风险提示</td><td>低温施工、高湿、停机窗口不足、资料缺失</td></tr><tr><td>可复用案例</td><td>同类项目、同类工况、同类客户</td></tr></tbody></table></div>
+<h3 id="4-4-案例数据">4.4 案例数据</h3>
+<div class="table-wrap"><table><thead><tr><th>数据项</th><th>示例</th></tr></thead><tbody><tr><td>案例名称</td><td>某沿海钢结构项目</td></tr><tr><td>行业</td><td>工业厂房</td></tr><tr><td>工况</td><td>C5-M、海洋大气</td></tr><tr><td>使用产品</td><td>A-102、M-305、F-680</td></tr><tr><td>项目规模</td><td>20 万平方米钢结构表面</td></tr><tr><td>结果</td><td>使用 5 年后维护良好</td></tr><tr><td>可公开级别</td><td>内部、客户可见、公开</td></tr><tr><td>图片/图表</td><td>现场图、施工图、对比图</td></tr></tbody></table></div>
+<h3 id="4-5-品牌与模板数据">4.5 品牌与模板数据</h3>
+<div class="table-wrap"><table><thead><tr><th>数据项</th><th>示例</th></tr></thead><tbody><tr><td>PPT 模板</td><td>企业标准模板、行业方案模板</td></tr><tr><td>色彩规范</td><td>品牌蓝、辅助灰、风险橙</td></tr><tr><td>字体规范</td><td>标题、正文、注释</td></tr><tr><td>Logo 规范</td><td>首页、页脚、封底</td></tr><tr><td>页面类型</td><td>封面、目录、问题页、方案页、产品页、案例页、结尾页</td></tr><tr><td>禁用表达</td><td>绝对化承诺、无依据质保、未经批准参数</td></tr></tbody></table></div>
+<h2 id="5-知识库设计">5. 知识库设计</h2>
+<h3 id="5-1-知识库分层">5.1 知识库分层</h3>
+<pre class="code"><code>方案生成知识库
+├── 产品/设备资料库
+├── 产品参数库
+├── TDS/SDS/说明书库
+├── 检测报告与认证库
+├── 标准规范库
+├── 行业方案模板库
+├── 企业 PPT 模板库
+├── 历史方案库
+├── 项目案例库
+├── 客户画像与表达策略库
+├── 图表/图片素材库
+└── 禁用表达与风险规则库</code></pre>
+<h3 id="5-2-检索方式">5.2 检索方式</h3>
+<div class="table-wrap"><table><thead><tr><th>检索方式</th><th>用途</th></tr></thead><tbody><tr><td>产品/设备精确检索</td><td>找到指定产品或设备资料</td></tr><tr><td>场景语义检索</td><td>查找相似工况、相似行业方案</td></tr><tr><td>参数检索</td><td>查找膜厚、VOC、效率、处理量等参数</td></tr><tr><td>案例检索</td><td>找同类客户、同类项目、同类环境案例</td></tr><tr><td>模板检索</td><td>匹配行业 PPT 模板和页面结构</td></tr><tr><td>规则检索</td><td>检查禁用表达、参数风险、认证范围</td></tr><tr><td>权限过滤</td><td>过滤不可用于客户外发的资料和案例</td></tr></tbody></table></div>
+<h3 id="5-3-索引字段">5.3 索引字段</h3>
+<p>每份资料建议建立以下索引：</p>
+<ul><li>行业。</li><li>应用场景。</li><li>客户对象。</li><li>产品/设备型号。</li><li>关键参数。</li><li>适用环境。</li><li>标准编号。</li><li>案例类型。</li><li>文件类型。</li><li>文件版本。</li><li>可公开级别。</li><li>来源系统。</li><li>原文页码。</li><li>权限标签。</li></ul>
+<h2 id="6-模板设计">6. 模板设计</h2>
+<h3 id="6-1-ppt-结构模板">6.1 PPT 结构模板</h3>
+<p>基础方案模板：</p>
+<div class="table-wrap"><table><thead><tr><th>页码</th><th>页面类型</th><th>页面目标</th><th>内容来源</th></tr></thead><tbody><tr><td>1</td><td>封面</td><td>明确客户、项目、方案主题</td><td>用户输入、项目上下文</td></tr><tr><td>2</td><td>目录</td><td>展示方案结构</td><td>模板</td></tr><tr><td>3</td><td>项目背景</td><td>说明项目场景和客户需求</td><td>客户资料、用户输入</td></tr><tr><td>4</td><td>痛点与挑战</td><td>提炼工程痛点</td><td>行业场景包、历史案例</td></tr><tr><td>5</td><td>方案总览</td><td>给出整体技术路线</td><td>产品资料、标准、案例</td></tr><tr><td>6</td><td>产品/设备组合</td><td>说明推荐组合和选择理由</td><td>产品/设备资料库</td></tr><tr><td>7</td><td>关键参数与依据</td><td>展示参数、认证、检测结论</td><td>TDS、说明书、检测报告</td></tr><tr><td>8</td><td>实施/施工/部署流程</td><td>说明落地步骤</td><td>工艺文件、作业指导书</td></tr><tr><td>9</td><td>质量控制与风险</td><td>展示控制点和风险措施</td><td>标准、规则库</td></tr><tr><td>10</td><td>项目案例</td><td>提供同类案例背书</td><td>案例库</td></tr><tr><td>11</td><td>价值收益</td><td>总结寿命、效率、成本、合规收益</td><td>计算结果、案例</td></tr><tr><td>12</td><td>后续计划</td><td>给出下一步动作</td><td>用户输入、模板</td></tr></tbody></table></div>
+<h3 id="6-2-按客户对象调整模板">6.2 按客户对象调整模板</h3>
+<div class="table-wrap"><table><thead><tr><th>客户对象</th><th>强调内容</th><th>弱化内容</th></tr></thead><tbody><tr><td>业主</td><td>投资收益、寿命、风险、维护成本、案例</td><td>过细施工细节</td></tr><tr><td>设计院</td><td>标准符合性、参数、规范依据、技术路线</td><td>销售话术</td></tr><tr><td>总包</td><td>交付周期、施工组织、质量控制、接口</td><td>品牌宣传</td></tr><tr><td>施工单位</td><td>工艺步骤、材料用量、施工条件、验收</td><td>战略价值</td></tr><tr><td>经销商</td><td>产品卖点、应用场景、竞品替代、话术</td><td>深度工程计算</td></tr></tbody></table></div>
+<h3 id="6-3-页面组件模板">6.3 页面组件模板</h3>
+<div class="table-wrap"><table><thead><tr><th>组件</th><th>用途</th></tr></thead><tbody><tr><td>标题 + 摘要</td><td>每页核心结论</td></tr><tr><td>参数表</td><td>展示产品/设备关键参数</td></tr><tr><td>方案流程图</td><td>展示实施路径</td></tr><tr><td>产品组合卡片</td><td>展示推荐组合</td></tr><tr><td>案例卡片</td><td>展示历史项目</td></tr><tr><td>风险提示框</td><td>标记注意事项</td></tr><tr><td>引用脚注</td><td>标记来源文件</td></tr><tr><td>对比表</td><td>展示方案或产品差异</td></tr></tbody></table></div>
+<h2 id="7-规则设计">7. 规则设计</h2>
+<h3 id="7-1-内容规则">7.1 内容规则</h3>
+<ul><li>不允许编造产品参数、认证、检测结论和案例。</li><li>产品参数必须来自结构化产品库或可信资料文件。</li><li>认证、检测和标准符合性必须附带来源。</li><li>适用性结论必须区分“明确支持”“资料不足”“不建议使用”。</li><li>涉及质保、寿命、性能承诺时必须有依据。</li><li>停用、替代或受限产品不得默认推荐。</li><li>不得使用未经授权的客户案例。</li></ul>
+<h3 id="7-2-ppt-结构规则">7.2 PPT 结构规则</h3>
+<ul><li>首页必须包含项目名称、客户对象、方案主题。</li><li>每页必须有明确页面结论。</li><li>方案页必须包含“推荐理由”和“依据”。</li><li>参数页必须包含来源。</li><li>风险页必须列出假设条件和需确认事项。</li><li>案例页必须符合可公开权限。</li><li>外发版本不得包含内部备注、成本、配方、未发布产品信息。</li></ul>
+<h3 id="7-3-风格规则">7.3 风格规则</h3>
+<ul><li>面向业主：强调价值、风险、寿命和维护。</li><li>面向设计院：强调标准、参数、规范和可验证性。</li><li>面向施工单位：强调步骤、条件、质量控制和安全。</li><li>面向经销商：强调卖点、应用场景和客户话术。</li><li>技术结论优先于营销表达。</li><li>避免绝对化用语，例如“永久”“完全无风险”“必然通过”。</li></ul>
+<h3 id="7-4-权限规则">7.4 权限规则</h3>
+<ul><li>用户只能引用系统权限允许的项目、资料源和知识源。</li><li>内部案例默认不能外发。</li><li>未公开产品不得出现在客户 PPT。</li><li>客户专属资料不能用于其他客户方案。</li><li>输出 PPT 继承所引用资料的权限标签。</li></ul>
+<h3 id="7-5-质量规则">7.5 质量规则</h3>
+<ul><li>每个关键事实必须有来源。</li><li>低置信度或多来源冲突必须标记。</li><li>缺失信息不得自动补写。</li><li>图表数据必须可追溯。</li><li>用户确认前不能生成最终外发版。</li></ul>
+<h2 id="8-详细流程">8. 详细流程</h2>
+<h3 id="8-1-端到端流程图">8.1 端到端流程图</h3>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;用户发起 PPT 方案生成任务&quot;] --&gt; B[&quot;从我的项目选择项目&quot;]
+    B --&gt; C[&quot;形成项目上下文&quot;]
+    C --&gt; D[&quot;选择行业场景包&quot;]
+    D --&gt; E[&quot;输入需求/上传资料&quot;]
+    E --&gt; F[&quot;识别客户对象和方案目标&quot;]
+    F --&gt; G[&quot;抽取工程对象和约束条件&quot;]
+    G --&gt; H[&quot;查找产品/设备资料、标准、案例&quot;]
+    H --&gt; I{&quot;关键信息是否完整&quot;}
+
+    I --&gt;|&quot;否&quot;| J[&quot;追问缺失条件/请求补充资料&quot;]
+    J --&gt; E
+    I --&gt;|&quot;是&quot;| K[&quot;匹配 PPT 结构模板&quot;]
+
+    K --&gt; L[&quot;生成方案大纲&quot;]
+    L --&gt; M[&quot;用户确认大纲&quot;]
+    M --&gt; N[&quot;生成逐页内容&quot;]
+    N --&gt; O[&quot;插入参数、案例、图表和引用&quot;]
+    O --&gt; P[&quot;执行规则审核&quot;]
+    P --&gt; Q{&quot;是否存在风险&quot;}
+
+    Q --&gt;|&quot;是&quot;| R[&quot;标记风险/需人工确认&quot;]
+    R --&gt; S[&quot;用户审阅修改&quot;]
+    Q --&gt;|&quot;否&quot;| S
+
+    S --&gt; T{&quot;是否确认生成&quot;}
+    T --&gt;|&quot;否&quot;| U[&quot;调整输入/模板/内容后重生成&quot;]
+    U --&gt; N
+    T --&gt;|&quot;是&quot;| V[&quot;生成可编辑 PPT&quot;]
+
+    V --&gt; W[&quot;导出/回写/沉淀&quot;]
+    W --&gt; X[&quot;保存任务记录和引用证据包&quot;]</pre></div>
+<h3 id="8-2-处理步骤">8.2 处理步骤</h3>
+<div class="table-wrap"><table><thead><tr><th>步骤</th><th>系统动作</th><th>关键判断</th></tr></thead><tbody><tr><td>1. 任务识别</td><td>判断用户要生成定制方案 PPT</td><td>是否选择项目并形成项目上下文</td></tr><tr><td>2. 场景解析</td><td>抽取行业、客户对象、工程对象、工况、目标</td><td>是否需要追问</td></tr><tr><td>3. 资料收集</td><td>查找产品资料、标准、案例、模板</td><td>是否有权限</td></tr><tr><td>4. 方案策略</td><td>决定讲述逻辑、页面结构和重点</td><td>客户对象是谁</td></tr><tr><td>5. 大纲生成</td><td>生成 PPT 页结构和每页结论</td><td>是否覆盖客户需求</td></tr><tr><td>6. 大纲确认</td><td>用户确认页数、逻辑和重点</td><td>是否调整结构</td></tr><tr><td>7. 内容生成</td><td>生成逐页标题、正文、表格、图表建议</td><td>是否有事实依据</td></tr><tr><td>8. 规则审核</td><td>检查参数、案例、权限、禁用表达</td><td>是否存在风险</td></tr><tr><td>9. 人工审阅</td><td>用户修改和确认</td><td>是否生成外发版</td></tr><tr><td>10. PPT 生成</td><td>套用模板生成可编辑 PPT</td><td>是否导出/回写</td></tr><tr><td>11. 沉淀复用</td><td>保存方案、引用、模板和确认记录</td><td>是否可作为案例</td></tr></tbody></table></div>
+<h2 id="9-输出细节">9. 输出细节</h2>
+<h3 id="9-1-大纲输出">9.1 大纲输出</h3>
+<pre class="code"><code>PPT 标题：沿海钢结构厂房防腐涂装解决方案
+客户对象：业主方
+输出目标：技术交流
+建议页数：12 页
+
+大纲：
+1. 封面
+2. 项目背景与环境挑战
+3. 沿海钢结构防腐核心痛点
+4. 推荐涂层体系总览
+5. 产品组合与选择理由
+6. 关键技术参数与检测依据
+7. 施工流程与质量控制
+8. 风险点与控制措施
+9. 同类项目案例
+10. 生命周期价值与维护建议
+11. 资料依据与需确认事项
+12. 下一步工作建议</code></pre>
+<h3 id="9-2-单页内容输出">9.2 单页内容输出</h3>
+<pre class="code"><code>第 5 页：产品组合与选择理由
+
+页面结论：
+推荐采用“环氧底漆 + 环氧云铁中间漆 + 聚氨酯面漆”的三道涂层体系，以兼顾附着力、屏蔽性和耐候性。
+
+页面内容：
+- 底漆：A-102 环氧底漆，推荐干膜厚度 80um。
+- 中间漆：M-305 环氧云铁中间漆，推荐干膜厚度 120um。
+- 面漆：F-680 聚氨酯面漆，推荐干膜厚度 60um。
+
+引用依据：
+- A-102_TDS_V3.2.pdf，第 2 页。
+- M-305_TDS_V2.1.pdf，第 2 页。
+- F-680_TDS_V4.0.pdf，第 3 页。
+
+风险提示：
+- 当前资料未包含该体系在本项目 C5-M 环境下 15 年设计寿命的完整认证，建议由应用工程师确认。</code></pre>
+<h3 id="9-3-ppt-交付物输出">9.3 PPT 交付物输出</h3>
+<p>输出文件：</p>
+<ul><li>可编辑 PPTX。</li><li>PDF 预览版。</li><li>引用证据包。</li><li>缺失信息清单。</li><li>风险与人工确认清单。</li></ul>
+<p>PPT 元数据：</p>
+<div class="table-wrap"><table><thead><tr><th>字段</th><th>说明</th></tr></thead><tbody><tr><td>任务 ID</td><td>本次生成任务编号</td></tr><tr><td>我的项目</td><td>所属项目入口</td></tr><tr><td>项目上下文</td><td>本次任务引用的资料范围和输出归属</td></tr><tr><td>行业场景包</td><td>使用的行业包</td></tr><tr><td>模板版本</td><td>PPT 模板版本</td></tr><tr><td>引用资料</td><td>TDS、SDS、案例、标准、检测报告</td></tr><tr><td>生成时间</td><td>生成日期时间</td></tr><tr><td>审阅状态</td><td>草稿、已确认、外发版</td></tr><tr><td>权限标签</td><td>内部、客户可见、公开</td></tr></tbody></table></div>
+<h2 id="10-异常与边界情况">10. 异常与边界情况</h2>
+<div class="table-wrap"><table><thead><tr><th>情况</th><th>系统处理</th></tr></thead><tbody><tr><td>客户对象不明确</td><td>追问“面向业主、设计院、总包、施工单位还是经销商”</td></tr><tr><td>产品范围不明确</td><td>推荐候选产品，并要求用户确认</td></tr><tr><td>缺少关键参数</td><td>标记缺失，不自动编写</td></tr><tr><td>案例无外发权限</td><td>不进入客户版 PPT</td></tr><tr><td>多个资料参数冲突</td><td>展示冲突来源，需人工确认</td></tr><tr><td>标准依据不足</td><td>标记为“资料不足，需专家确认”</td></tr><tr><td>模板缺失</td><td>使用行业默认模板，提示后续替换企业模板</td></tr><tr><td>图片素材不足</td><td>使用占位页或建议上传现场图/产品图</td></tr><tr><td>用户要求绝对化承诺</td><td>拦截并改写为有依据的表达</td></tr></tbody></table></div>
+<h2 id="11-后台配置能力">11. 后台配置能力</h2>
+<h3 id="11-1-模板配置">11.1 模板配置</h3>
+<ul><li>企业 PPT 模板。</li><li>行业方案模板。</li><li>页面类型模板。</li><li>客户对象表达模板。</li><li>图表组件模板。</li><li>引用脚注样式。</li><li>封面和封底规范。</li></ul>
+<h3 id="11-2-数据配置">11.2 数据配置</h3>
+<ul><li>产品/设备主数据。</li><li>产品/设备参数库。</li><li>TDS/SDS/说明书库。</li><li>检测报告与认证库。</li><li>标准规范库。</li><li>项目案例库。</li><li>图片/图表素材库。</li><li>客户对象标签。</li></ul>
+<h3 id="11-3-规则配置">11.3 规则配置</h3>
+<ul><li>参数引用规则。</li><li>认证引用规则。</li><li>案例外发权限规则。</li><li>禁用表达规则。</li><li>产品适用性规则。</li><li>人工确认规则。</li><li>输出权限规则。</li></ul>
+<h2 id="12-知识更新流程">12. 知识更新流程</h2>
+<div class="diagram-wrap"><pre class="mermaid">flowchart TD
+    A[&quot;新增资料&quot;] --&gt; B{&quot;资料类型&quot;}
+    B --&gt; B1[&quot;产品资料&quot;]
+    B --&gt; B2[&quot;案例资料&quot;]
+    B --&gt; B3[&quot;PPT 模板&quot;]
+    B --&gt; B4[&quot;标准规范&quot;]
+    B --&gt; B5[&quot;规则配置&quot;]
+
+    B1 --&gt; C[&quot;解析与抽取&quot;]
+    B2 --&gt; C
+    B3 --&gt; D[&quot;模板结构识别&quot;]
+    B4 --&gt; C
+    B5 --&gt; E[&quot;规则校验&quot;]
+
+    C --&gt; F[&quot;关联产品/场景/行业&quot;]
+    D --&gt; F
+    E --&gt; F
+
+    F --&gt; G[&quot;专家审核&quot;]
+    G --&gt; H{&quot;是否通过&quot;}
+    H --&gt;|&quot;否&quot;| I[&quot;退回修改&quot;]
+    I --&gt; A
+    H --&gt;|&quot;是&quot;| J[&quot;发布到知识库/模板库/规则库&quot;]
+    J --&gt; K[&quot;可被 PPT 生成任务调用&quot;]</pre></div>
+<h2 id="13-与其他任务联动">13. 与其他任务联动</h2>
+<div class="table-wrap"><table><thead><tr><th>PPT 生成阶段</th><th>可联动任务</th></tr></thead><tbody><tr><td>查找资料</td><td>产品资料问答、标准规范查找、历史案例检索</td></tr><tr><td>生成大纲</td><td>工程方案生成、客户表达策略</td></tr><tr><td>生成参数页</td><td>工程参数计算、材料用量估算</td></tr><tr><td>生成风险页</td><td>技术符合性审核、资料缺口审核</td></tr><tr><td>生成案例页</td><td>案例检索、权限审核</td></tr><tr><td>生成外发版</td><td>人工审阅、权限检查、导出/回写</td></tr></tbody></table></div>
+<h2 id="14-成功标准">14. 成功标准</h2>
+<p>该场景的产品成功标准：</p>
+<ul><li>用户能在少量输入下生成可用的 PPT 大纲。</li><li>PPT 内容能基于真实资料自动填充。</li><li>每个关键参数、认证、案例都有来源。</li><li>不合规或无依据内容能被拦截或标记。</li><li>能按客户对象调整表达重点。</li><li>输出 PPT 可编辑、可导出、可回写。</li><li>方案生成结果能沉淀为项目资产或历史案例。</li></ul></article>
+    </main>
+  </div>
+</body>
+</html>

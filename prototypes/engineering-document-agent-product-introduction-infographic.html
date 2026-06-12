@@ -1,0 +1,751 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI 销售助手产品介绍 </title>
+  <style>
+    :root {
+      --bg: #f7f7f4;
+      --panel: rgba(255,255,255,.9);
+      --panel-soft: #f2f6f5;
+      --line: #cfd6d6;
+      --line-soft: #dfe4e2;
+      --ink: #344246;
+      --muted: #6e7d80;
+      --faint: #94a0a1;
+      --teal: #1f9aae;
+      --teal-dark: #2f7f8e;
+      --blue: #2d7892;
+      --aqua: #86c8c7;
+      --orange: #f0ba58;
+      --red: #ef604d;
+      --green: #74b7a7;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #dadfdd;
+      color: var(--ink);
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+    }
+
+    .stage {
+      position: relative;
+      width: 1920px;
+      height: 1350px;
+      margin: 0 auto;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(74,91,94,.055) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(rgba(74,91,94,.045) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(180deg, #f7f7f4 0%, #eeeeea 100%);
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        linear-gradient(90deg, transparent 0 33.2%, rgba(185,191,190,.48) 33.2% 33.26%, transparent 33.26% 66.5%, rgba(185,191,190,.48) 66.5% 66.56%, transparent 66.56%),
+        radial-gradient(circle at 47% 41%, rgba(31,154,174,.1), transparent 30%),
+        radial-gradient(circle at 82% 83%, rgba(240,186,88,.09), transparent 22%);
+      pointer-events: none;
+    }
+
+    h1, h2, h3, p { margin: 0; }
+
+    .topbar {
+      position: absolute;
+      left: 44px;
+      top: 24px;
+      width: 1832px;
+      height: 88px;
+      display: grid;
+      grid-template-columns: 500px 1fr 390px;
+      align-items: center;
+      gap: 28px;
+      border-bottom: 1px solid #c9d0cf;
+    }
+
+    .brand { display: flex; align-items: center; gap: 16px; }
+    .mark {
+      width: 54px;
+      height: 54px;
+      border: 2px solid var(--teal);
+      border-radius: 50%;
+      position: relative;
+      background: #fff;
+    }
+    .mark::before {
+      content: "";
+      position: absolute;
+      inset: 10px;
+      border: 1px dashed rgba(31,154,174,.46);
+      border-radius: 50%;
+    }
+    .mark::after {
+      content: "";
+      position: absolute;
+      inset: 18px;
+      border-radius: 50%;
+      background: var(--teal);
+    }
+    .brand h1 {
+      font-size: 30px;
+      line-height: 1.08;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .brand p {
+      margin-top: 7px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.24;
+    }
+    .top-title {
+      color: var(--teal-dark);
+      font-size: 19px;
+      line-height: 1.42;
+      font-weight: 850;
+      text-align: center;
+    }
+    .top-meta {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--muted);
+      font-size: 11px;
+      white-space: nowrap;
+    }
+    .pill {
+      padding: 7px 10px;
+      border: 1px solid #bfc8c6;
+      background: #fff;
+      color: var(--teal-dark);
+      font-weight: 850;
+    }
+
+    .canvas {
+      position: absolute;
+      left: 44px;
+      top: 132px;
+      width: 1832px;
+      height: 1188px;
+      display: grid;
+      grid-template-rows: 260px 252px 264px 366px;
+      gap: 12px;
+    }
+
+    .panel,
+    .card,
+    .capability,
+    .scene-card,
+    .flow-node,
+    .mini-card {
+      border: 1px solid var(--line);
+      background: var(--panel);
+    }
+
+    .panel {
+      position: relative;
+      overflow: hidden;
+    }
+    .panel::before,
+    .panel::after {
+      content: "";
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-color: #b8c4c2;
+      pointer-events: none;
+    }
+    .panel::before {
+      left: -1px;
+      top: -1px;
+      border-left: 2px solid;
+      border-top: 2px solid;
+    }
+    .panel::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 2px solid;
+      border-bottom: 2px solid;
+    }
+    .panel-head {
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--line-soft);
+      background: rgba(250,250,248,.78);
+    }
+    .panel-head h2 {
+      font-size: 16px;
+      line-height: 1;
+      font-weight: 900;
+      letter-spacing: 0;
+    }
+    .panel-head span {
+      color: var(--teal);
+      font-size: 10px;
+      font-weight: 900;
+      letter-spacing: .8px;
+    }
+    .panel-body { padding: 12px 14px; }
+
+    .top-grid,
+    .matrix-grid {
+      display: grid;
+      grid-template-columns: 1fr 1.46fr 1fr;
+      gap: 12px;
+    }
+
+    .subhead {
+      margin-bottom: 7px;
+      color: var(--teal-dark);
+      font-size: 14px;
+      line-height: 1.1;
+      font-weight: 900;
+    }
+    .text {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.46;
+    }
+    .strong-line {
+      margin-top: 8px;
+      padding-top: 8px;
+      border-top: 1px solid var(--line-soft);
+      color: var(--ink);
+      font-size: 12px;
+      line-height: 1.42;
+      font-weight: 750;
+    }
+    .hermes-line {
+      margin-top: 7px;
+      padding: 6px 8px;
+      border: 1px solid rgba(31,154,174,.34);
+      background: rgba(238,249,248,.84);
+      color: var(--teal-dark);
+      font-size: 10.8px;
+      line-height: 1.28;
+      font-weight: 850;
+    }
+    .hermes-card {
+      margin-top: 6px;
+      padding: 7px 8px;
+      border: 1px solid rgba(31,154,174,.42);
+      background: linear-gradient(135deg, rgba(255,255,255,.96), rgba(238,249,248,.86));
+    }
+    .hermes-card b {
+      display: block;
+      margin-bottom: 4px;
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 950;
+    }
+    .hermes-card p {
+      color: var(--muted);
+      font-size: 10.2px;
+      line-height: 1.28;
+    }
+    .hermes-grid {
+      margin-top: 4px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 3px;
+    }
+    .hermes-grid span {
+      padding: 3px 5px;
+      border-left: 3px solid var(--teal);
+      background: rgba(242,246,245,.9);
+      color: var(--ink);
+      font-size: 9.5px;
+      line-height: 1.15;
+      font-weight: 800;
+    }
+    .tag-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 6px;
+      margin-top: 8px;
+    }
+    .tag {
+      min-height: 26px;
+      display: grid;
+      place-items: center;
+      border: 1px solid #d7dfdd;
+      background: rgba(242,246,245,.8);
+      color: var(--teal-dark);
+      font-size: 11px;
+      font-weight: 850;
+    }
+
+    .cap-frame {
+      position: relative;
+      height: 184px;
+      padding: 2px 10px 0;
+    }
+    .task-node {
+      width: 150px;
+      height: 34px;
+      margin: 0 auto 11px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--teal);
+      background: #fff;
+      color: var(--teal-dark);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .cap-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 9px;
+      position: relative;
+    }
+    .cap-row::before {
+      content: "";
+      position: absolute;
+      left: 11%;
+      right: 11%;
+      top: -10px;
+      height: 1px;
+      background: rgba(47,127,142,.36);
+    }
+    .capability {
+      min-height: 100px;
+      padding: 9px 9px 8px;
+      text-align: center;
+      background: rgba(255,255,255,.82);
+    }
+    .capability b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--teal-dark);
+      font-size: 13px;
+      font-weight: 900;
+    }
+    .capability span {
+      display: block;
+      color: var(--muted);
+      font-size: 10.6px;
+      line-height: 1.36;
+    }
+    .cap-summary {
+      margin-top: 10px;
+      text-align: center;
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 850;
+    }
+
+    .role-list {
+      display: grid;
+      gap: 5px;
+      margin-top: 6px;
+    }
+    .role-list div {
+      padding: 4px 7px;
+      border-left: 3px solid var(--aqua);
+      background: rgba(242,246,245,.72);
+      color: var(--muted);
+      font-size: 9.8px;
+      line-height: 1.16;
+    }
+    .role-list b {
+      display: block;
+      color: var(--ink);
+      font-size: 12px;
+    }
+
+    .scene-matrix {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      grid-template-rows: 1fr 52px;
+      gap: 8px;
+    }
+    .scene-card {
+      padding: 9px 10px;
+      background: rgba(255,255,255,.86);
+    }
+    .scene-card h3 {
+      color: var(--teal-dark);
+      font-size: 13px;
+      line-height: 1.22;
+      font-weight: 900;
+    }
+    .scene-card p {
+      margin-top: 6px;
+      color: var(--muted);
+      font-size: 10.6px;
+      line-height: 1.33;
+    }
+    .scene-card .pain {
+      margin-top: 7px;
+      padding-top: 7px;
+      border-top: 1px solid var(--line-soft);
+      color: var(--ink);
+      font-weight: 750;
+    }
+    .scene-wide {
+      grid-column: 1 / -1;
+      padding: 9px 12px;
+      border: 1px solid var(--line);
+      background: rgba(242,246,245,.78);
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+    .scene-wide b { color: var(--teal-dark); }
+
+    .function-map {
+      display: grid;
+      grid-template-columns: 118px 430px 1fr;
+      border: 1px solid var(--line);
+      border-bottom: 0;
+      background: rgba(255,255,255,.75);
+    }
+    .function-map > div {
+      min-height: 48px;
+      padding: 8px 10px;
+      border-right: 1px solid var(--line-soft);
+      border-bottom: 1px solid var(--line);
+      color: var(--muted);
+      font-size: 11.4px;
+      line-height: 1.34;
+    }
+    .function-map > div:nth-child(3n) { border-right: 0; }
+    .function-map .type {
+      display: grid;
+      place-items: center;
+      color: var(--teal-dark);
+      font-size: 14px;
+      font-weight: 900;
+      background: rgba(242,246,245,.78);
+    }
+    .function-map .mods {
+      color: var(--ink);
+      font-weight: 760;
+    }
+
+    .bottom-grid {
+      display: grid;
+      grid-template-columns: 1.9fr .74fr;
+      gap: 12px;
+    }
+    .bottom-grid .panel-body { height: calc(100% - 36px); }
+
+    .closure {
+      position: relative;
+      height: 100%;
+      padding: 4px 8px;
+    }
+    .flow-svg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+    .flow-svg line,
+    .flow-svg path {
+      fill: none;
+      stroke: rgba(47,127,142,.36);
+      stroke-width: 1.4;
+    }
+    .flow-svg .main { stroke: rgba(31,154,174,.58); stroke-width: 2; }
+    .flow-stack {
+      position: relative;
+      z-index: 2;
+      height: 100%;
+      display: grid;
+      grid-template-rows: 54px 76px 82px 42px;
+      gap: 8px;
+      justify-items: center;
+    }
+    .scenario-pack {
+      width: 330px;
+      padding: 8px 12px;
+      text-align: center;
+      border: 1px solid var(--teal);
+      background: #fff;
+    }
+    .scenario-pack b,
+    .flow-node b,
+    .mini-card b {
+      display: block;
+      color: var(--teal-dark);
+      font-size: 13px;
+      line-height: 1.12;
+      font-weight: 900;
+    }
+    .scenario-pack span,
+    .flow-node span,
+    .mini-card span {
+      display: block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 10.6px;
+      line-height: 1.28;
+    }
+    .context-row {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      align-items: center;
+    }
+    .flow-node {
+      padding: 9px 12px;
+      text-align: center;
+      background: rgba(255,255,255,.86);
+    }
+    .work-chain {
+      width: 100%;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+      padding: 10px;
+      border: 1px solid var(--line);
+      background: rgba(242,246,245,.72);
+    }
+    .mini-card {
+      padding: 8px 10px;
+      text-align: center;
+      background: #fff;
+    }
+    .confirm-deliver {
+      display: grid;
+      grid-template-columns: 230px 42px 340px;
+      align-items: center;
+      gap: 10px;
+      color: var(--muted);
+      font-size: 12px;
+      font-weight: 800;
+    }
+    .arrow {
+      color: var(--teal-dark);
+      text-align: center;
+      font-size: 22px;
+      font-weight: 900;
+    }
+
+    .judgement {
+      display: grid;
+      gap: 10px;
+    }
+    .judge-card {
+      padding: 11px 12px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.82);
+    }
+    .judge-card b {
+      display: block;
+      margin-bottom: 6px;
+      color: var(--teal-dark);
+      font-size: 13px;
+      line-height: 1.15;
+      font-weight: 900;
+    }
+    .judge-card p {
+      color: var(--muted);
+      font-size: 11.6px;
+      line-height: 1.42;
+    }
+    .risk {
+      border-color: rgba(239,96,77,.42);
+      background: rgba(255,248,245,.78);
+    }
+    .risk b { color: var(--red); }
+
+    @media (max-width: 2200px) {
+      .stage {
+        transform-origin: top left;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="stage">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark"></div>
+        <div>
+          <h1>AI销售助手</h1>
+          <p>AI Presales Solution Assistant · Product Introduction</p>
+        </div>
+      </div>
+      <div class="top-title">产品资料一键精准查询，客户需求智能匹配方案，解决方案/指导书生成</div>
+      <div class="top-meta">
+        <span>Hermes 设计：客户记忆 / 项目偏好 / 表达风格 / 复用推荐</span>
+      </div>
+    </header>
+
+    <section class="canvas">
+      <div class="top-grid">
+        <section class="panel">
+          <div class="panel-head"><h2>01 产品定位</h2><span>DEFINITION</span></div>
+          <div class="panel-body">
+            <h3 class="subhead">AI销售助手</h3>
+            <div class="hermes-line">产品定位：<br>面向建筑、装备、能源、电力、化工、涂料等工程领域行业，赋能销售在售前/售中阶段复杂任务, 把标准、产品资料、项目经验和行业知识转化为可查询、可生成、可计算、可审核的知识，快速产出可信、可追溯的交付成果。<br></div>
+            <p class="strong-line">用户痛点：资料难找 / 依据难追 / 计算易错 / 审核低效。</p>
+            <p class="strong-line">价值结果：缩短产出周期 / 降低整理成本 / 提高质量与技术结论可信度 / 经验可沉淀。</p>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head"><h2>02 核心能力框架</h2><span>CAPABILITY FRAME</span></div>
+          <div class="panel-body">
+            <div class="cap-frame">
+              <div class="task-node">任务</div>
+              <div class="cap-row">
+                <div class="capability"><b>AI 查询</b><span>查资料依据<br>标准 / 项目 / 产品 / 案例</span></div>
+                <div class="capability"><b>AI 计算</b><span>算参数用量<br>公式 / 参数 / 材料估算</span></div>
+                <div class="capability"><b>AI 生成</b><span>生成文档材料<br>解决方案PPT / 施工指导书 / 说明 / 报告</span></div>
+                <div class="capability"><b>AI 审核</b><span>审合规风险<br>技术符合性 / 内容合规 / 引用风险</span></div>
+              </div>
+              <div class="cap-summary">可交付 / 可审核 / 可追溯 / 可复用 / 可自我进化</div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>03 Hermes 设计</h2><span>USER MEMORY</span></div>
+          <div class="panel-body">
+            <p class="text">关注用户和客户的长期上下文：每次提问、修改、确认和交付，都会沉淀为可复用的客户理解。</p>
+            <div class="hermes-card">
+              <b>客户价值</b>
+              <p>下次生成更贴近客户需求、项目背景、行业习惯和企业表达风格，减少反复沟通和重复改稿。</p>
+              <div class="hermes-grid">
+                <span>记住客户偏好</span><span>理解项目上下文</span><span>复用历史交付</span>
+                <span>学习修改习惯</span><span>推荐常用模板</span><span>沉淀最佳表达</span>
+              </div>
+            </div>
+            <div class="role-list">
+              <div><b>价值边界</b>Hermes 不替代查询、计算和审核能力，而是在这些任务之上持续学习客户、项目和交付偏好。</div>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel">
+        <div class="panel-head"><h2>04 场景矩阵：不同细分行业的知识/文档形态不同，但底层问题和痛点高度相似</h2><span>SCENARIO MATRIX</span></div>
+        <div class="panel-body">
+          <div class="scene-matrix">
+            <div class="scene-card">
+              <h3>解决方案 PPT 与技术材料生成</h3>
+              <p>涂料 / 装备 / 电力 / 化工等<br>技术销售 / 方案 / 工程技术</p>
+              <p class="pain">写方案耗时，引用不完整</p>
+            </div>
+            <div class="scene-card">
+              <h3>标准规范与项目资料查找</h3>
+              <p>全行业<br>工程技术 / 项目 / 知识负责人</p>
+              <p class="pain">资料分散，查找慢，依据难定位</p>
+            </div>
+            <div class="scene-card">
+              <h3>工程参数与材料用量计算</h3>
+              <p>涂料 / 建筑 / 基建 / 电力等<br>工程技术 / 资料 / 交付人员</p>
+              <p class="pain">参数来源不清，计算不透明易错</p>
+            </div>
+            <div class="scene-card">
+              <h3>技术符合性与内容合规审核</h3>
+              <p>轨交 / 化工 / 电力 / 能源等<br>审核 / 技术销售 / 项目负责人</p>
+              <p class="pain">人工审核慢，对外材料有风险</p>
+            </div>
+            <div class="scene-card">
+              <h3>产品资料转客户材料</h3>
+              <p>涂料 / 材料 / 装备 / 设备厂商<br>技术销售 / 市场支持 / 方案人员</p>
+              <p class="pain">难快速转为客户可读内容</p>
+            </div>
+          <div class="scene-wide"><b>Hermes 横向增强：</b>所有场景持续沉淀客户偏好、项目背景、常用模板、修改记录和历史交付方式。</div>
+          </div>
+        </div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-head"><h2>05 功能地图：四类 AI 能力可独立使用，也可在完整任务中串联使用</h2><span>FUNCTION MAP</span></div>
+        <div class="panel-body">
+          <div class="function-map">
+            <div class="type">AI 查询</div>
+            <div class="mods">标准规范查询 / 项目资料定位 / 产品设备资料查询 / 历史案例检索</div>
+            <div>快速找到适用条款、技术依据、项目文件、产品参数和相似经验，并结合客户历史关注点减少遗漏。</div>
+            <div class="type">AI 计算</div>
+            <div class="mods">工程参数计算 / 材料用量估算</div>
+            <div>基于标准、公式和可信参数完成工程计算，保留假设、单位、公式版本和人工确认点，降低口径不一致风险。</div>
+            <div class="type">AI 生成</div>
+            <div class="mods">解决方案 PPT / 作业指导书 / 技术说明 / 推广材料 / 交付报告</div>
+            <div>将客户需求、产品资料、项目条件和案例经验转化为结构完整、表达规范、每段可回溯的文档成果。</div>
+            <div class="type">AI 审核</div>
+            <div class="mods">技术符合性审核 / 规范合规审核 / 引用与风险审核</div>
+            <div>识别与国家规范、行业规范、地方标准、客户要求、技术规格的不一致点，发现夸大表述、依据不足需人工确认内容。</div>
+          </div>
+        </div>
+      </section>
+
+      <div class="bottom-grid">
+        <section class="panel">
+          <div class="panel-head"><h2>06 行业场景化交付闭环</h2><span>DELIVERY LOOP</span></div>
+          <div class="panel-body">
+            <div class="closure">
+              <svg class="flow-svg" viewBox="0 0 1428 220" preserveAspectRatio="none" aria-hidden="true">
+                <line class="main" x1="714" y1="48" x2="714" y2="88"></line>
+                <path d="M714 72 L238 72 L238 98"></path>
+                <path d="M714 72 L714 98"></path>
+                <path d="M714 72 L1190 72 L1190 98"></path>
+                <path d="M238 152 L238 166 L714 166"></path>
+                <path d="M714 152 L714 166"></path>
+                <path d="M1190 152 L1190 166 L714 166"></path>
+                <line class="main" x1="714" y1="166" x2="714" y2="178"></line>
+              </svg>
+              <div class="flow-stack">
+                <div class="scenario-pack"><b>行业场景包 + Hermes 客户记忆</b><span>行业术语 / 工程对象 / 模板 / 客户偏好 / 输出格式</span></div>
+                <div class="context-row">
+                  <div class="flow-node"><b>证据上下文</b><span>标准 / 产品<br>项目 / 案例</span></div>
+                  <div class="flow-node"><b>客户记忆上下文</b><span>偏好 / 历史<br>风格 / 模板</span></div>
+                  <div class="flow-node"><b>任务上下文</b><span>客户需求<br>条件 / 约束</span></div>
+                </div>
+                <div class="work-chain">
+                  <div class="mini-card"><b>AI 查询</b><span>查标准、产品资料、项目文件和案例</span></div>
+                  <div class="mini-card"><b>AI 生成</b><span>生成 PPT / 指导书 / 说明 / 材料 / 报告</span></div>
+                  <div class="mini-card"><b>AI 计算</b><span>计算参数和用量，形成估算依据</span></div>
+                  <div class="mini-card"><b>AI 审核</b><span>检查技术符合性、内容合规、引用风险</span></div>
+                </div>
+                <div class="confirm-deliver">
+                  <div class="mini-card"><b>人工确认</b><span>关键参数 / 技术结论 / 风险项</span></div>
+                  <div class="arrow">→</div>
+                  <div class="mini-card"><b>成果交付</b><span>Word / PPT / PDF / Excel / 系统回写结果</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section class="panel">
+          <div class="panel-head"><h2>07 关键判断</h2><span>TAKEAWAYS</span></div>
+          <div class="panel-body">
+            <div class="judgement">
+              <div class="judge-card">
+                <b>Hermes 不是单点功能</b>
+                <p>它让每次使用都沉淀客户理解，让查询、生成、计算和审核的结果越来越贴近真实业务场景。</p>
+              </div>
+              <div class="judge-card">
+                <b>核心壁垒来自持续学习</b>
+                <p>更重要的是客户偏好、项目经验、常用模板、修改习惯和企业表达方式的持续沉淀。</p>
+              </div>
+              <div class="judge-card risk">
+                <b>适用边界</b>
+                <p>AI 辅助查询、计算、生成和审核；关键参数、技术结论、合规风险仍需人工确认。</p>
+              </div>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </main>
+</body>
+</html>

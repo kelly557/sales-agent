@@ -1,0 +1,1451 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>工程行业销售 Agent 端到端流程与数据流</title>
+  <style>
+    :root {
+      --bg: #f6f9fe;
+      --paper: #ffffff;
+      --ink: #142235;
+      --muted: #5d6f86;
+      --soft: #edf5ff;
+      --soft-2: #f7fbff;
+      --blue: #3278ff;
+      --blue-2: #6fa7ff;
+      --line: #cfdcf0;
+      --line-2: #e3ebf7;
+      --green: #2b8f74;
+      --amber: #a56a08;
+      --red: #b23b4a;
+      --shadow: 0 18px 46px rgba(29, 57, 99, .09);
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      color: var(--ink);
+      background:
+        linear-gradient(45deg, rgba(187, 205, 230, .16) 25%, transparent 25%) 0 0 / 26px 26px,
+        linear-gradient(45deg, transparent 75%, rgba(187, 205, 230, .16) 75%) 0 0 / 26px 26px,
+        linear-gradient(180deg, #fbfdff 0%, var(--bg) 48%, #eef4fc 100%);
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", Arial, sans-serif;
+      line-height: 1.62;
+    }
+
+    .page {
+      max-width: 1480px;
+      margin: 0 auto;
+      padding: 28px 28px 58px;
+    }
+
+    .hero { margin-bottom: 22px; }
+
+    .hero-main,
+    .section {
+      background: rgba(255, 255, 255, .94);
+      border: 1px solid rgba(186, 204, 232, .86);
+      border-radius: 14px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main { padding: 30px 32px; }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 12px;
+      padding: 5px 10px;
+      color: #1c56c8;
+      background: #eef5ff;
+      border: 1px solid #cfe0ff;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .02em;
+    }
+
+    h1, h2, h3, h4, p { margin-top: 0; }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: clamp(30px, 4vw, 48px);
+      line-height: 1.12;
+      letter-spacing: 0;
+    }
+
+    h2 {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 14px;
+      font-size: 24px;
+      line-height: 1.25;
+      letter-spacing: 0;
+    }
+
+    h3 {
+      margin-bottom: 10px;
+      font-size: 18px;
+      line-height: 1.35;
+      letter-spacing: 0;
+    }
+
+    p { color: #31465c; }
+
+    .lead {
+      max-width: 980px;
+      margin-bottom: 0;
+      color: var(--muted);
+      font-size: 16px;
+    }
+
+    .hero-kpis {
+      display: grid;
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .kpi {
+      display: grid;
+      grid-template-columns: 34px minmax(0, 1fr);
+      gap: 10px;
+      align-items: center;
+      padding: 11px;
+      background: var(--soft-2);
+      border: 1px solid var(--line-2);
+      border-radius: 10px;
+    }
+
+    .icon {
+      width: 34px;
+      height: 34px;
+      display: grid;
+      place-items: center;
+      color: var(--blue);
+      background: #eef5ff;
+      border: 1px solid #cfe0ff;
+      border-radius: 9px;
+      font-weight: 900;
+    }
+
+    .kpi strong { display: block; font-size: 14px; }
+    .kpi span { display: block; color: var(--muted); font-size: 12px; line-height: 1.35; }
+
+    .section {
+      margin-top: 18px;
+      padding: 22px;
+    }
+
+    .section-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: flex-start;
+      margin-bottom: 16px;
+      border-bottom: 1px solid var(--line-2);
+      padding-bottom: 14px;
+    }
+
+    .section-title p {
+      max-width: 760px;
+      margin: 0;
+      color: var(--muted);
+      font-size: 14px;
+    }
+
+    .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 9px;
+      color: #2557b8;
+      background: #eef5ff;
+      border: 1px solid #cfe0ff;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .summary-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+
+    .summary-card {
+      min-height: 142px;
+      padding: 15px;
+      background: #fff;
+      border: 1px solid var(--line-2);
+      border-radius: 11px;
+    }
+
+    .summary-card h3 {
+      display: flex;
+      gap: 8px;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 15px;
+    }
+
+    .summary-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .flow-board {
+      overflow-x: auto;
+      padding: 18px;
+      background: rgba(250, 253, 255, .9);
+      border: 1px solid var(--line-2);
+      border-radius: 12px;
+    }
+
+    .graph-board {
+      overflow-x: auto;
+      padding: 18px;
+      background: #fbfdff;
+      border: 1px solid var(--line-2);
+      border-radius: 12px;
+    }
+
+    .graph-svg {
+      min-width: 1180px;
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .graph-box { fill: #ffffff; stroke: #bcd1ee; stroke-width: 1.2; rx: 6; }
+    .graph-box-blue { fill: #edf5ff; stroke: #bad3fb; stroke-width: 1.2; rx: 6; }
+    .graph-box-soft { fill: #f7fbff; stroke: #d4e3f7; stroke-width: 1.2; rx: 6; }
+    .graph-title { fill: #173453; font-size: 15px; font-weight: 800; }
+    .graph-sub { fill: #50657d; font-size: 12px; }
+    .graph-mini { fill: #1d61e7; font-size: 11px; font-weight: 800; }
+    .graph-line { stroke: #7f90a8; stroke-width: 1.2; fill: none; marker-end: url(#arrow); }
+    .graph-line-soft { stroke: #a8b6ca; stroke-width: 1; fill: none; marker-end: url(#arrowSoft); stroke-dasharray: 4 4; }
+    .graph-lane { fill: #1d61e7; font-size: 12px; font-weight: 900; }
+
+    .route-map {
+      min-width: 1180px;
+      padding: 6px 4px 2px;
+    }
+
+    .agent-stack {
+      width: 360px;
+      margin: 0 auto;
+      text-align: center;
+    }
+
+    .agent-box {
+      padding: 10px 14px;
+      background: #ffffff;
+      border: 1px solid #bcd1ee;
+      border-radius: 4px;
+      box-shadow: 0 5px 12px rgba(29, 57, 99, .05);
+      font-size: 12px;
+      font-weight: 800;
+    }
+
+    .agent-box.sub {
+      margin-top: 28px;
+      background: #edf5ff;
+      border-color: #c8dbfb;
+    }
+
+    .agent-connector {
+      width: 1px;
+      height: 28px;
+      margin: 0 auto;
+      background: #6f8094;
+      position: relative;
+    }
+
+    .agent-connector::after,
+    .thin-arrow::after {
+      content: "";
+      position: absolute;
+      left: -4px;
+      bottom: -1px;
+      width: 8px;
+      height: 8px;
+      border-right: 1px solid #6f8094;
+      border-bottom: 1px solid #6f8094;
+      transform: rotate(45deg);
+    }
+
+    .bracket {
+      width: calc(100% - 140px);
+      height: 30px;
+      margin: 14px auto 0;
+      border-left: 1px solid #909fb3;
+      border-right: 1px solid #909fb3;
+      border-top: 1px solid #909fb3;
+    }
+
+    .thin-arrow {
+      width: 1px;
+      height: 28px;
+      margin: 0 auto;
+      background: #6f8094;
+      position: relative;
+    }
+
+    .process-table {
+      display: grid;
+      grid-template-columns: 68px repeat(5, 1fr);
+      gap: 10px;
+      align-items: stretch;
+    }
+
+    .process-table.flow-seven { grid-template-columns: 68px repeat(7, 1fr); }
+
+    .side-label {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #1d61e7;
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+      line-height: 1.25;
+      padding: 8px;
+      background: #f4f8ff;
+      border: 1px solid #d5e3f7;
+      border-radius: 3px;
+    }
+
+    .process-step {
+      min-height: 86px;
+      padding: 10px 12px;
+      background: #edf5ff;
+      border: 1px solid #d5e3f7;
+      border-radius: 3px;
+      position: relative;
+    }
+
+    .process-step .step-no {
+      margin-bottom: 8px;
+      color: #1d61e7;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .process-step strong {
+      display: block;
+      color: #18324f;
+      font-size: 13px;
+      line-height: 1.25;
+    }
+
+    .process-cell {
+      min-height: 118px;
+      padding: 11px 12px;
+      background: #fff;
+      border: 1px solid #bfd2ef;
+      border-radius: 4px;
+      position: relative;
+    }
+
+    .process-cell::before {
+      content: "";
+      position: absolute;
+      top: -11px;
+      left: 50%;
+      width: 1px;
+      height: 11px;
+      background: #909fb3;
+    }
+
+    .process-cell ul {
+      margin: 0;
+      padding-left: 16px;
+      color: #334b63;
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .process-cell li::marker { color: #1d61e7; }
+
+    .template-cards {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .template-card {
+      padding: 14px;
+      background: #fff;
+      border: 1px solid #d5e3f7;
+      border-radius: 8px;
+    }
+
+    .template-card h4 {
+      margin: 0 0 8px;
+      font-size: 14px;
+      color: #173453;
+    }
+
+    .template-card ul {
+      margin: 0;
+      padding-left: 16px;
+      color: #4b627a;
+      font-size: 12px;
+    }
+
+    .page-spec {
+      display: grid;
+      grid-template-columns: 160px minmax(0, 1fr);
+      gap: 10px;
+      align-items: stretch;
+      padding: 10px;
+      border-bottom: 1px solid #e7eef8;
+      background: #fff;
+    }
+
+    .page-spec:last-child { border-bottom: 0; }
+
+    .page-name {
+      padding: 10px;
+      background: #edf5ff;
+      border: 1px solid #c8dbfb;
+      border-radius: 4px;
+      color: #1d4fb0;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .page-data {
+      display: grid;
+      grid-template-columns: minmax(0, .9fr) minmax(0, 1.1fr);
+      gap: 10px;
+    }
+
+    .page-data div {
+      padding: 10px;
+      background: #fbfdff;
+      border: 1px solid #e2ebf7;
+      border-radius: 4px;
+      color: #334b63;
+      font-size: 12px;
+    }
+
+    .page-data strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #173453;
+      font-size: 12px;
+    }
+
+    .trigger {
+      width: 330px;
+      margin: 0 auto 18px;
+      padding: 13px 14px;
+      text-align: center;
+      background: #fff;
+      border: 1px solid #bcd0ee;
+      border-radius: 10px;
+      box-shadow: 0 8px 22px rgba(29, 57, 99, .08);
+    }
+
+    .trigger .small { color: var(--muted); font-size: 12px; }
+
+    .down-arrow {
+      width: 1px;
+      height: 24px;
+      margin: -5px auto 2px;
+      background: #95a9c4;
+      position: relative;
+    }
+
+    .down-arrow::after {
+      content: "";
+      position: absolute;
+      left: -4px;
+      bottom: -1px;
+      width: 8px;
+      height: 8px;
+      border-right: 1px solid #95a9c4;
+      border-bottom: 1px solid #95a9c4;
+      transform: rotate(45deg);
+    }
+
+    .step-grid {
+      min-width: 1160px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      align-items: stretch;
+      position: relative;
+    }
+
+    .step {
+      position: relative;
+      min-height: 104px;
+      padding: 14px 13px 13px;
+      background: #edf5ff;
+      border: 1px solid #c9dcf8;
+      border-radius: 8px;
+    }
+
+    .step:not(:last-child)::after {
+      content: "";
+      position: absolute;
+      right: -12px;
+      top: 50%;
+      width: 12px;
+      border-top: 1px solid #9eb2cf;
+    }
+
+    .step .label {
+      margin-bottom: 8px;
+      color: #1d61e7;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .step strong {
+      display: block;
+      margin-bottom: 6px;
+      color: #18324f;
+      font-size: 14px;
+      line-height: 1.3;
+    }
+
+    .step span {
+      display: block;
+      color: #54687f;
+      font-size: 12px;
+      line-height: 1.4;
+    }
+
+    .lane-grid {
+      min-width: 1160px;
+      display: grid;
+      grid-template-columns: repeat(6, 1fr);
+      gap: 12px;
+      margin-top: 10px;
+    }
+
+    .lane-cell {
+      min-height: 112px;
+      padding: 12px;
+      background: #fff;
+      border: 1px solid #d5e2f3;
+      border-radius: 8px;
+    }
+
+    .lane-cell .lane-title {
+      margin-bottom: 7px;
+      color: #1d61e7;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    .lane-cell ul {
+      margin: 0;
+      padding-left: 16px;
+      color: #3f5369;
+      font-size: 12px;
+      line-height: 1.5;
+    }
+
+    .lane-label {
+      display: inline-block;
+      margin-top: 16px;
+      margin-bottom: 6px;
+      color: #2f5fa5;
+      font-size: 12px;
+      font-weight: 900;
+      writing-mode: initial;
+    }
+
+    .matrix {
+      width: 100%;
+      overflow: auto;
+      border: 1px solid var(--line-2);
+      border-radius: 12px;
+    }
+
+    table {
+      width: 100%;
+      min-width: 920px;
+      border-collapse: collapse;
+      background: #fff;
+    }
+
+    th, td {
+      padding: 11px 12px;
+      border-bottom: 1px solid #e7eef8;
+      text-align: left;
+      vertical-align: top;
+      font-size: 13px;
+    }
+
+    th {
+      color: #173453;
+      background: #f0f6ff;
+      font-weight: 900;
+    }
+
+    tr:last-child td { border-bottom: 0; }
+
+    td { color: #31465c; }
+
+    .two-col {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+
+    .timeline {
+      display: grid;
+      gap: 12px;
+    }
+
+    .timeline-row {
+      display: grid;
+      grid-template-columns: 150px minmax(0, 1fr) 260px;
+      gap: 12px;
+      align-items: stretch;
+    }
+
+    .time {
+      display: grid;
+      place-items: center;
+      padding: 10px;
+      color: #2557b8;
+      background: #edf5ff;
+      border: 1px solid #c9dcf8;
+      border-radius: 8px;
+      font-size: 12px;
+      font-weight: 900;
+      text-align: center;
+    }
+
+    .actor-card,
+    .output-card {
+      padding: 12px;
+      background: #fff;
+      border: 1px solid var(--line-2);
+      border-radius: 8px;
+    }
+
+    .actor-card strong,
+    .output-card strong {
+      display: block;
+      margin-bottom: 5px;
+      color: #172f4c;
+      font-size: 13px;
+    }
+
+    .actor-card p,
+    .output-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.45;
+    }
+
+    .sample {
+      display: grid;
+      gap: 10px;
+      padding: 16px;
+      background: #fbfdff;
+      border: 1px solid var(--line-2);
+      border-radius: 12px;
+    }
+
+    .sample-block {
+      padding: 13px;
+      background: #fff;
+      border: 1px solid #d8e4f3;
+      border-radius: 9px;
+    }
+
+    .sample-block h4 {
+      margin-bottom: 8px;
+      color: #173453;
+      font-size: 14px;
+    }
+
+    .sample-block p {
+      margin-bottom: 8px;
+      font-size: 13px;
+    }
+
+    .pill-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .pill {
+      display: inline-flex;
+      padding: 4px 8px;
+      color: #2e4f77;
+      background: #f3f8ff;
+      border: 1px solid #d7e5f8;
+      border-radius: 7px;
+      font-size: 12px;
+      font-weight: 750;
+    }
+
+    .note {
+      margin-top: 12px;
+      padding: 12px;
+      color: #39516b;
+      background: #f7fbff;
+      border: 1px dashed #b9cbe4;
+      border-radius: 9px;
+      font-size: 13px;
+    }
+
+    .risk { color: var(--red); font-weight: 800; }
+    .ok { color: var(--green); font-weight: 800; }
+    .warn { color: var(--amber); font-weight: 800; }
+
+    @media (max-width: 980px) {
+      .page { padding: 18px; }
+      .two-col, .summary-grid { grid-template-columns: 1fr; }
+      .timeline-row { grid-template-columns: 1fr; }
+      .section-title { display: block; }
+      .tag { margin-top: 8px; }
+    }
+  </style>
+</head>
+<body>
+  <main class="page">
+    <section class="hero">
+      <div class="hero-main">
+        <h1>工程行业销售 Agent 端到端流程与数据流设计</h1>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>01. 设计目标与边界</h2>
+          <p>目标是表达一个工程行业销售 Agent 从销售输入到客户方案交付的端到端流程，重点是数据如何进入、被理解、被检索、被组织成证据包、被填入行业模板并回写记忆。能力模块是执行节点，不是本文档的主角。</p>
+        </div>
+        <span class="tag">目标</span>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h3><span class="icon">A</span>一个 Agent 多行业包</h3>
+          <p>同一个销售 Agent 通过行业包适配建筑、涂料，后续扩展化学、材料等工程行业。</p>
+        </div>
+        <div class="summary-card">
+          <h3><span class="icon">B</span>表单按行业配置</h3>
+          <p>表单字段由行业包和租户配置生成，支持必填、推荐、可选、隐藏和上下文预填。</p>
+        </div>
+        <div class="summary-card">
+          <h3><span class="icon">C</span>数据流是核心</h3>
+          <p>关键不是展示能力名称，而是说明每一步消耗什么数据、产出什么数据、如何传递到下一步。</p>
+        </div>
+        <div class="summary-card">
+          <h3><span class="icon">D</span>输出必须可追溯</h3>
+          <p>客户方案中的产品、案例、价格、用量、服务承诺和方案依据都要保留来源、版本和权限标签。</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>02. 业务 / 数据 / 流程总览 Graph</h2>
+          <p>这张图把业务输入、行业配置、数据源、Agent 编排、证据包、PPT 页级输出和记忆回写放在同一张图里，作为后续细节章节的总览。</p>
+        </div>
+        <span class="tag">Graph</span>
+      </div>
+      <div class="graph-board">
+        <svg class="graph-svg" viewBox="0 0 1180 720" role="img" aria-label="工程行业销售 Agent 业务数据流程总览图">
+          <defs>
+            <marker id="arrow" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#7f90a8"></path>
+            </marker>
+            <marker id="arrowSoft" markerWidth="8" markerHeight="8" refX="6" refY="3.5" orient="auto">
+              <path d="M0,0 L7,3.5 L0,7 Z" fill="#a8b6ca"></path>
+            </marker>
+          </defs>
+
+          <text x="40" y="34" class="graph-lane">业务输入</text>
+          <text x="300" y="34" class="graph-lane">Agent 编排</text>
+          <text x="595" y="34" class="graph-lane">数据与证据</text>
+          <text x="885" y="34" class="graph-lane">PPT 交付物</text>
+
+          <rect x="35" y="58" width="190" height="82" class="graph-box-blue"></rect>
+          <text x="55" y="88" class="graph-title">销售输入</text>
+          <text x="55" y="112" class="graph-sub">客户需求 / 项目 / 上传资料</text>
+          <text x="55" y="130" class="graph-sub">文本、语音、图片、文件</text>
+
+          <rect x="35" y="176" width="190" height="96" class="graph-box"></rect>
+          <text x="55" y="206" class="graph-title">行业表单配置</text>
+          <text x="55" y="230" class="graph-sub">字段：必填 / 推荐 / 可选</text>
+          <text x="55" y="248" class="graph-sub">规则：预填 / 隐藏 / 校验</text>
+
+          <rect x="35" y="308" width="190" height="96" class="graph-box"></rect>
+          <text x="55" y="338" class="graph-title">模板选择</text>
+          <text x="55" y="362" class="graph-sub">销售指定模板优先</text>
+          <text x="55" y="380" class="graph-sub">未指定则按行业和场景匹配</text>
+
+          <rect x="280" y="58" width="210" height="72" class="graph-box-blue"></rect>
+          <text x="302" y="86" class="graph-title">上下文读取</text>
+          <text x="302" y="110" class="graph-sub">tenant、客户、项目、历史记忆</text>
+
+          <rect x="280" y="160" width="210" height="72" class="graph-box-blue"></rect>
+          <text x="302" y="188" class="graph-title">意图识别与 Query 改写</text>
+          <text x="302" y="212" class="graph-sub">查询 / 方案 / 混合任务</text>
+
+          <rect x="280" y="262" width="210" height="72" class="graph-box-blue"></rect>
+          <text x="302" y="290" class="graph-title">轻量参数提取</text>
+          <text x="302" y="314" class="graph-sub">行业、场景、诉求、交付物</text>
+
+          <rect x="280" y="364" width="210" height="72" class="graph-box-blue"></rect>
+          <text x="302" y="392" class="graph-title">任务拆解与执行链</text>
+          <text x="302" y="416" class="graph-sub">资料检索 → PPT 方案生成</text>
+
+          <rect x="575" y="58" width="220" height="102" class="graph-box-soft"></rect>
+          <text x="597" y="88" class="graph-title">行业数据源</text>
+          <text x="597" y="112" class="graph-sub">产品库、案例库、服务能力库</text>
+          <text x="597" y="130" class="graph-sub">图纸/项目资料、检测报告</text>
+          <text x="597" y="148" class="graph-sub">价格权限、模板库、规则库</text>
+
+          <rect x="575" y="202" width="220" height="86" class="graph-box-blue"></rect>
+          <text x="597" y="232" class="graph-title">证据包</text>
+          <text x="597" y="256" class="graph-sub">结论 + 来源 + 版本 + 权限</text>
+          <text x="597" y="274" class="graph-sub">冲突项 / 缺失项 / 待确认项</text>
+
+          <rect x="575" y="330" width="220" height="86" class="graph-box"></rect>
+          <text x="597" y="360" class="graph-title">页级数据绑定</text>
+          <text x="597" y="384" class="graph-sub">每页需要什么数据</text>
+          <text x="597" y="402" class="graph-sub">每个字段来自哪个来源</text>
+
+          <rect x="865" y="58" width="245" height="270" class="graph-box-blue"></rect>
+          <text x="887" y="88" class="graph-title">解决方案 PPT</text>
+          <text x="887" y="116" class="graph-mini">封面 / 目录</text>
+          <text x="887" y="142" class="graph-sub">客户、项目、行业、模板</text>
+          <text x="887" y="174" class="graph-mini">需求理解</text>
+          <text x="887" y="200" class="graph-sub">痛点、预算、场景、阶段</text>
+          <text x="887" y="232" class="graph-mini">推荐方案</text>
+          <text x="887" y="258" class="graph-sub">产品体系 / 服务包 / 实施路径</text>
+          <text x="887" y="290" class="graph-mini">案例 / 服务 / 附录</text>
+          <text x="887" y="316" class="graph-sub">案例、估算、引用、待确认项</text>
+
+          <rect x="865" y="370" width="245" height="82" class="graph-box"></rect>
+          <text x="887" y="400" class="graph-title">校验与格式化</text>
+          <text x="887" y="424" class="graph-sub">来源、权限、风险表达、空页</text>
+
+          <rect x="865" y="500" width="245" height="82" class="graph-box"></rect>
+          <text x="887" y="530" class="graph-title">输出与回写</text>
+          <text x="887" y="554" class="graph-sub">PPT / PDF / Word 草稿</text>
+          <text x="887" y="572" class="graph-sub">客户偏好、确认项、推荐记录</text>
+
+          <rect x="35" y="500" width="760" height="82" class="graph-box-soft"></rect>
+          <text x="55" y="530" class="graph-title">回写闭环</text>
+          <text x="55" y="554" class="graph-sub">客户关注点、已采用模板、已确认假设、被拒绝方案、人工修改记录、成交反馈进入 Hermes / CRM / 项目记忆</text>
+
+          <path d="M225 99 H280" class="graph-line"></path>
+          <path d="M385 130 V160" class="graph-line"></path>
+          <path d="M385 232 V262" class="graph-line"></path>
+          <path d="M385 334 V364" class="graph-line"></path>
+          <path d="M490 400 H575" class="graph-line"></path>
+          <path d="M685 160 V202" class="graph-line"></path>
+          <path d="M795 245 H865" class="graph-line"></path>
+          <path d="M685 288 V330" class="graph-line"></path>
+          <path d="M795 373 H865" class="graph-line"></path>
+          <path d="M988 328 V370" class="graph-line"></path>
+          <path d="M988 452 V500" class="graph-line"></path>
+          <path d="M225 224 H280" class="graph-line-soft"></path>
+          <path d="M225 356 H280" class="graph-line-soft"></path>
+          <path d="M575 541 H225" class="graph-line-soft"></path>
+          <path d="M865 541 H795" class="graph-line-soft"></path>
+          <path d="M490 196 H575" class="graph-line"></path>
+        </svg>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>03. SaaS 端到端主流程</h2>
+          <p>流程图只保留截图的视觉效果：细线连接、浅蓝步骤块、白色说明方格和紧凑网格；流程内容完全按当前 Agent 链路重画。</p>
+        </div>
+        <span class="tag">主链路</span>
+      </div>
+
+      <div class="flow-board">
+        <div class="route-map">
+          <div class="agent-stack">
+            <div class="agent-box">销售输入客户需求 / 上传资料 / 选择项目</div>
+            <div class="agent-connector"></div>
+            <div class="agent-box sub">一个工程行业销售 Agent<br/>通过行业包适配建筑、涂料、化学、材料等行业</div>
+          </div>
+          <div class="thin-arrow"></div>
+          <div class="bracket"></div>
+          <div class="process-table flow-seven">
+            <div class="side-label">执行步骤</div>
+            <div class="process-step"><div class="step-no">Step 1</div><strong>上下文读取</strong></div>
+            <div class="process-step"><div class="step-no">Step 2</div><strong>意图识别</strong></div>
+            <div class="process-step"><div class="step-no">Step 3</div><strong>Query 改写</strong></div>
+            <div class="process-step"><div class="step-no">Step 4</div><strong>轻量参数提取</strong></div>
+            <div class="process-step"><div class="step-no">Step 5</div><strong>任务拆解与路由</strong></div>
+            <div class="process-step"><div class="step-no">Step 6</div><strong>能力执行</strong></div>
+            <div class="process-step"><div class="step-no">Step 7</div><strong>整合输出</strong></div>
+
+            <div class="side-label">系统动作</div>
+            <div class="process-cell"><ul><li>读取 tenant、行业、销售角色、客户、项目、会话历史</li><li>Hermes 只提供偏好和历史确认项，不覆盖强事实</li></ul></div>
+            <div class="process-cell"><ul><li>识别产品资料查询、案例查询、方案生成、混合任务</li><li>根据租户和销售所属行业加载对应行业包</li></ul></div>
+            <div class="process-cell"><ul><li>补行业同义词、场景词和资料类型</li><li>建筑侧补项目类型/部位/服务内容；涂料侧补产品/体系/性能词</li></ul></div>
+            <div class="process-cell"><ul><li>只抽取必要字段，不做重槽位</li><li>字段来自行业配置：必填、推荐、可选、隐藏</li></ul></div>
+            <div class="process-cell"><ul><li>资料查询走检索能力</li><li>方案生成走证据检索 → PPT 方案生成</li><li>用户已选模板则锁定模板</li></ul></div>
+            <div class="process-cell"><ul><li>按任务加载流程、规则、模板和脚本</li><li>检索证据包，生成模板化交付物</li></ul></div>
+            <div class="process-cell"><ul><li>解析校验、格式化结果、合并上下文</li><li>输出客户可看的完整方案和内部依据</li></ul></div>
+
+            <div class="side-label">数据产物</div>
+            <div class="process-cell"><ul><li>客户画像、项目背景、销售权限、历史推荐记录</li><li>行业知识库范围和数据版本</li></ul></div>
+            <div class="process-cell"><ul><li>任务类型、交付物类型、是否需要表单</li><li>置信度和兜底策略</li></ul></div>
+            <div class="process-cell"><ul><li>检索 query、过滤条件、数据源范围</li><li>可解释的改写原因</li></ul></div>
+            <div class="process-cell"><ul><li>表单预填快照</li><li>缺失但不阻塞字段、缺失且阻塞字段</li></ul></div>
+            <div class="process-cell"><ul><li>任务计划、执行链、模板 ID 或模板候选</li><li>每个执行节点需要的上下文和参数</li></ul></div>
+            <div class="process-cell"><ul><li>证据包、材料/服务估算、案例包、方案草稿</li><li>来源、版本、权限、风险提示</li></ul></div>
+            <div class="process-cell"><ul><li>资料卡、客户方案、PPT/Word/PDF 草稿</li><li>待确认项和记忆回写项</li></ul></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>04. 数据检索与证据包流转</h2>
+          <p>这一段描述从查询条件到多源取数、排序去重、证据包封装的数据流。检索能力只是执行方式，核心产物是可被下游方案生成复用的结构化证据包。</p>
+        </div>
+        <span class="tag">数据流</span>
+      </div>
+      <div class="flow-board">
+        <div class="route-map">
+          <div class="process-table">
+            <div class="side-label">检索步骤</div>
+            <div class="process-step"><div class="step-no">Step 1</div><strong>读取能力入口</strong></div>
+            <div class="process-step"><div class="step-no">Step 2</div><strong>加载任务流程</strong></div>
+            <div class="process-step"><div class="step-no">Step 3</div><strong>生成检索条件</strong></div>
+            <div class="process-step"><div class="step-no">Step 4</div><strong>多源取数</strong></div>
+            <div class="process-step"><div class="step-no">Step 5</div><strong>证据包封装</strong></div>
+
+            <div class="side-label">处理规则</div>
+            <div class="process-cell"><ul><li>根据意图判断资料、案例、产品、服务能力或方案依据查询</li><li>确认行业销售所能访问的数据范围</li></ul></div>
+            <div class="process-cell"><ul><li>建筑销售：项目机会、服务能力、工程案例、客户方案模板</li><li>涂料销售：产品资料、体系、检测报告、施工工艺</li></ul></div>
+            <div class="process-cell"><ul><li>扩展行业同义词和客户表达</li><li>生成结构化过滤条件和向量检索 query</li></ul></div>
+            <div class="process-cell"><ul><li>结构化库先过滤</li><li>文档库召回片段</li><li>元数据定位案例编号、报告编号、图纸位置</li></ul></div>
+            <div class="process-cell"><ul><li>输出结论、证据、版本、权限</li><li>列出冲突、缺失、待确认项</li></ul></div>
+
+            <div class="side-label">返回数据</div>
+            <div class="process-cell"><ul><li>检索流程可执行</li><li>明确需要哪些上下文和参数</li></ul></div>
+            <div class="process-cell"><ul><li>只加载必要 workflow</li><li>避免一次加载全部执行文件</li></ul></div>
+            <div class="process-cell"><ul><li>得到可执行检索条件</li><li>减少纯语义检索误召回</li></ul></div>
+            <div class="process-cell"><ul><li>候选资料、案例、报告、服务能力材料</li><li>完成排序和去重</li></ul></div>
+            <div class="process-cell"><ul><li>供 PPT 方案生成直接使用</li><li>供查询结果直接展示</li></ul></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="two-col" style="margin-top:14px;">
+        <div class="matrix">
+          <table>
+            <thead><tr><th colspan="4">建筑行业检索数据源</th></tr><tr><th>数据</th><th>来源</th><th>获取方式</th><th>真实用途</th></tr></thead>
+            <tbody>
+              <tr><td>图纸目录与图纸版本</td><td>项目文档库、BIM/CDE、网盘集成</td><td>按项目编号读取最新已发布版本；文件名、图号、专业、版本号过滤</td><td>避免把旧版图纸和范围信息用于客户方案。</td></tr>
+              <tr><td>建筑做法表</td><td>建筑施工图、装饰图、设计说明 PDF/CAD 提取结果</td><td>OCR/版面解析后按做法编号、部位、房间类型索引</td><td>定位“内墙 1”“楼地面 3”“屋面 2”等真实做法。</td></tr>
+              <tr><td>工程量与部位清单</td><td>清单计价文件、BIM 模型、项目台账</td><td>按楼栋、楼层、构件、房间、专业过滤</td><td>生成材料估算、施工范围、检验批划分。</td></tr>
+              <tr><td>规范标准</td><td>企业标准库、国家/地方规范库</td><td>按专业、关键词、条文号、适用地区检索</td><td>生成验收要求、质量控制点、安全注意事项。</td></tr>
+              <tr><td>客户方案与服务能力模板</td><td>企业知识库、历史项目归档</td><td>按工程类型、客户类型、服务范围、项目阶段召回</td><td>为 PPT 方案生成提供客户版章节结构和表达风格。</td></tr>
+              <tr><td>隐蔽验收和检验批表格</td><td>资料管理系统、质量系统</td><td>按专业、分项工程、验收规范映射</td><td>补充“需要留存哪些验收资料”。</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="matrix">
+          <table>
+            <thead><tr><th colspan="4">涂料行业检索数据源</th></tr><tr><th>数据</th><th>来源</th><th>获取方式</th><th>真实用途</th></tr></thead>
+            <tbody>
+              <tr><td>产品主数据</td><td>PIM/ERP/产品中心</td><td>按品类、应用部位、上架状态、区域供货、租户权限过滤</td><td>确认产品是否可推荐、是否可供货。</td></tr>
+              <tr><td>TDS / 产品说明书</td><td>文档知识库、对象存储</td><td>产品 ID 精确拉取 + 向量片段召回</td><td>提取适用基材、理论涂布率、重涂间隔、施工方式。</td></tr>
+              <tr><td>检测报告</td><td>DMS、质量系统、认证库</td><td>按产品、性能项、报告有效期、检测机构过滤</td><td>支撑 VOC、耐擦洗、耐沾污、防火、防腐等声明。</td></tr>
+              <tr><td>涂装体系库</td><td>技术中心、方案库</td><td>按基材、环境、腐蚀等级、使用场景匹配</td><td>组合底漆/中涂/面漆，避免单品推荐。</td></tr>
+              <tr><td>施工工艺</td><td>技术服务知识库</td><td>按产品体系、基材处理、施工方法检索</td><td>输出基层处理、施工间隔、环境限制、验收方式。</td></tr>
+              <tr><td>案例与价格权限</td><td>CRM、案例库、价格政策系统</td><td>按行业、地区、项目类型、用户角色过滤</td><td>提供相似项目证据；决定是否展示价格或只展示材料估算。</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>05. PPT 方案生成数据流</h2>
+          <p>这一段描述从证据包、行业表单、模板定义到 PPT 页级内容的生成数据流。重点是每一页需要什么数据、来自哪里、如何校验，而不是强调 Skill 本身。</p>
+        </div>
+        <span class="tag">PPT 数据流</span>
+      </div>
+      <div class="flow-board">
+        <div class="route-map">
+          <div class="process-table">
+            <div class="side-label">生成步骤</div>
+            <div class="process-step"><div class="step-no">Step 1</div><strong>接收证据包</strong></div>
+            <div class="process-step"><div class="step-no">Step 2</div><strong>确定模板</strong></div>
+            <div class="process-step"><div class="step-no">Step 3</div><strong>加载规则</strong></div>
+            <div class="process-step"><div class="step-no">Step 4</div><strong>逐页生成</strong></div>
+            <div class="process-step"><div class="step-no">Step 5</div><strong>校验输出</strong></div>
+
+            <div class="side-label">生成逻辑</div>
+            <div class="process-cell"><ul><li>读取用户需求、行业表单快照、检索证据包</li><li>确认销售要交付给客户的内容形态</li></ul></div>
+            <div class="process-cell"><ul><li>用户已选：使用指定模板</li><li>未选：按行业、场景、交付物、客户类型评分</li></ul></div>
+            <div class="process-cell"><ul><li>读取模板页级定义、行业规则、风险表达规则</li><li>读取服务承诺、引用和权限规则</li></ul></div>
+            <div class="process-cell"><ul><li>封面、目录、需求、方案、案例、服务、附录逐页填充</li><li>脚本补材料估算、服务清单或报价说明</li></ul></div>
+            <div class="process-cell"><ul><li>检查空页、缺字段、引用缺失</li><li>检查过度承诺、版本冲突、权限泄露</li></ul></div>
+
+            <div class="side-label">交付数据</div>
+            <div class="process-cell"><ul><li>完整生成上下文</li><li>不再自由发散生成</li></ul></div>
+            <div class="process-cell"><ul><li>template_id 或自动选择理由</li><li>备选模板列表</li></ul></div>
+            <div class="process-cell"><ul><li>可填充页级 schema</li><li>每页数据依赖</li></ul></div>
+            <div class="process-cell"><ul><li>完整方案草稿</li><li>客户版与内部依据版</li></ul></div>
+            <div class="process-cell"><ul><li>可审阅交付物</li><li>待确认项和来源清单</li></ul></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="matrix" style="margin-top:14px;">
+        <table>
+          <thead>
+            <tr>
+              <th>PPT 页面模块</th>
+              <th>需要的数据</th>
+              <th>主要来源</th>
+              <th>生成产物</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>封面 / 目录</td>
+              <td>客户名称、项目名称、行业、交付物类型、模板 ID、提交日期。</td>
+              <td>CRM、项目上下文、行业表单、模板配置。</td>
+              <td>客户可识别的方案标题、章节目录和交付版本。</td>
+            </tr>
+            <tr>
+              <td>需求理解</td>
+              <td>客户痛点、场景、预算倾向、项目阶段、销售历史沟通。</td>
+              <td>销售输入、Hermes 记忆、CRM 商机、会议纪要。</td>
+              <td>客户需求摘要、项目假设、需要确认的问题。</td>
+            </tr>
+            <tr>
+              <td>推荐方案</td>
+              <td>产品体系、服务包、工程范围、施工/服务路径、适用理由。</td>
+              <td>产品库、服务能力库、方案库、工程案例、行业规则。</td>
+              <td>方案结构、推荐理由、范围边界和替代方案。</td>
+            </tr>
+            <tr>
+              <td>案例 / 服务 / 附录</td>
+              <td>相似案例、资质、服务承诺、材料估算、报价边界、引用来源。</td>
+              <td>案例库、企业资质库、价格权限、材料规则、证据包。</td>
+              <td>案例展示页、服务支持页、材料估算页、来源和待确认项。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>06. 行业表单与模板匹配数据流</h2>
+          <p>销售可以在表单中主动选择模板；如果没有选择，系统必须根据行业、客户类型、交付物、项目阶段、场景和数据完整度自动选择最合适的模板，而不是随机套用默认模板。表单字段本身也允许按行业和租户配置。</p>
+        </div>
+        <span class="tag">模板匹配</span>
+      </div>
+      <div class="flow-board">
+        <div class="route-map">
+          <div class="agent-stack">
+            <div class="agent-box">行业表单提交 / 销售未选择或已选择模板</div>
+            <div class="agent-connector"></div>
+            <div class="agent-box sub">模板匹配与页级字段绑定</div>
+          </div>
+          <div class="thin-arrow"></div>
+          <div class="bracket"></div>
+          <div class="process-table">
+            <div class="side-label">模板流程</div>
+            <div class="process-step"><div class="step-no">Step 1</div><strong>检查销售选择</strong></div>
+            <div class="process-step"><div class="step-no">Step 2</div><strong>读取行业配置</strong></div>
+            <div class="process-step"><div class="step-no">Step 3</div><strong>候选模板评分</strong></div>
+            <div class="process-step"><div class="step-no">Step 4</div><strong>绑定页级字段</strong></div>
+            <div class="process-step"><div class="step-no">Step 5</div><strong>生成交付物</strong></div>
+
+            <div class="side-label">匹配逻辑</div>
+            <div class="process-cell"><ul><li>若用户选择模板，直接锁定 template_id</li><li>若未选择，进入自动匹配</li></ul></div>
+            <div class="process-cell"><ul><li>读取行业表单配置：字段、必填项、默认值、隐藏规则</li><li>读取租户可用模板库和权限</li></ul></div>
+            <div class="process-cell"><ul><li>场景匹配：建筑客户方案、涂料产品体系方案</li><li>阶段匹配：线索沟通、售前方案、招投标前沟通</li><li>数据完整度：是否有面积、案例、报价权限</li></ul></div>
+            <div class="process-cell"><ul><li>绑定每页字段、必填项、数据来源</li><li>空数据页自动降级或隐藏</li></ul></div>
+            <div class="process-cell"><ul><li>生成完整文档，不只生成正文</li><li>输出自动模板选择理由</li></ul></div>
+
+            <div class="side-label">生成结果</div>
+            <div class="process-cell"><ul><li>用户选择优先</li><li>可用于审计和复现</li></ul></div>
+            <div class="process-cell"><ul><li>得到行业表单 schema</li><li>得到候选模板列表</li></ul></div>
+            <div class="process-cell"><ul><li>得到推荐模板和备选模板</li><li>解释推荐原因</li></ul></div>
+            <div class="process-cell"><ul><li>得到页级填充计划</li><li>明确每页缺失字段</li></ul></div>
+            <div class="process-cell"><ul><li>生成 PPT/Word/PDF 草稿</li><li>带来源、假设和待确认项</li></ul></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="template-cards">
+        <div class="template-card">
+          <h4>涂料客户版方案模板</h4>
+          <ul>
+            <li>适用：销售现场、客户初步方案、产品体系推荐</li>
+            <li>页：封面、需求理解、推荐体系、产品参数、案例、服务支持、附录</li>
+            <li>自动选择信号：客户类型为甲方/业主，交付物为 PPT 或客户版方案</li>
+          </ul>
+        </div>
+        <div class="template-card">
+          <h4>建筑销售客户方案模板</h4>
+          <ul>
+            <li>适用：建筑行业销售现场、客户初步方案、工程服务能力展示</li>
+            <li>页：封面、需求理解、推荐服务方案、实施路径、案例展示、服务保障、报价边界、附录</li>
+            <li>自动选择信号：客户类型为业主/开发商/总包，交付物为客户版方案或项目建议书</li>
+          </ul>
+        </div>
+        <div class="template-card">
+          <h4>建筑投标前方案模板</h4>
+          <ul>
+            <li>适用：销售推进招采、投标前技术商务沟通、客户内部立项材料</li>
+            <li>页：项目概况、范围边界、技术路线、资源计划、风险假设、案例资质、商务说明</li>
+            <li>自动选择信号：交付物为项目建议书，存在客户预算、范围和工期信息</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>07. 建筑行业端到端样例：商业综合体屋面防水与外立面翻新方案</h2>
+          <p>这个样例体现建筑行业销售的真实数据特点：客户项目机会、工程范围、历史案例、企业资质、服务能力、初步工程量、报价边界和交付承诺。</p>
+        </div>
+        <span class="tag">Building Example</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="time">T0 用户输入</div>
+          <div class="actor-card"><strong>输入</strong><p>“客户是商业综合体，屋面漏水，外立面也想翻新，预算要可控，帮我出一版客户沟通方案。”</p></div>
+          <div class="output-card"><strong>轻量字段</strong><p>行业=建筑；用户=建筑行业销售；场景=商业综合体；需求=屋面防水 + 外立面翻新；交付物=客户版方案。</p></div>
+        </div>
+        <div class="timeline-row">
+          <div class="time">T1 上下文</div>
+          <div class="actor-card"><strong>读取销售上下文</strong><p>CRM 客户信息、商机阶段、项目位置、客户预算倾向、历史沟通记录、企业服务能力、可公开商业综合体案例。</p></div>
+          <div class="output-card"><strong>关键判定</strong><p>客户还未提供完整图纸，先按“初步沟通方案”模板生成；所有工程量和报价边界都标注为待现场踏勘确认。</p></div>
+        </div>
+        <div class="timeline-row">
+          <div class="time">T2 证据检索</div>
+          <div class="actor-card"><strong>检索内容</strong><p>检索屋面防水维修方案、外立面翻新服务包、商业综合体案例、企业资质、现场踏勘清单、初步报价规则。</p></div>
+          <div class="output-card"><strong>证据包</strong><p>服务能力材料、案例编号、可公开图片、施工组织能力说明、质保服务条款、价格区间权限。</p></div>
+        </div>
+        <div class="timeline-row">
+          <div class="time">T3 PPT 方案生成</div>
+          <div class="actor-card"><strong>生成内容</strong><p>按客户版建筑解决方案模板生成：需求理解、推荐服务方案、实施路径、案例展示、服务保障、报价边界和待确认项。</p></div>
+          <div class="output-card"><strong>脚本/规则</strong><p>按预估面积和服务包生成初步工程量区间；按销售权限决定是否展示价格；风险承诺使用条件化表达。</p></div>
+        </div>
+      </div>
+
+      <div class="sample" style="margin-top:14px;">
+        <div class="sample-block">
+          <h4>全量输出数据：建筑销售客户方案模板</h4>
+          <p>自动选择模板：建筑销售客户方案模板。选择原因：用户是建筑行业销售，任务是面向客户沟通初步方案；输入包含商业综合体、屋面防水、外立面翻新、预算可控，适合客户版项目建议书，而不是施工内部文件。</p>
+        </div>
+        <div class="matrix">
+          <div class="page-spec">
+            <div class="page-name">封面页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>方案标题、客户名称、项目名称、建筑类型、提交单位、销售负责人、日期、保密等级。</div>
+              <div><strong>业务数据</strong>标题：XX商业综合体屋面防水与外立面翻新解决方案；客户：XX商业管理公司；建筑类型：商业综合体；提交单位：某建筑服务商华东事业部；日期：2026-06-05；客户版。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">目录页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>章节、页码、模块类型、是否可隐藏。</div>
+              <div><strong>业务数据</strong>1 客户需求理解；2 现状风险判断；3 推荐解决方案；4 实施路径；5 工程量与报价边界；6 案例展示；7 服务保障；8 下一步工作；9 附录与资料来源。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">客户需求理解页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>客户类型、建筑类型、项目阶段、问题描述、预算倾向、客户关注点。</div>
+              <div><strong>业务数据</strong>客户为商业运营方；项目处于初步沟通阶段；核心问题为屋面渗漏、外立面老化影响形象；预算需可控；关注施工周期、营业影响、质保和案例可信度。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">现状风险判断页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>风险类型、可能原因、对运营影响、验证方式、需客户补充资料。</div>
+              <div><strong>业务数据</strong>屋面风险：卷材老化、节点开裂、排水不畅；外立面风险：涂层粉化、空鼓、开裂和污染；运营影响：漏水投诉、商场形象和局部封闭施工；需现场踏勘和图纸确认。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">推荐解决方案页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>服务包、适用范围、推荐理由、可选增强项、排除范围。</div>
+              <div><strong>业务数据</strong>服务包 A：屋面重点渗漏排查 + 节点修复 + 防水层翻新；服务包 B：外立面基层修补 + 清洗 + 翻新涂装；可选增强：夜间施工、分区围挡、样板段先行；不含结构加固和幕墙系统更换。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">实施路径页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>阶段、工作内容、交付物、周期、客户配合事项。</div>
+              <div><strong>业务数据</strong>第 1 阶段现场踏勘与渗漏点排查；第 2 阶段样板段施工；第 3 阶段分区施工；第 4 阶段验收与质保移交。客户需提供屋面平面图、营业时间限制和施工通道安排。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">工程量与报价边界页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>预估面积、计价范围、价格展示权限、报价假设、排除项。</div>
+              <div><strong>业务数据</strong>屋面暂估 6,000㎡，外立面暂估 12,000㎡；当前用户无最终报价权限，仅展示报价构成：材料、人工、机械、措施、管理和税费；最终报价需以踏勘、图纸和清单确认为准。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">案例展示页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>案例名称、建筑类型、地区、服务内容、面积、客户关注点、可公开状态。</div>
+              <div><strong>业务数据</strong>案例：苏州某商业中心屋面防水维修；建筑类型：商业综合体；服务内容：屋面节点修复 + 防水翻新；面积：约 7,500㎡；关注：不停业施工和质保；状态：客户版可公开。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">服务保障页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>组织保障、技术支持、施工管理、质量检查、售后响应、质保说明。</div>
+              <div><strong>业务数据</strong>提供踏勘报告、样板段建议、施工组织计划、关键节点巡检、完工移交资料和质保响应。质保年限和响应 SLA 需结合最终合同确认。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">下一步与附录页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>下一步动作、需客户提供资料、风险提示、引用清单、待确认项。</div>
+              <div><strong>业务数据</strong>下一步：安排现场踏勘、确认施工范围、形成正式报价；需客户提供屋面图纸、外立面照片、漏水点记录、营业限制；引用：CASE-COM-ROOF-2025、服务能力手册 v2026.01、报价规则 v2026.03。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>08. 涂料行业端到端样例：学校外墙涂装方案</h2>
+          <p>这个样例体现涂料行业的真实数据特点：产品主数据、体系组合、检测报告、施工工艺、区域气候、材料估算和客户版表达。</p>
+        </div>
+        <span class="tag">Coating Example</span>
+      </div>
+      <div class="timeline">
+        <div class="timeline-row">
+          <div class="time">T0 用户输入</div>
+          <div class="actor-card"><strong>输入</strong><p>“客户是华南学校外墙，预算中等，想耐污一些，帮我做个方案。”</p></div>
+          <div class="output-card"><strong>轻量字段</strong><p>行业=涂料；场景=学校外墙；诉求=耐污、耐候、预算中等；交付物=客户版方案。</p></div>
+        </div>
+        <div class="timeline-row">
+          <div class="time">T1 一次性表单</div>
+          <div class="actor-card"><strong>仅补关键项</strong><p>面积、基层类型、是否旧墙翻新、是否临海、是否需要案例、是否需要材料估算。</p></div>
+          <div class="output-card"><strong>预填来源</strong><p>客户=XX学校；地区=华南；项目阶段=方案沟通；客户历史关注=耐污和维护成本。</p></div>
+        </div>
+        <div class="timeline-row">
+          <div class="time">T2 证据检索</div>
+          <div class="actor-card"><strong>检索内容</strong><p>筛选华南可供货产品；检索外墙体系、耐沾污报告、施工工艺、学校案例、价格权限。</p></div>
+          <div class="output-card"><strong>证据包</strong><p>B100 抗碱底漆、A120 高耐候外墙乳胶漆、REPORT-A120-STAIN-2025、外墙施工指南。</p></div>
+        </div>
+        <div class="timeline-row">
+          <div class="time">T3 PPT 方案生成</div>
+          <div class="actor-card"><strong>生成内容</strong><p>生成方案名称、项目假设、推荐体系、产品组合、施工结构、材料估算、客户表达和内部依据。</p></div>
+          <div class="output-card"><strong>校验</strong><p>检查产品上架状态、区域供货、报告有效期、涂布率单位、风险表达和未确认假设。</p></div>
+        </div>
+      </div>
+
+      <div class="sample" style="margin-top:14px;">
+        <div class="sample-block">
+          <h4>全量输出数据：涂料客户版方案 PPT 模板</h4>
+          <p>自动选择模板：涂料客户版方案模板。选择原因：用户要求“给客户做方案”，场景为学校外墙，输入包含预算、区域、性能诉求，适合客户沟通型 PPT，而不是内部技术方案或单页资料卡。</p>
+        </div>
+        <div class="matrix">
+          <div class="page-spec">
+            <div class="page-name">封面页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>方案标题、客户名称、项目名称、场景图、提交单位、日期、保密等级。</div>
+              <div><strong>业务数据</strong>标题：XX学校外墙耐候耐污涂装方案；客户：XX学校；区域：华南；提交单位：某涂料品牌华南技术服务中心；日期：2026-06-05；客户版。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">目录页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>章节、页码、模块类型、是否可隐藏。</div>
+              <div><strong>业务数据</strong>1 项目需求理解；2 工况与风险判断；3 推荐涂装体系；4 产品参数；5 施工工艺；6 材料估算；7 案例展示；8 服务支持；9 待确认项与资料来源。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">项目需求理解页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>客户类型、建筑类型、应用部位、面积、预算、核心诉求、项目阶段。</div>
+              <div><strong>业务数据</strong>客户类型：学校；应用：外墙；面积：5,000㎡；预算：中等；诉求：耐污、耐候、降低维护成本；阶段：售前方案沟通；是否需要案例：是。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">工况与风险判断页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>区域气候、基材、旧墙状态、环境风险、施工前置条件。</div>
+              <div><strong>业务数据</strong>华南湿热环境；基材暂按水泥砂浆/混凝土；未确认是否旧墙翻新；重点风险：基层含水率、抗碱封闭、雨季施工窗口、阴阳角和分格缝处理。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">推荐体系页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>体系名称、层级、产品、遍数、干膜/理论用量、适用理由。</div>
+              <div><strong>业务数据</strong>基层处理与修补 → B100 抗碱封闭底漆 1 遍，0.15 kg/㎡ → A120 高耐候外墙乳胶漆 2 遍，合计 0.30 kg/㎡；理由：兼顾耐候、耐沾污和成本控制。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">产品参数页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>产品名称、适用范围、关键性能、施工方式、包装规格、资料来源。</div>
+              <div><strong>业务数据</strong>B100：抗碱封闭、增强附着；A120：外墙耐候耐沾污、辊涂/喷涂；资料来源：DOC-B100-2025、DOC-A120-2025；检测：REPORT-A120-STAIN-2025。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">施工工艺页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>施工流程、环境要求、基层要求、重涂间隔、验收方式。</div>
+              <div><strong>业务数据</strong>基层检查 → 裂缝修补 → 打磨除尘 → 底漆 → 面漆第一遍 → 面漆第二遍 → 成品保护；雨天和基层潮湿时不施工；含水率和 pH 值需现场复核。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">材料估算页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>面积、产品、理论耗量、损耗率、估算用量、备注。</div>
+              <div><strong>业务数据</strong>面积 5,000㎡；B100 约 750kg，未含损耗；A120 约 1,500kg，未含损耗；建议按基层粗糙度和现场损耗增加 5%~10%；价格因权限不足不展示。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">案例展示页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>案例名称、地区、建筑类型、使用体系、面积、客户关注点、可公开状态。</div>
+              <div><strong>业务数据</strong>案例：广州某中学外墙翻新；地区：华南；体系：抗碱底漆 + 高耐候外墙面漆；面积：约 8,000㎡；关注：耐污和施工周期；状态：客户版可公开。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">服务支持页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>售前支持、样板支持、现场技术服务、施工培训、验收配合、售后响应。</div>
+              <div><strong>业务数据</strong>可提供样板墙建议、基层检测建议、施工前技术沟通、首段施工巡检、关键节点验收配合、完工后维护建议。具体服务频次按项目商务协议确认。</div>
+            </div>
+          </div>
+          <div class="page-spec">
+            <div class="page-name">待确认与附录页</div>
+            <div class="page-data">
+              <div><strong>页面字段</strong>待确认项、假设条件、风险提示、引用资料、内部依据。</div>
+              <div><strong>业务数据</strong>待确认：是否旧墙、是否临海、基层含水率、颜色分区、分格缝要求；引用：DOC-B100-2025、DOC-A120-2025、REPORT-A120-STAIN-2025、GUIDE-EXT-WALL-2026。</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>09. 行业配置表单：只补方案生成的关键字段</h2>
+          <p>不做重槽位填充，但生成方案需要最小可执行信息。表单字段由行业包和租户配置生成，并尽量从客户、项目、商机和会话上下文预填。</p>
+        </div>
+        <span class="tag">One-shot Form</span>
+      </div>
+      <div class="matrix">
+        <table>
+          <thead>
+            <tr>
+              <th>表单区块</th>
+              <th>建筑销售字段</th>
+              <th>涂料行业字段</th>
+              <th>预填来源</th>
+              <th>是否阻塞生成</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>项目定位</td>
+              <td>客户名称、项目名称、建筑类型、项目地点、商机阶段、客户类型。</td>
+              <td>客户、项目、地区、应用场景、应用部位。</td>
+              <td>CRM、项目上下文、商机记录、Hermes。</td>
+              <td><span class="ok">部分阻塞</span>，至少需要部位或场景。</td>
+            </tr>
+            <tr>
+              <td>工程条件</td>
+              <td>服务范围、工程部位、客户痛点、预算倾向、工期限制、营业影响要求。</td>
+              <td>基材、旧墙/新墙、环境、是否临海/高湿、施工方式。</td>
+              <td>商机记录、客户访谈、项目资料、历史相似方案。</td>
+              <td><span class="warn">缺失时可假设</span>，但必须在输出中标注。</td>
+            </tr>
+            <tr>
+              <td>规模数据</td>
+              <td>预估面积、服务包范围、计划工期、是否需要初步报价。</td>
+              <td>面积、涂装遍数、理论涂布率、损耗率。</td>
+              <td>项目清单、用户输入、历史报价规则、产品 TDS。</td>
+              <td><span class="warn">材料估算阻塞</span>，文字方案不阻塞。</td>
+            </tr>
+            <tr>
+              <td>交付物</td>
+              <td>客户版方案、项目建议书、服务能力介绍、投标前方案。</td>
+              <td>产品资料卡、客户版方案、内部技术方案、PPT 草稿。</td>
+              <td>用户请求、行业配置默认值、历史偏好。</td>
+              <td><span class="ok">阻塞</span>，必须明确输出形态。</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="section-title">
+        <div>
+          <h2>10. 校验、输出与回写</h2>
+          <p>能力执行完成后可以出结果，但不能跳过校验。校验不是额外对话，而是结果包装的一部分。</p>
+        </div>
+        <span class="tag">Validation</span>
+      </div>
+      <div class="summary-grid">
+        <div class="summary-card">
+          <h3><span class="icon">V</span>版本校验</h3>
+          <p>建筑图纸、规范、做法表、产品说明书、检测报告必须检查版本。命中新旧冲突时只输出最新有效版本，并提示冲突来源。</p>
+        </div>
+        <div class="summary-card">
+          <h3><span class="icon">P</span>权限校验</h3>
+          <p>跨项目资料、内部价格、成本、未公开检测报告、客户信息必须按 SaaS 租户和角色过滤。</p>
+        </div>
+        <div class="summary-card">
+          <h3><span class="icon">R</span>适配校验</h3>
+          <p>建筑检查专业/部位/工序是否匹配；涂料检查产品、基材、环境、体系和施工条件是否匹配。</p>
+        </div>
+        <div class="summary-card">
+          <h3><span class="icon">Q</span>表达校验</h3>
+          <p>避免“保证不脱落”“永久防水”“完全环保”等绝对承诺，替换为有条件的工程表达。</p>
+        </div>
+      </div>
+      <div class="note">
+        <strong>建议落地口径：</strong>查询任务返回“答案 + 来源 + 适配说明 + 待确认项”；生成任务返回“正文 + 内部依据 + 假设条件 + 风险提示 + 可导出格式”。这样产品、开发和算法都能围绕同一输出契约迭代。
+      </div>
+    </section>
+  </main>
+</body>
+</html>

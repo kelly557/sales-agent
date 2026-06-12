@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>行业调研与场景分析</title>
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: "base",
+      securityLevel: "loose",
+      flowchart: { curve: "basis", nodeSpacing: 42, rankSpacing: 52 },
+      themeVariables: {
+        fontFamily: "Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+        primaryColor: "#eef6ff",
+        primaryTextColor: "#12314d",
+        primaryBorderColor: "#79a9da",
+        lineColor: "#6d8298",
+        secondaryColor: "#f5f7fb",
+        tertiaryColor: "#fff7ed",
+        edgeLabelBackground: "#ffffff",
+        textColor: "#23384d"
+      }
+    });
+  </script>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="shell">
+    <aside class="side">
+      <a class="brand" href="index.html">
+        <div class="brand-mark">A</div>
+        <div><strong>工程文档 Agent</strong><span>设计文档库</span></div>
+      </a>
+      <nav class="doc-nav"><a class="doc-link" href="product-plan.html"><span>工程行业文档 Agent 产品方案</span><small>面向工程行业的 Agent Native 文档任务产品设计。</small></a><a class="doc-link active" href="research-notes.html"><span>行业调研与场景分析</span><small>行业痛点、适合场景、典型输入输出和案例。</small></a><a class="doc-link" href="business-process.html"><span>业务流程图</span><small>从我的项目、项目上下文、资料集成、任务执行、人工审阅到交付沉淀的端到端流程。</small></a><a class="doc-link" href="custom-solution-ppt.html"><span>定制方案生成（PPT）详细流程</span><small>定制方案 PPT 的输入输出、数据、知识库、模板、规则、流程与异常处理。</small></a><a class="doc-link" href="product-data-qa.html"><span>产品资料查询（问答）详细流程</span><small>产品资料问答的输入输出、数据、知识库、规则、权限、流程与成功标准。</small></a></nav>
+      <div class="toc-card"><div class="toc-title">本页目录</div><a class="toc-l1" href="#工程行业文档-agent-行业调研与场景分析">工程行业文档 Agent 行业调研与场景分析</a><a class="toc-l2" href="#1-行业痛点与适合场景">1. 行业痛点与适合场景</a><a class="toc-l2" href="#2-分行业分析">2. 分行业分析</a><a class="toc-l3" href="#2-1-建筑行业">2.1 建筑行业</a><a class="toc-l3" href="#2-2-基建行业">2.2 基建行业</a><a class="toc-l3" href="#2-3-装备制造行业">2.3 装备制造行业</a><a class="toc-l3" href="#2-4-能源行业">2.4 能源行业</a><a class="toc-l3" href="#2-5-轨道交通行业">2.5 轨道交通行业</a><a class="toc-l3" href="#2-6-化工行业">2.6 化工行业</a><a class="toc-l3" href="#2-7-电力行业">2.7 电力行业</a><a class="toc-l3" href="#2-8-矿山行业">2.8 矿山行业</a><a class="toc-l3" href="#2-9-水利行业">2.9 水利行业</a><a class="toc-l3" href="#2-10-涂料行业">2.10 涂料行业</a><a class="toc-l2" href="#3-核心场景输入输出">3. 核心场景输入输出</a><a class="toc-l3" href="#3-1-工程方案生成-agent">3.1 工程方案生成 Agent</a><a class="toc-l3" href="#3-2-施工作业指导书-操作规程-agent">3.2 施工作业指导书 / 操作规程 Agent</a><a class="toc-l3" href="#3-3-技术要求抽取与符合性审查-agent">3.3 技术要求抽取与符合性审查 Agent</a><a class="toc-l3" href="#3-4-资料缺口检查与交付包-agent">3.4 资料缺口检查与交付包 Agent</a><a class="toc-l3" href="#3-5-设备资料建档与运维移交-agent">3.5 设备资料建档与运维移交 Agent</a><a class="toc-l3" href="#3-6-变更影响分析-agent">3.6 变更影响分析 Agent</a></div>
+    </aside>
+    <main class="content">
+      <header class="hero">
+        <div class="eyebrow">Design Docs</div>
+        <h1>行业调研与场景分析</h1>
+        <p>行业痛点、适合场景、典型输入输出和案例。</p>
+      </header>
+      <article class="article"><h1 id="工程行业文档-agent-行业调研与场景分析">工程行业文档 Agent 行业调研与场景分析</h1>
+<p>本文档用于保存产品方案之外的调研材料，包括行业痛点、适合场景、典型输入输出和案例。主产品方案聚焦产品设计，本文件作为其外部依据。</p>
+<h2 id="1-行业痛点与适合场景">1. 行业痛点与适合场景</h2>
+<div class="table-wrap"><table><thead><tr><th>行业</th><th>文档核心矛盾</th><th>高价值 Agent 场景</th></tr></thead><tbody><tr><td>建筑</td><td>资料量大、过程资料后补、竣工归档压力大</td><td>施工方案、作业指导书、验收资料缺口检查</td></tr><tr><td>基建</td><td>标段多、检测资料多、计量/验收链条长</td><td>专项方案、试验检测资料整理、交付包检查</td></tr><tr><td>装备制造</td><td>产品资料复杂、技术方案定制化、交付资料繁重</td><td>技术方案、说明书、检验规程、设备交付包</td></tr><tr><td>能源</td><td>设备多、调试运维资料重、合规要求高</td><td>设备资料建档、调试方案、运维移交包</td></tr><tr><td>轨道交通</td><td>多专业接口复杂、系统集成资料多、认证验收严</td><td>接口文件审查、技术规格符合性、调试验收资料</td></tr><tr><td>化工</td><td>工艺安全风险高、P&amp;ID/设备/管道资料强关联</td><td>变更影响分析、试压方案、设备资料审查</td></tr><tr><td>电力</td><td>试验报告多、二次/继保资料复杂、移交标准严</td><td>作业指导书、试验报告整理、竣工移交检查</td></tr><tr><td>矿山</td><td>安全规程重、设备运维复杂、整改闭环要求强</td><td>作业规程、安全整改证据链、设备运维资料</td></tr><tr><td>水利</td><td>验收层级多、监测资料多、工程周期长</td><td>验收资料检查、监测报告整理、施工方案</td></tr><tr><td>涂料</td><td>应用方案高度场景化、产品资料需转译成工程方案</td><td>解决方案、施工指导书、推广资料</td></tr></tbody></table></div>
+<h2 id="2-分行业分析">2. 分行业分析</h2>
+<h3 id="2-1-建筑行业">2.1 建筑行业</h3>
+<p>核心痛点：</p>
+<ul><li>施工资料、验收资料、检验批资料数量巨大。</li><li>现场过程记录常常后补，真实性和完整性难保证。</li><li>施工方案、专项方案、技术交底大量重复编写。</li><li>竣工资料整理高度依赖资料员经验。</li><li>图纸变更、签证、验收记录之间关联弱。</li></ul>
+<p>适合场景：</p>
+<ul><li>施工方案/专项方案生成 Agent。</li><li>技术交底生成 Agent。</li><li>检验批、隐蔽验收、竣工资料缺口检查 Agent。</li><li>图纸会审与设计变更摘要 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>降低资料员和技术员重复劳动。</li><li>提高竣工资料完整率。</li><li>减少方案模板套用错误。</li></ul>
+<h3 id="2-2-基建行业">2.2 基建行业</h3>
+<p>包括道路、桥梁、隧道、市政、港口等。</p>
+<p>核心痛点：</p>
+<ul><li>标段多、参建单位多，资料口径不一致。</li><li>试验检测资料、材料证明、隐蔽验收资料多。</li><li>施工方案与现场工序、试验资料、计量支付资料存在断点。</li><li>竣工交付资料按分部分项、单位工程组织，整理复杂。</li><li>长周期项目中版本和变更追踪困难。</li></ul>
+<p>适合场景：</p>
+<ul><li>试验检测资料整理 Agent。</li><li>专项施工方案生成 Agent。</li><li>分部分项验收资料缺口检查 Agent。</li><li>交工/竣工资料包 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>减少交付前集中补资料。</li><li>提高检测报告、材料证明和验收资料的对应关系。</li><li>帮助项目部快速形成标准化交付包。</li></ul>
+<h3 id="2-3-装备制造行业">2.3 装备制造行业</h3>
+<p>核心痛点：</p>
+<ul><li>技术方案高度定制，售前、设计、制造、交付资料割裂。</li><li>BOM、图纸、检验规程、说明书、合格证、维护手册之间信息重复。</li><li>设备交付资料包整理成本高。</li><li>产品说明书和作业指导书更新滞后。</li><li>新人难以复用历史项目方案。</li></ul>
+<p>适合场景：</p>
+<ul><li>设备技术方案生成 Agent。</li><li>产品说明书/维护手册生成 Agent。</li><li>检验规程与出厂资料生成 Agent。</li><li>设备交付包检查 Agent。</li><li>历史相似方案复用 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>缩短方案和交付资料制作周期。</li><li>提高设备资料一致性。</li><li>把历史项目经验转化为可复用资产。</li></ul>
+<h3 id="2-4-能源行业">2.4 能源行业</h3>
+<p>包括新能源、油气、储能、综合能源等。</p>
+<p>核心痛点：</p>
+<ul><li>设备种类多，供应商资料格式不统一。</li><li>调试、试运行、运维移交资料重。</li><li>合规、安全、环保资料要求高。</li><li>多专业、多系统资料之间依赖强。</li><li>运维阶段找不到建设期资料。</li></ul>
+<p>适合场景：</p>
+<ul><li>设备资料建档 Agent。</li><li>调试方案/试运行报告生成 Agent。</li><li>运维移交包 Agent。</li><li>合规资料缺口检查 Agent。</li><li>设备故障知识复用 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>打通建设期资料到运维资料。</li><li>降低设备资料整理成本。</li><li>提高调试与移交质量。</li></ul>
+<h3 id="2-5-轨道交通行业">2.5 轨道交通行业</h3>
+<p>核心痛点：</p>
+<ul><li>专业多：车辆、信号、通信、供电、站台门、AFC、综合监控等。</li><li>接口文件复杂，跨专业协调成本高。</li><li>系统集成测试和联调联试资料量大。</li><li>安全认证、验收要求严格。</li><li>变更影响可能跨系统扩散。</li></ul>
+<p>适合场景：</p>
+<ul><li>接口文件审查 Agent。</li><li>技术规格符合性审查 Agent。</li><li>联调联试资料整理 Agent。</li><li>变更影响分析 Agent。</li><li>验收资料缺口检查 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>降低接口遗漏和规格不一致风险。</li><li>提升系统集成资料质量。</li><li>辅助联调联试和验收准备。</li></ul>
+<h3 id="2-6-化工行业">2.6 化工行业</h3>
+<p>核心痛点：</p>
+<ul><li>工艺安全要求高，任何文档错误都可能带来安全风险。</li><li>PFD、P&amp;ID、设备数据表、管道表、仪表表、HAZOP 资料强关联。</li><li>变更管理复杂，MOC 影响范围难判断。</li><li>设备、管道、仪表、阀门资料多且版本多。</li><li>试压、吹扫、单机试车、联动试车资料要求严格。</li></ul>
+<p>适合场景：</p>
+<ul><li>P&amp;ID/技术文件变更影响分析 Agent。</li><li>设备数据表审查 Agent。</li><li>管道试压方案生成 Agent。</li><li>HAZOP 整改项资料闭环 Agent。</li><li>调试/试车资料包 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>降低变更遗漏风险。</li><li>提高设备、管道、仪表资料一致性。</li><li>辅助安全合规和试车验收。</li></ul>
+<h3 id="2-7-电力行业">2.7 电力行业</h3>
+<p>核心痛点：</p>
+<ul><li>设备试验报告、继保定值、调试记录、竣工资料非常多。</li><li>一次、二次、通信、自动化资料专业性强。</li><li>作业指导书和安全措施要求严格。</li><li>移交运维资料标准化程度高。</li><li>老旧资料查找和复用困难。</li></ul>
+<p>适合场景：</p>
+<ul><li>作业指导书生成 Agent。</li><li>试验报告整理 Agent。</li><li>继保/二次资料审查 Agent。</li><li>竣工移交资料缺口检查 Agent。</li><li>运维资料问答 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>减少调试和移交资料整理成本。</li><li>提高作业文件规范性。</li><li>帮助运维快速理解设备历史资料。</li></ul>
+<h3 id="2-8-矿山行业">2.8 矿山行业</h3>
+<p>核心痛点：</p>
+<ul><li>安全规程、作业规程、整改资料要求重。</li><li>采掘、通风、排水、提升、运输、选矿等系统资料复杂。</li><li>设备运行环境恶劣，运维记录和故障资料价值高。</li><li>安监检查、隐患整改闭环压力大。</li><li>现场资料不规范，扫描件和图片多。</li></ul>
+<p>适合场景：</p>
+<ul><li>作业规程生成 Agent。</li><li>安全整改证据链 Agent。</li><li>设备运维资料整理 Agent。</li><li>隐患排查报告生成 Agent。</li><li>合规检查资料缺口 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>提高安全资料规范性。</li><li>降低隐患整改闭环遗漏。</li><li>沉淀设备故障和维护经验。</li></ul>
+<h3 id="2-9-水利行业">2.9 水利行业</h3>
+<p>核心痛点：</p>
+<ul><li>项目周期长，阶段验收、专项验收、竣工验收资料复杂。</li><li>施工、监理、检测、监测资料数量大。</li><li>大坝、水闸、泵站、堤防、渠道等工程对象差异明显。</li><li>运行期监测资料与建设期资料割裂。</li><li>防洪调度、运行维护文档专业性强。</li></ul>
+<p>适合场景：</p>
+<ul><li>验收资料缺口检查 Agent。</li><li>施工方案生成 Agent。</li><li>监测报告整理 Agent。</li><li>运行维护手册生成 Agent。</li><li>专项验收资料包 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>降低验收资料整理难度。</li><li>提高监测资料利用率。</li><li>支撑建设到运行移交。</li></ul>
+<h3 id="2-10-涂料行业">2.10 涂料行业</h3>
+<p>核心痛点：</p>
+<ul><li>产品资料多，但客户真正需要的是应用解决方案。</li><li>TDS、SDS、检测报告、认证、案例之间需要人工组合。</li><li>不同底材、环境、施工条件对应不同体系。</li><li>技术销售和应用工程师编写方案、PPT、施工指导书耗时。</li><li>产品参数不能乱写，必须可追溯。</li></ul>
+<p>适合场景：</p>
+<ul><li>涂装解决方案生成 Agent。</li><li>施工作业指导书生成 Agent。</li><li>产品推广 PPT/PDF 生成 Agent。</li><li>技术要求符合性审查 Agent。</li><li>竞品替代方案 Agent。</li></ul>
+<p>价值：</p>
+<ul><li>把产品知识转化为销售和工程交付材料。</li><li>提高方案响应速度。</li><li>降低新人对专家经验的依赖。</li></ul>
+<h2 id="3-核心场景输入输出">3. 核心场景输入输出</h2>
+<h3 id="3-1-工程方案生成-agent">3.1 工程方案生成 Agent</h3>
+<p>适用行业：</p>
+<ul><li>建筑</li><li>基建</li><li>水利</li><li>能源</li><li>化工</li><li>电力</li><li>矿山</li><li>轨道交通</li><li>涂料</li><li>装备制造</li></ul>
+<p>用户输入：</p>
+<ul><li>项目类型</li><li>工程对象</li><li>使用环境</li><li>技术要求</li><li>标准规范</li><li>产品/设备资料</li><li>历史类似方案</li><li>企业模板</li></ul>
+<p>Agent 输出：</p>
+<ul><li>方案正文</li><li>技术路线</li><li>施工/实施步骤</li><li>材料与设备要求</li><li>质量控制点</li><li>安全环保要求</li><li>风险提示</li><li>引用依据</li><li>可编辑 Word/PDF/PPT</li></ul>
+<p>案例：</p>
+<ul><li>涂料企业输入“沿海钢结构厂房，C5-M 腐蚀环境，设计寿命 15 年”，Agent 自动推荐涂层体系，生成解决方案、施工指导书和客户推广 PPT。</li><li>装备制造企业输入“矿山破碎站除尘系统改造需求”，Agent 生成设备选型说明、技术方案和安装调试说明。</li></ul>
+<h3 id="3-2-施工作业指导书-操作规程-agent">3.2 施工作业指导书 / 操作规程 Agent</h3>
+<p>适用行业：</p>
+<ul><li>建筑</li><li>基建</li><li>电力</li><li>化工</li><li>矿山</li><li>水利</li><li>轨道交通</li><li>涂料</li><li>装备制造</li></ul>
+<p>用户输入：</p>
+<ul><li>工程部位</li><li>作业类型</li><li>施工工艺</li><li>材料/设备</li><li>安全要求</li><li>质量验收标准</li><li>企业模板</li></ul>
+<p>Agent 输出：</p>
+<ul><li>作业条件</li><li>人员机具准备</li><li>工艺流程</li><li>操作步骤</li><li>质量控制点</li><li>检查记录表</li><li>安全环保措施</li><li>常见问题处理</li><li>Word 文档</li></ul>
+<p>案例：</p>
+<ul><li>电力企业生成“GIS 设备安装作业指导书”。</li><li>水利企业生成“闸门防腐施工指导书”。</li><li>化工企业生成“管道试压作业指导书”。</li></ul>
+<h3 id="3-3-技术要求抽取与符合性审查-agent">3.3 技术要求抽取与符合性审查 Agent</h3>
+<p>适用行业：</p>
+<ul><li>化工</li><li>电力</li><li>轨道交通</li><li>能源</li><li>装备制造</li><li>建筑机电</li><li>涂料</li></ul>
+<p>用户输入：</p>
+<ul><li>技术规范书</li><li>标准规范</li><li>设计说明</li><li>供应商资料</li><li>产品资料</li><li>检测报告</li></ul>
+<p>Agent 输出：</p>
+<ul><li>关键技术要求清单</li><li>强制性条款</li><li>可检查项</li><li>符合/不符合/需人工确认</li><li>风险说明</li><li>引用页码和原文位置</li><li>审查报告</li></ul>
+<p>案例：</p>
+<ul><li>轨交项目上传“通信系统技术规格书”和供应商提交资料，Agent 自动提取接口、性能、认证、测试要求，并生成符合性矩阵。</li><li>涂料企业上传客户技术要求和自家产品 TDS，Agent 判断推荐体系是否满足耐候、耐腐蚀、VOC、膜厚等要求。</li></ul>
+<h3 id="3-4-资料缺口检查与交付包-agent">3.4 资料缺口检查与交付包 Agent</h3>
+<p>适用行业：</p>
+<ul><li>建筑</li><li>基建</li><li>电力</li><li>能源</li><li>轨道交通</li><li>化工</li><li>水利</li><li>矿山</li><li>装备制造</li></ul>
+<p>用户输入：</p>
+<ul><li>项目资料目录要求</li><li>当前已有文件</li><li>验收标准</li><li>设备清单</li><li>图纸清单</li><li>过程记录</li><li>企业归档模板</li></ul>
+<p>Agent 输出：</p>
+<ul><li>缺失资料清单</li><li>异常资料清单</li><li>版本冲突</li><li>签章缺失</li><li>日期/编号异常</li><li>资料完整率</li><li>交付包目录</li><li>补件任务建议</li></ul>
+<p>案例：</p>
+<ul><li>电力工程移交前，Agent 检查设备合格证、试验报告、调试记录、竣工图、备品备件清单是否齐全。</li><li>建筑机电项目竣工前，Agent 自动发现某批风机缺少出厂检测报告和安装验收记录。</li></ul>
+<h3 id="3-5-设备资料建档与运维移交-agent">3.5 设备资料建档与运维移交 Agent</h3>
+<p>适用行业：</p>
+<ul><li>能源</li><li>电力</li><li>化工</li><li>矿山</li><li>轨道交通</li><li>装备制造</li><li>水利</li></ul>
+<p>用户输入：</p>
+<ul><li>设备说明书</li><li>铭牌照片</li><li>合格证</li><li>检测报告</li><li>FAT/SAT 报告</li><li>维护手册</li><li>备件清单</li><li>图纸资料</li></ul>
+<p>Agent 输出：</p>
+<ul><li>设备档案</li><li>参数表</li><li>运维要点</li><li>备件清单</li><li>故障处理建议</li><li>点检保养计划</li><li>移交资料包</li><li>资料缺口清单</li></ul>
+<p>案例：</p>
+<ul><li>化工厂上传泵、阀门、换热器资料，Agent 自动生成设备台账字段、维护要点和缺失资料清单。</li><li>矿山企业上传破碎机、皮带机、提升机资料，Agent 生成运维手册摘要和备件清单。</li></ul>
+<h3 id="3-6-变更影响分析-agent">3.6 变更影响分析 Agent</h3>
+<p>适用行业：</p>
+<ul><li>建筑</li><li>基建</li><li>电力</li><li>轨道交通</li><li>化工</li><li>装备制造</li><li>水利</li></ul>
+<p>用户输入：</p>
+<ul><li>新旧版本图纸/技术文件</li><li>设计变更单</li><li>设备清单</li><li>施工方案</li><li>验收资料</li><li>历史问题记录</li></ul>
+<p>Agent 输出：</p>
+<ul><li>变更摘要</li><li>影响专业</li><li>影响设备/材料</li><li>需更新文档</li><li>需补充验收资料</li><li>风险项</li><li>通知建议</li></ul>
+<p>案例：</p>
+<ul><li>化工项目 P&amp;ID 变更后，Agent 提示受影响的设备数据表、管道材料表、仪表清单、施工方案和试压记录。</li><li>轨交供电系统设计变更后，Agent 提示需要同步更新调试方案、接口文件和验收记录。</li></ul></article>
+    </main>
+  </div>
+</body>
+</html>

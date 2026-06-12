@@ -1,0 +1,1581 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>工程行业文档 Agent - 产品设计稿</title>
+  <style>
+    :root {
+      --bg: #0b1730;
+      --bg-2: #10244a;
+      --panel: rgba(13, 32, 66, .88);
+      --panel-soft: rgba(18, 43, 84, .74);
+      --line: #2d69df;
+      --line-soft: rgba(83, 145, 255, .42);
+      --cyan: #57d8f7;
+      --cyan-2: #8defff;
+      --blue: #3f7dff;
+      --orange: #ffb545;
+      --red: #ff6b6b;
+      --green: #56e39f;
+      --text: #eef7ff;
+      --muted: #9cb8de;
+      --muted-2: #7195c5;
+      --paper: #eaf3ff;
+      --ink: #17304f;
+    }
+
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; }
+    body {
+      background: #061022;
+      font-family: "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+      color: var(--text);
+    }
+
+    .stage {
+      width: 1920px;
+      height: 1080px;
+      margin: 0 auto;
+      position: relative;
+      overflow: hidden;
+      background:
+        linear-gradient(90deg, rgba(87,216,247,.05) 1px, transparent 1px) 0 0 / 48px 48px,
+        linear-gradient(rgba(87,216,247,.045) 1px, transparent 1px) 0 0 / 48px 48px,
+        radial-gradient(circle at 50% 45%, rgba(63,125,255,.32), transparent 35%),
+        linear-gradient(135deg, #08162e 0%, #10244a 52%, #0b1730 100%);
+    }
+
+    .stage::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(circle at 15% 16%, rgba(87,216,247,.2), transparent 18%),
+        radial-gradient(circle at 88% 78%, rgba(255,181,69,.13), transparent 20%);
+      pointer-events: none;
+    }
+
+    .topbar {
+      position: absolute;
+      left: 40px;
+      top: 24px;
+      width: 1840px;
+      height: 84px;
+      display: grid;
+      grid-template-columns: 470px 1fr 360px;
+      align-items: center;
+      gap: 28px;
+      border-bottom: 1px solid var(--line-soft);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+
+    .mark {
+      width: 54px;
+      height: 54px;
+      position: relative;
+      border: 2px solid var(--cyan);
+      border-radius: 50%;
+      box-shadow: 0 0 22px rgba(87,216,247,.28);
+    }
+
+    .mark::before,
+    .mark::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 1px dashed rgba(141,239,255,.72);
+    }
+
+    .mark::before { inset: 8px; }
+    .mark::after { inset: 18px; background: var(--cyan); border: 0; box-shadow: 0 0 14px var(--cyan); }
+
+    .brand h1 {
+      margin: 0;
+      font-size: 27px;
+      line-height: 1.12;
+      letter-spacing: 0;
+      font-weight: 800;
+    }
+
+    .brand p {
+      margin: 6px 0 0;
+      font-size: 13px;
+      color: var(--muted);
+      letter-spacing: .5px;
+    }
+
+    .top-title {
+      height: 48px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      justify-content: center;
+      color: var(--cyan-2);
+      font-size: 18px;
+      font-weight: 800;
+    }
+
+    .chevrons {
+      display: inline-flex;
+      gap: 5px;
+    }
+
+    .chevrons i {
+      width: 0;
+      height: 0;
+      display: block;
+      border-top: 5px solid transparent;
+      border-bottom: 5px solid transparent;
+      border-left: 9px solid var(--cyan);
+      opacity: .88;
+    }
+
+    .date-strip {
+      justify-self: end;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .pill {
+      border: 1px solid var(--line);
+      color: var(--cyan-2);
+      padding: 8px 13px;
+      background: rgba(17, 39, 79, .74);
+      clip-path: polygon(10px 0, 100% 0, calc(100% - 10px) 100%, 0 100%);
+      font-weight: 800;
+      white-space: nowrap;
+    }
+
+    .column {
+      position: absolute;
+      top: 130px;
+      bottom: 34px;
+    }
+
+    .left { left: 40px; width: 520px; }
+    .center { left: 592px; width: 736px; }
+    .right { right: 40px; width: 520px; }
+
+    .panel {
+      position: relative;
+      border: 1px solid var(--line-soft);
+      background: linear-gradient(180deg, rgba(17, 40, 83, .9), rgba(10, 27, 58, .88));
+      box-shadow: inset 0 0 0 1px rgba(141,239,255,.08), 0 18px 36px rgba(0, 0, 0, .18);
+      margin-bottom: 18px;
+      overflow: hidden;
+    }
+
+    .panel::before,
+    .panel::after {
+      content: "";
+      position: absolute;
+      width: 34px;
+      height: 34px;
+      border-color: var(--cyan);
+      opacity: .8;
+      pointer-events: none;
+    }
+
+    .panel::before {
+      left: -1px;
+      top: -1px;
+      border-left: 2px solid;
+      border-top: 2px solid;
+    }
+
+    .panel::after {
+      right: -1px;
+      bottom: -1px;
+      border-right: 2px solid;
+      border-bottom: 2px solid;
+    }
+
+    .panel-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 14px 16px 9px;
+      border-bottom: 1px solid rgba(83,145,255,.24);
+    }
+
+    .panel-head h2 {
+      margin: 0;
+      color: #f5fbff;
+      font-size: 18px;
+      line-height: 1;
+      font-weight: 800;
+    }
+
+    .panel-head span {
+      color: var(--cyan);
+      font-size: 11px;
+      font-weight: 800;
+      letter-spacing: 1.6px;
+    }
+
+    .panel-body { padding: 15px 16px 16px; }
+
+    .position {
+      height: 192px;
+    }
+
+    .statement {
+      display: grid;
+      grid-template-columns: 118px 1fr;
+      gap: 16px;
+      align-items: center;
+    }
+
+    .radar {
+      width: 118px;
+      height: 118px;
+      position: relative;
+      border: 2px solid var(--cyan);
+      border-radius: 50%;
+      background:
+        radial-gradient(circle, transparent 32%, rgba(87,216,247,.1) 33%, transparent 34%),
+        conic-gradient(from 20deg, rgba(87,216,247,.7), rgba(63,125,255,.08), rgba(255,181,69,.62), rgba(87,216,247,.7));
+    }
+
+    .radar::before {
+      content: "Agent\A Native";
+      white-space: pre;
+      position: absolute;
+      inset: 21px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      border-radius: 50%;
+      background: #0e2143;
+      color: var(--cyan-2);
+      font-size: 14px;
+      line-height: 1.25;
+      font-weight: 800;
+    }
+
+    .statement h3 {
+      margin: 0 0 9px;
+      font-size: 22px;
+      line-height: 1.22;
+    }
+
+    .statement p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.55;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 7px;
+      margin-top: 14px;
+    }
+
+    .value-grid div {
+      min-height: 38px;
+      display: grid;
+      place-items: center;
+      text-align: center;
+      border: 1px solid rgba(87,216,247,.38);
+      color: var(--cyan-2);
+      font-size: 12px;
+      font-weight: 800;
+      background: rgba(87,216,247,.06);
+    }
+
+    .roles {
+      height: 268px;
+    }
+
+    .role-list {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .role-card {
+      min-height: 88px;
+      border: 1px solid rgba(83,145,255,.35);
+      background: rgba(15, 37, 77, .72);
+      padding: 10px 11px;
+    }
+
+    .role-card h3 {
+      margin: 0 0 6px;
+      color: var(--cyan-2);
+      font-size: 14px;
+      line-height: 1.2;
+    }
+
+    .role-card p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 11.5px;
+      line-height: 1.45;
+    }
+
+    .industry {
+      height: 248px;
+    }
+
+    .bar-row {
+      display: grid;
+      grid-template-columns: 70px 1fr 42px;
+      gap: 10px;
+      align-items: center;
+      margin-bottom: 10px;
+      font-size: 12px;
+      color: var(--paper);
+    }
+
+    .bar-track {
+      height: 13px;
+      border: 1px solid rgba(141,239,255,.32);
+      background: rgba(255,255,255,.05);
+      position: relative;
+    }
+
+    .bar-track i {
+      display: block;
+      height: 100%;
+      background: linear-gradient(90deg, var(--cyan), var(--blue) 58%, var(--orange));
+    }
+
+    .bar-row b {
+      color: var(--cyan-2);
+      font-size: 12px;
+      text-align: right;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 7px;
+      margin-top: 11px;
+    }
+
+    .chip {
+      padding: 5px 8px;
+      border: 1px solid rgba(87,216,247,.34);
+      background: rgba(87,216,247,.07);
+      color: #dbefff;
+      font-size: 11.5px;
+      white-space: nowrap;
+    }
+
+    .scope {
+      height: 198px;
+    }
+
+    .matrix {
+      display: grid;
+      grid-template-columns: 118px 1fr 1fr 1fr;
+      border: 1px solid rgba(83,145,255,.34);
+      font-size: 11.2px;
+    }
+
+    .matrix div {
+      min-height: 33px;
+      padding: 7px 8px;
+      border-right: 1px solid rgba(83,145,255,.2);
+      border-bottom: 1px solid rgba(83,145,255,.2);
+      color: var(--muted);
+      line-height: 1.25;
+    }
+
+    .matrix div:nth-child(4n) { border-right: 0; }
+    .matrix .m-head {
+      color: var(--cyan-2);
+      font-weight: 800;
+      background: rgba(87,216,247,.08);
+    }
+    .matrix .m-key { color: #fff; font-weight: 800; }
+
+    .hero-panel {
+      height: 438px;
+      padding: 0;
+      background: radial-gradient(circle at 50% 42%, rgba(63,125,255,.22), rgba(9, 25, 55, .95) 64%);
+    }
+
+    .system-core {
+      position: absolute;
+      left: 50%;
+      top: 200px;
+      width: 242px;
+      height: 242px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      border: 2px solid rgba(87,216,247,.72);
+      display: grid;
+      place-items: center;
+      text-align: center;
+      box-shadow: 0 0 0 10px rgba(63,125,255,.08), 0 0 42px rgba(63,125,255,.25);
+    }
+
+    .system-core::before,
+    .system-core::after {
+      content: "";
+      position: absolute;
+      border-radius: 50%;
+      border: 2px dashed rgba(141,239,255,.36);
+    }
+
+    .system-core::before { inset: 18px; }
+    .system-core::after { inset: -28px; border-color: rgba(63,125,255,.48); }
+
+    .core-text {
+      position: relative;
+      z-index: 1;
+      width: 150px;
+    }
+
+    .core-text b {
+      display: block;
+      color: #fff;
+      font-size: 21px;
+      margin-bottom: 8px;
+    }
+
+    .core-text span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.38;
+    }
+
+    .orbit {
+      position: absolute;
+      width: 158px;
+      min-height: 56px;
+      border: 1px solid var(--line);
+      background: rgba(12, 31, 65, .82);
+      padding: 9px 10px;
+    }
+
+    .orbit h3 {
+      margin: 0 0 5px;
+      font-size: 13px;
+      color: var(--cyan-2);
+    }
+
+    .orbit p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 10.6px;
+      line-height: 1.3;
+    }
+
+    .o1 { left: 22px; top: 34px; }
+    .o2 { right: 22px; top: 34px; }
+    .o3 { left: 22px; bottom: 38px; }
+    .o4 { right: 22px; bottom: 38px; }
+
+    .core-lines {
+      position: absolute;
+      left: 0;
+      top: 38px;
+      width: 100%;
+      height: calc(100% - 38px);
+      z-index: 1;
+      pointer-events: none;
+    }
+
+    .hero-caption {
+      position: absolute;
+      left: 28px;
+      right: 28px;
+      bottom: 18px;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .metric {
+      border: 1px solid rgba(87,216,247,.34);
+      padding: 9px 10px;
+      background: rgba(87,216,247,.06);
+    }
+
+    .metric b {
+      display: block;
+      font-size: 23px;
+      color: #fff;
+      line-height: 1;
+    }
+
+    .metric span {
+      display: block;
+      margin-top: 6px;
+      font-size: 11px;
+      color: var(--muted);
+    }
+
+    .metric em {
+      display: block;
+      margin-top: 4px;
+      color: var(--muted);
+      font-size: 10px;
+      line-height: 1.25;
+      font-style: normal;
+    }
+
+    .workflow {
+      height: 290px;
+    }
+
+    .flow-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 11px;
+    }
+
+    .flow-item {
+      position: relative;
+      min-height: 96px;
+      border: 1px solid rgba(83,145,255,.38);
+      background: rgba(13, 34, 72, .72);
+      padding: 12px 11px 10px;
+    }
+
+    .flow-item::after {
+      content: "";
+      position: absolute;
+      right: -12px;
+      top: 42px;
+      width: 12px;
+      height: 1px;
+      background: var(--cyan);
+    }
+
+    .flow-item:nth-child(4n)::after { display: none; }
+
+    .flow-num {
+      width: 30px;
+      height: 30px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--cyan);
+      color: var(--cyan-2);
+      font-weight: 800;
+      margin-bottom: 9px;
+      clip-path: polygon(25% 0, 75% 0, 100% 50%, 75% 100%, 25% 100%, 0 50%);
+    }
+
+    .flow-item h3 {
+      margin: 0 0 5px;
+      font-size: 13px;
+      color: #fff;
+    }
+
+    .flow-item p {
+      margin: 0;
+      color: var(--muted);
+      font-size: 10.7px;
+      line-height: 1.34;
+    }
+
+    .architecture {
+      height: 190px;
+    }
+
+    .stack {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .stack-layer {
+      display: grid;
+      grid-template-columns: 82px 1fr;
+      gap: 9px;
+      align-items: center;
+      min-height: 48px;
+      border: 1px solid rgba(83,145,255,.34);
+      padding: 8px 10px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .stack-layer b {
+      color: var(--cyan-2);
+      font-size: 12px;
+    }
+
+    .stack-layer span {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.35;
+    }
+
+    .risk {
+      height: 194px;
+    }
+
+    .risk-row {
+      display: grid;
+      grid-template-columns: 86px 1fr 70px;
+      gap: 10px;
+      align-items: center;
+      min-height: 36px;
+      border-bottom: 1px solid rgba(83,145,255,.18);
+      font-size: 11.7px;
+      color: var(--muted);
+    }
+
+    .risk-row:last-child { border-bottom: 0; }
+    .risk-row b { color: #fff; }
+    .risk-row strong { color: var(--orange); text-align: right; font-size: 13px; }
+
+    .kpi {
+      height: 210px;
+    }
+
+    .rings {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+    }
+
+    .ring {
+      text-align: center;
+    }
+
+    .ring-chart {
+      width: 112px;
+      height: 112px;
+      margin: 0 auto 8px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: conic-gradient(var(--cyan) var(--pct), rgba(255,255,255,.08) 0);
+      position: relative;
+    }
+
+    .ring-chart::before {
+      content: "";
+      position: absolute;
+      inset: 12px;
+      border-radius: 50%;
+      background: #10244a;
+      border: 1px solid rgba(141,239,255,.2);
+    }
+
+    .ring-chart b {
+      position: relative;
+      z-index: 1;
+      color: #fff;
+      font-size: 22px;
+    }
+
+    .ring span {
+      color: var(--muted);
+      font-size: 12px;
+      line-height: 1.35;
+    }
+
+    .mvp {
+      height: 274px;
+    }
+
+    .timeline {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 12px;
+    }
+
+    .timeline::before {
+      content: "";
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      top: 31px;
+      height: 2px;
+      background: linear-gradient(90deg, var(--cyan), var(--blue), var(--orange));
+    }
+
+    .phase {
+      position: relative;
+      min-height: 170px;
+      border: 1px solid rgba(83,145,255,.34);
+      padding: 54px 11px 11px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .dot {
+      position: absolute;
+      top: 18px;
+      left: 12px;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: #10244a;
+      border: 2px solid var(--cyan);
+      box-shadow: 0 0 16px rgba(87,216,247,.34);
+      z-index: 1;
+    }
+
+    .phase h3 {
+      margin: 0 0 8px;
+      color: var(--cyan-2);
+      font-size: 14px;
+    }
+
+    .phase ul {
+      margin: 0;
+      padding-left: 16px;
+      color: var(--muted);
+      font-size: 11.2px;
+      line-height: 1.5;
+    }
+
+    .deliver {
+      height: 252px;
+    }
+
+    .deliver-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+    }
+
+    .doc-card {
+      min-height: 70px;
+      display: grid;
+      grid-template-columns: 42px 1fr;
+      gap: 10px;
+      align-items: center;
+      border: 1px solid rgba(83,145,255,.34);
+      padding: 10px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .doc-icon {
+      width: 40px;
+      height: 48px;
+      position: relative;
+      background: rgba(234,243,255,.92);
+      color: var(--ink);
+      display: grid;
+      place-items: end center;
+      padding-bottom: 8px;
+      font-size: 10px;
+      font-weight: 900;
+    }
+
+    .doc-icon::before {
+      content: "";
+      position: absolute;
+      right: 0;
+      top: 0;
+      border-top: 12px solid #b8d7ff;
+      border-left: 12px solid transparent;
+    }
+
+    .doc-card b {
+      display: block;
+      color: #fff;
+      font-size: 13px;
+      margin-bottom: 5px;
+    }
+
+    .doc-card span {
+      display: block;
+      color: var(--muted);
+      font-size: 10.8px;
+      line-height: 1.35;
+    }
+
+    .governance {
+      height: 196px;
+    }
+
+    .governance-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+    }
+
+    .gov {
+      min-height: 112px;
+      border: 1px solid rgba(83,145,255,.34);
+      padding: 11px;
+      background: rgba(255,255,255,.035);
+    }
+
+    .gov b {
+      display: block;
+      color: var(--cyan-2);
+      font-size: 14px;
+      margin-bottom: 8px;
+    }
+
+    .gov span {
+      color: var(--muted);
+      font-size: 11.2px;
+      line-height: 1.45;
+    }
+
+    .tiny-label {
+      position: absolute;
+      color: rgba(141,239,255,.52);
+      font-size: 10px;
+      letter-spacing: 1.2px;
+    }
+
+    .tl1 { left: 40px; bottom: 12px; }
+    .tl2 { right: 40px; bottom: 12px; }
+
+    /* Light infographic theme, matched to the first reference image. */
+    :root {
+      --bg: #f2f2ef;
+      --bg-2: #ffffff;
+      --panel: #ffffff;
+      --panel-soft: #f7f8f6;
+      --line: #cfd6d6;
+      --line-soft: #dfe4e2;
+      --cyan: #1f9aae;
+      --cyan-2: #247f92;
+      --blue: #2c7893;
+      --orange: #f0ba58;
+      --red: #ef604d;
+      --green: #74b7a7;
+      --text: #364245;
+      --muted: #708083;
+      --muted-2: #94a0a1;
+      --paper: #ffffff;
+      --ink: #304044;
+    }
+
+    body {
+      background: #d9dcda;
+      color: var(--text);
+    }
+
+    .stage {
+      background:
+        linear-gradient(90deg, rgba(74,91,94,.055) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(rgba(74,91,94,.045) 1px, transparent 1px) 0 0 / 64px 64px,
+        linear-gradient(180deg, #f7f7f4 0%, #eeeeea 100%);
+    }
+
+    .stage::before {
+      background:
+        linear-gradient(90deg, transparent 0 31.8%, rgba(185,191,190,.72) 31.8% 31.9%, transparent 31.9% 68.1%, rgba(185,191,190,.72) 68.1% 68.2%, transparent 68.2%),
+        radial-gradient(circle at 50% 45%, rgba(31,154,174,.08), transparent 31%);
+    }
+
+    .topbar {
+      border-bottom: 1px solid #c9d0cf;
+    }
+
+    .mark {
+      border-color: var(--cyan);
+      background: #ffffff;
+      box-shadow: none;
+    }
+
+    .mark::before {
+      border-color: rgba(31,154,174,.42);
+    }
+
+    .mark::after {
+      background: var(--cyan);
+      box-shadow: none;
+    }
+
+    .brand h1,
+    .statement h3,
+    .panel-head h2,
+    .flow-item h3,
+    .metric b,
+    .core-text b,
+    .risk-row b,
+    .doc-card b {
+      color: #344246;
+    }
+
+    .brand p,
+    .date-strip,
+    .statement p,
+    .role-card p,
+    .bar-row,
+    .matrix div,
+    .orbit p,
+    .core-text span,
+    .metric span,
+    .flow-item p,
+    .stack-layer span,
+    .risk-row,
+    .ring span,
+    .phase ul,
+    .doc-card span,
+    .gov span {
+      color: #738184;
+    }
+
+    .top-title {
+      color: #2f6f82;
+    }
+
+    .chevrons i {
+      border-left-color: var(--red);
+    }
+
+    .pill {
+      border-color: #bfc8c6;
+      color: #2f6f82;
+      background: #ffffff;
+    }
+
+    .panel {
+      border-color: #cfd6d6;
+      background: rgba(255,255,255,.86);
+      box-shadow: none;
+    }
+
+    .panel::before,
+    .panel::after {
+      border-color: #b8c4c2;
+      opacity: .85;
+    }
+
+    .panel-head {
+      border-bottom-color: #e0e5e3;
+      background: rgba(250,250,248,.7);
+    }
+
+    .panel-head span {
+      color: #1f9aae;
+    }
+
+    .radar {
+      border-color: #2d8fa2;
+      background:
+        radial-gradient(circle, transparent 32%, rgba(31,154,174,.13) 33%, transparent 34%),
+        conic-gradient(from 20deg, #2f9fb0, #86c8c7 34%, #f0ba58 63%, #ef604d 82%, #2f9fb0);
+    }
+
+    .radar::before {
+      background: #ffffff;
+      color: #2f6f82;
+    }
+
+    .value-grid div,
+    .role-card,
+    .chip,
+    .matrix,
+    .matrix div,
+    .orbit,
+    .metric,
+    .flow-item,
+    .stack-layer,
+    .risk-row,
+    .phase,
+    .doc-card,
+    .gov {
+      border-color: #d5dcda;
+      background: rgba(250,250,248,.72);
+    }
+
+    .value-grid div,
+    .role-card h3,
+    .chip,
+    .matrix .m-head,
+    .stack-layer b,
+    .phase h3,
+    .gov b {
+      color: #2f7f8e;
+    }
+
+    .role-card h3,
+    .matrix .m-key {
+      color: #344246;
+    }
+
+    .bar-track {
+      border-color: #cbd3d1;
+      background: #edf0ee;
+    }
+
+    .bar-track i {
+      background: linear-gradient(90deg, #2d7892 0%, #86c8c7 48%, #ef604d 67%, #f0ba58 100%);
+    }
+
+    .bar-row b,
+    .risk-row strong {
+      color: #ef604d;
+    }
+
+    .hero-panel {
+      background: radial-gradient(circle at 50% 42%, rgba(134,200,199,.23), rgba(255,255,255,.86) 64%);
+    }
+
+    .system-core {
+      border-color: #2d8fa2;
+      background: #ffffff;
+      box-shadow: 0 0 0 10px rgba(31,154,174,.06);
+    }
+
+    .system-core::before {
+      border-color: rgba(31,154,174,.34);
+    }
+
+    .system-core::after {
+      border-color: rgba(239,96,77,.24);
+    }
+
+    .flow-item::after,
+    .timeline::before {
+      background: #8fb6bd;
+    }
+
+    .flow-num,
+    .dot {
+      border-color: #1f9aae;
+      color: #2f7f8e;
+      background: #ffffff;
+      box-shadow: none;
+    }
+
+    .metric {
+      background: #f5f7f5;
+    }
+
+    .ring-chart {
+      background: conic-gradient(#2f9fb0 var(--pct), #e6e9e7 0);
+    }
+
+    .ring-chart::before {
+      background: #ffffff;
+      border-color: #d8dfdd;
+    }
+
+    .ring-chart b {
+      color: #344246;
+    }
+
+    .doc-icon {
+      background: #eef3f3;
+      color: #2f6f82;
+    }
+
+    .doc-icon::before {
+      border-top-color: #d5dedc;
+    }
+
+    .tiny-label {
+      color: #8a9698;
+    }
+
+    /* Compact 1080p layout and higher information density. */
+    .topbar {
+      top: 20px;
+      height: 72px;
+      grid-template-columns: 430px 1fr 360px;
+    }
+
+    .brand h1 { font-size: 25px; }
+    .brand p { font-size: 12px; margin-top: 5px; }
+    .mark { width: 48px; height: 48px; }
+    .mark::after { inset: 17px; }
+    .column { top: 116px; bottom: 30px; }
+    .panel { margin-bottom: 10px; }
+    .panel-head { padding: 10px 16px 8px; }
+    .panel-head h2 { font-size: 17px; }
+    .panel-body { padding: 12px 16px 13px; }
+
+    .position { height: 172px; }
+    .statement { grid-template-columns: 104px 1fr; gap: 14px; }
+    .radar { width: 104px; height: 104px; }
+    .radar::before { inset: 19px; font-size: 13px; }
+    .statement h3 { font-size: 20px; margin-bottom: 6px; }
+    .statement p { font-size: 12.2px; line-height: 1.45; }
+    .value-grid { margin-top: 9px; gap: 6px; }
+    .value-grid div { min-height: 28px; font-size: 11.2px; }
+
+    .roles { height: 228px; }
+    .role-list { gap: 8px; }
+    .role-card { min-height: 71px; padding: 7px 10px; }
+    .role-card h3 { font-size: 13px; margin-bottom: 4px; }
+    .role-card p { font-size: 10.3px; line-height: 1.34; }
+
+    .industry { height: 318px; }
+    .bar-row {
+      grid-template-columns: 66px 1fr 34px;
+      gap: 8px;
+      margin-bottom: 6px;
+      font-size: 11.2px;
+    }
+    .bar-track { height: 10px; }
+    .bar-row b { font-size: 11px; }
+    .pain-grid {
+      display: grid;
+      grid-template-columns: 66px 1fr 1fr;
+      border: 1px solid #d5dcda;
+      margin-top: 9px;
+      font-size: 9.6px;
+      line-height: 1.2;
+    }
+    .pain-grid div {
+      min-height: 25px;
+      padding: 4px 6px;
+      border-right: 1px solid #d5dcda;
+      border-bottom: 1px solid #d5dcda;
+      color: #6e7d80;
+    }
+    .pain-grid div:nth-child(3n) { border-right: 0; }
+    .pain-grid .p-head {
+      background: #eef5f4;
+      color: #2f7f8e;
+      font-weight: 800;
+    }
+    .pain-grid .p-key {
+      color: #344246;
+      font-weight: 800;
+    }
+    .industry .chips { display: none; }
+    .chips { gap: 4px; margin-top: 7px; }
+    .chip { padding: 3px 6px; font-size: 9.8px; }
+
+    .scope { height: 176px; }
+    .matrix { grid-template-columns: 82px 1fr 1fr 1fr; font-size: 10.4px; }
+    .matrix div { min-height: 28px; padding: 5px 6px; }
+
+    .hero-panel { height: 325px; }
+    .system-core {
+      top: 151px;
+      width: 174px;
+      height: 174px;
+    }
+    .system-core::before { inset: 15px; }
+    .system-core::after { inset: -22px; }
+    .core-text { width: 118px; }
+    .core-text b { font-size: 17px; margin-bottom: 5px; }
+    .core-text span { font-size: 10px; line-height: 1.25; }
+    .orbit { width: 158px; min-height: 52px; padding: 7px 9px; }
+    .orbit h3 { font-size: 12px; margin-bottom: 4px; }
+    .orbit p { font-size: 9.8px; line-height: 1.25; }
+    .o1 { left: 22px; top: 34px; }
+    .o2 { right: 22px; top: 34px; }
+    .o3 { left: 22px; bottom: 92px; }
+    .o4 { right: 22px; bottom: 92px; }
+    .c1 { left: 174px; top: 85px; width: 130px; }
+    .c2 { right: 174px; top: 85px; width: 130px; }
+    .c3 { left: 174px; bottom: 145px; width: 132px; }
+    .c4 { right: 174px; bottom: 145px; width: 132px; }
+    .hero-caption { left: 26px; right: 26px; bottom: 10px; gap: 8px; }
+    .metric { padding: 7px 9px; }
+    .metric b { font-size: 12px; color: #2f7f8e; }
+    .metric span { margin-top: 4px; font-size: 10.4px; line-height: 1.25; color: #344246; font-weight: 800; }
+    .metric em { font-size: 9.4px; }
+
+    .hero-panel { height: 360px; }
+    .system-core {
+      top: 188px;
+      width: 122px;
+      height: 122px;
+      z-index: 3;
+    }
+    .system-core::before { inset: 10px; }
+    .system-core::after { inset: -14px; }
+    .core-text { width: 88px; }
+    .core-text b { font-size: 14px; margin-bottom: 4px; }
+    .core-text span { font-size: 8.3px; line-height: 1.18; }
+    .orbit,
+    .metric {
+      position: absolute;
+      width: 184px;
+      height: 50px;
+      min-height: 0;
+      padding: 6px 8px;
+      z-index: 2;
+    }
+    .orbit h3,
+    .metric b {
+      margin: 0 0 4px;
+      font-size: 11px;
+      color: #2f7f8e;
+      line-height: 1.15;
+    }
+    .orbit p,
+    .metric span,
+    .metric em {
+      margin: 0;
+      color: #6e7d80;
+      font-size: 8.8px;
+      line-height: 1.18;
+      font-weight: 400;
+    }
+    .metric span {
+      display: block;
+      color: #344246;
+      font-weight: 800;
+      margin-bottom: 2px;
+    }
+    .metric em { display: block; }
+    .o1 { left: 24px; top: 50px; }
+    .o2 { right: 24px; top: 50px; }
+    .o3 { left: 24px; top: 116px; bottom: auto; }
+    .o4 { right: 24px; top: 116px; bottom: auto; }
+    .hero-caption {
+      display: block;
+      left: 0;
+      right: 0;
+      bottom: auto;
+    }
+    .hero-caption .metric:nth-child(1) { left: 24px; top: 182px; }
+    .hero-caption .metric:nth-child(2) { right: 24px; top: 182px; }
+    .hero-caption .metric:nth-child(3) { left: 24px; top: 248px; }
+    .hero-caption .metric:nth-child(4) { right: 24px; top: 248px; }
+    .core-lines line {
+      stroke: rgba(47, 127, 142, .35);
+      stroke-width: 1.4;
+    }
+
+    .workflow { height: 230px; }
+    .flow-grid { gap: 8px; }
+    .flow-item { min-height: 64px; padding: 7px 8px 6px; }
+    .flow-item::after { right: -9px; width: 9px; top: 35px; }
+    .flow-num { width: 20px; height: 20px; margin-bottom: 4px; font-size: 9.5px; }
+    .flow-item h3 { font-size: 12px; margin-bottom: 4px; }
+    .flow-item p { font-size: 8.9px; line-height: 1.2; }
+
+    .architecture { height: 160px; }
+    .stack { gap: 7px 10px; }
+    .stack-layer {
+      grid-template-columns: 70px 1fr;
+      min-height: 36px;
+      padding: 6px 9px;
+      gap: 7px;
+    }
+    .stack-layer b { font-size: 11.4px; }
+    .stack-layer span { font-size: 9.8px; line-height: 1.25; }
+
+    .risk { height: 172px; }
+    .risk-row {
+      grid-template-columns: 76px 1fr 60px;
+      min-height: 31px;
+      gap: 8px;
+      font-size: 10.2px;
+    }
+    .risk-row strong { font-size: 11px; }
+
+    .kpi { height: 198px; }
+    .rings { gap: 10px; }
+    .ring-chart { width: 88px; height: 88px; margin-bottom: 6px; }
+    .ring-chart::before { inset: 10px; }
+    .ring-chart b { font-size: 19px; }
+    .ring span { font-size: 10.5px; }
+
+    .mvp { height: 242px; }
+    .timeline { gap: 10px; }
+    .timeline::before { top: 25px; }
+    .phase { min-height: 154px; padding: 43px 9px 9px; }
+    .dot { top: 14px; width: 25px; height: 25px; }
+    .phase h3 { font-size: 12.3px; margin-bottom: 6px; }
+    .phase ul { font-size: 10.2px; line-height: 1.42; padding-left: 14px; }
+
+    .deliver { height: 214px; }
+    .deliver-grid { gap: 9px; }
+    .doc-card {
+      min-height: 61px;
+      grid-template-columns: 38px 1fr;
+      gap: 9px;
+      padding: 8px;
+    }
+    .doc-icon { width: 36px; height: 42px; font-size: 9px; padding-bottom: 7px; }
+    .doc-card b { font-size: 12px; margin-bottom: 4px; }
+    .doc-card span { font-size: 9.7px; line-height: 1.25; }
+
+    .governance { height: 154px; }
+    .governance-grid { gap: 10px; }
+    .gov { min-height: 88px; padding: 9px; }
+    .gov b { font-size: 12px; margin-bottom: 6px; }
+    .gov span { font-size: 10px; line-height: 1.32; }
+
+    .tiny-label { bottom: 8px; }
+  </style>
+</head>
+<body>
+  <main class="stage" aria-label="工程行业文档 Agent 产品设计稿">
+    <header class="topbar">
+      <div class="brand">
+        <div class="mark"></div>
+        <div>
+          <h1>工程行业文档 Agent</h1>
+          <p>ENGINEERING DOCUMENT AGENT · PRODUCT DESIGN BLUEPRINT</p>
+        </div>
+      </div>
+      <div class="top-title">
+        <span>产品设计稿 / 信息架构 / MVP 路线</span>
+        <span class="chevrons"><i></i><i></i><i></i><i></i><i></i></span>
+      </div>
+      <div class="date-strip">
+        <span>Agent Native</span>
+        <span class="pill">文档生成 · 审查 · 交付 · 证据链</span>
+      </div>
+    </header>
+
+    <section class="column left">
+      <article class="panel position">
+        <div class="panel-head"><h2>01 产品定位</h2><span>POSITION</span></div>
+        <div class="panel-body">
+          <div class="statement">
+            <div class="radar"></div>
+            <div>
+              <h3>把工程资料转化为可交付成果</h3>
+              <p>不是传统文档管理系统，而是围绕工程任务自动完成文档生产、审查、复用、交付和证据留痕。核心输入来自项目资料、产品资料、标准规范与历史案例。</p>
+            </div>
+          </div>
+          <div class="value-grid">
+            <div>文档生成</div>
+            <div>文档审查</div>
+            <div>文档复用</div>
+            <div>文档交付</div>
+            <div>证据链</div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel roles">
+        <div class="panel-head"><h2>02 用户角色与价值</h2><span>USERS</span></div>
+        <div class="panel-body">
+          <div class="role-list">
+            <div class="role-card">
+              <h3>一线工程技术人员</h3>
+              <p>快速生成方案、指导书、技术说明；自动引用标准依据；发现遗漏和高风险内容。</p>
+            </div>
+            <div class="role-card">
+              <h3>项目交付与资料人员</h3>
+              <p>自动识别资料类型、命名归类、检查缺件、生成交付包目录并跟踪补件。</p>
+            </div>
+            <div class="role-card">
+              <h3>技术销售与解决方案人员</h3>
+              <p>根据客户场景组合产品参数、案例、认证，输出方案、PPT、技术答复和推广材料。</p>
+            </div>
+            <div class="role-card">
+              <h3>知识与标准负责人</h3>
+              <p>沉淀历史项目、模板、术语和审查规则，控制 Agent 生成边界和引用来源。</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel industry">
+        <div class="panel-head"><h2>03 行业场景优先级</h2><span>SCENARIOS</span></div>
+        <div class="panel-body">
+          <div class="bar-row"><span>装备制造</span><div class="bar-track"><i style="width:94%"></i></div><b>94</b></div>
+          <div class="bar-row"><span>电力能源</span><div class="bar-track"><i style="width:91%"></i></div><b>91</b></div>
+          <div class="bar-row"><span>建筑基建</span><div class="bar-track"><i style="width:88%"></i></div><b>88</b></div>
+          <div class="bar-row"><span>轨道交通</span><div class="bar-track"><i style="width:82%"></i></div><b>82</b></div>
+          <div class="bar-row"><span>化工矿山</span><div class="bar-track"><i style="width:79%"></i></div><b>79</b></div>
+          <div class="pain-grid">
+            <div class="p-head">行业</div><div class="p-head">业务痛点</div><div class="p-head">Agent 切入点</div>
+            <div class="p-key">建筑/基建</div><div>检验批、隐蔽验收、试验检测、竣工资料量大，过程资料常后补。</div><div>方案/交底生成，资料缺口检查，交工/竣工包校验。</div>
+            <div class="p-key">装备制造</div><div>BOM、图纸、说明书、检验规程、合格证、维护手册信息重复且割裂。</div><div>技术方案、说明书、检验规程、设备交付包自动生成。</div>
+            <div class="p-key">能源/电力</div><div>设备厂家资料格式不一，调试记录、试验报告、运维移交要求高。</div><div>设备建档、作业指导书、试验报告整理、移交包检查。</div>
+            <div class="p-key">轨交/化工</div><div>接口文件、P&ID、设备数据表、变更影响跨专业扩散，合规风险高。</div><div>规格符合性审查、接口审查、MOC 变更影响分析。</div>
+            <div class="p-key">矿山/水利/涂料</div><div>安全整改、监测验收、应用方案高度场景化，专家经验难复制。</div><div>整改证据链、验收资料包、涂装方案与推广材料生成。</div>
+          </div>
+          <div class="chips">
+            <span class="chip">建筑</span><span class="chip">基建</span><span class="chip">装备制造</span><span class="chip">能源</span><span class="chip">轨道交通</span><span class="chip">化工</span><span class="chip">电力</span><span class="chip">矿山</span><span class="chip">水利</span><span class="chip">涂料</span>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel scope">
+        <div class="panel-head"><h2>04 任务边界</h2><span>SCOPE</span></div>
+        <div class="panel-body">
+          <div class="matrix">
+            <div class="m-head">类型</div><div class="m-head">生成</div><div class="m-head">审查</div><div class="m-head">整理/分析</div>
+            <div class="m-key">主任务</div><div>方案、指导书、PPT</div><div>符合性、缺口、风险</div><div>建档、交付包、变更影响</div>
+            <div class="m-key">输入源</div><div>需求、模板、历史方案</div><div>技术规范、标准、供应商资料</div><div>设备清单、图纸、记录</div>
+            <div class="m-key">不做</div><div>招投标</div><div>合同审查</div><div>通用 OA / 文档库</div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <section class="column center">
+      <article class="panel hero-panel">
+        <div class="panel-head"><h2>05 Agent Native 核心系统</h2><span>CORE SYSTEM</span></div>
+        <svg class="core-lines" viewBox="0 0 736 322" preserveAspectRatio="none" aria-hidden="true">
+          <line x1="368" y1="150" x2="212" y2="75"></line>
+          <line x1="368" y1="150" x2="524" y2="75"></line>
+          <line x1="368" y1="150" x2="212" y2="141"></line>
+          <line x1="368" y1="150" x2="524" y2="141"></line>
+          <line x1="368" y1="150" x2="212" y2="207"></line>
+          <line x1="368" y1="150" x2="524" y2="207"></line>
+          <line x1="368" y1="150" x2="212" y2="273"></line>
+          <line x1="368" y1="150" x2="524" y2="273"></line>
+        </svg>
+        <div class="orbit o1">
+          <h3>文档解析中心</h3>
+          <p>Word / Excel / PDF / PPT / OCR / 图片 / CAD 与 P&ID 初步索引。</p>
+        </div>
+        <div class="orbit o2">
+          <h3>行业场景包</h3>
+          <p>行业术语、对象模型、模板、资料目录、标准映射和 Agent 工作流。</p>
+        </div>
+        <div class="orbit o3">
+          <h3>工程知识底座</h3>
+          <p>项目、专业、设备、材料、标准规范、检测报告、认证和历史案例。</p>
+        </div>
+        <div class="orbit o4">
+          <h3>模板与规则库</h3>
+          <p>企业模板、审查规则、参数校验、术语库和禁止生成规则。</p>
+        </div>
+        <div class="system-core">
+          <div class="core-text">
+            <b>Agent 任务引擎</b>
+            <span>识别场景、规划步骤、检索证据、生成输出并标记人工确认项。</span>
+          </div>
+        </div>
+        <div class="hero-caption">
+          <div class="metric"><b>任务入口</b><span>生成 / 审查 / 整理 / 分析</span><em>决定 Agent 规划方式与风险阈值。</em></div>
+          <div class="metric"><b>Agent 编排</b><span>方案、指导书、审查、缺口、建档、变更、交付</span><em>按任务自动拆解步骤并调用工具。</em></div>
+          <div class="metric"><b>行业上下文</b><span>建筑、基建、装备、能源、轨交、化工等场景包</span><em>加载术语、模板、目录和审查规则。</em></div>
+          <div class="metric"><b>交付出口</b><span>Word / PPT / PDF / Excel / 目录包</span><em>统一生成可审阅、可追溯交付物。</em></div>
+        </div>
+      </article>
+
+      <article class="panel workflow">
+        <div class="panel-head"><h2>06 通用 Agent 工作流</h2><span>WORKFLOW</span></div>
+        <div class="panel-body">
+          <div class="flow-grid">
+            <div class="flow-item"><div class="flow-num">01</div><h3>任务输入</h3><p>用户输入项目类型、工程对象、使用环境、技术要求、资料包和输出格式。</p></div>
+            <div class="flow-item"><div class="flow-num">02</div><h3>场景识别</h3><p>判断行业、专业、任务类型和适用场景包，锁定模板与规则边界。</p></div>
+            <div class="flow-item"><div class="flow-num">03</div><h3>资料解析</h3><p>抽取元数据、技术参数、表格、签章、版本、编号和原文位置。</p></div>
+            <div class="flow-item"><div class="flow-num">04</div><h3>对象建模</h3><p>识别项目、系统、设备、材料、工序、验收对象和关联文档。</p></div>
+            <div class="flow-item"><div class="flow-num">05</div><h3>知识检索</h3><p>匹配企业模板、标准规范、历史案例、产品参数和审查规则。</p></div>
+            <div class="flow-item"><div class="flow-num">06</div><h3>计划执行</h3><p>生成大纲、审查矩阵、缺口清单、设备档案或变更影响清单。</p></div>
+            <div class="flow-item"><div class="flow-num">07</div><h3>风险标记</h3><p>对缺失条件、冲突参数、高风险条款设置人工确认和引用证据。</p></div>
+            <div class="flow-item"><div class="flow-num">08</div><h3>输出沉淀</h3><p>导出可编辑交付物，并沉淀为模板、规则、案例和知识资产。</p></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel architecture">
+        <div class="panel-head"><h2>07 产品信息架构</h2><span>IA</span></div>
+        <div class="panel-body">
+          <div class="stack">
+            <div class="stack-layer"><b>工作台</b><span>最近任务、待确认项、风险提醒、常用 Agent。</span></div>
+            <div class="stack-layer"><b>任务中心</b><span>生成、审查、资料整理、变更分析、交付包。</span></div>
+            <div class="stack-layer"><b>行业包</b><span>建筑、基建、装备、能源、轨交、化工、电力等。</span></div>
+            <div class="stack-layer"><b>知识底座</b><span>项目、设备、产品、标准、图纸、报告、历史案例。</span></div>
+            <div class="stack-layer"><b>解析中心</b><span>Office、PDF、OCR、图片、表格抽取、元数据识别。</span></div>
+            <div class="stack-layer"><b>治理配置</b><span>用户权限、知识源、模板、规则、审计日志。</span></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel risk">
+        <div class="panel-head"><h2>08 风险与证据链设计</h2><span>TRACEABILITY</span></div>
+        <div class="panel-body">
+          <div class="risk-row"><b>引用溯源</b><span>输出段落绑定来源文件、页码、表格、条款或历史案例。</span><strong>必选</strong></div>
+          <div class="risk-row"><b>人工确认</b><span>参数缺失、标准冲突、适用条件不明确时进入确认队列。</span><strong>高优先级</strong></div>
+          <div class="risk-row"><b>禁止生成</b><span>无依据参数、超出产品能力、法规结论和安全承诺设为拦截项。</span><strong>强管控</strong></div>
+          <div class="risk-row"><b>版本审计</b><span>记录输入资料版本、Agent 输出版本、人工修改和最终交付版本。</span><strong>闭环</strong></div>
+        </div>
+      </article>
+    </section>
+
+    <section class="column right">
+      <article class="panel kpi">
+        <div class="panel-head"><h2>09 核心产品指标</h2><span>METRICS</span></div>
+        <div class="panel-body">
+          <div class="rings">
+            <div class="ring">
+              <div class="ring-chart" style="--pct:82%"><b>82%</b></div>
+              <span>资料完整率<br>目标提升</span>
+            </div>
+            <div class="ring">
+              <div class="ring-chart" style="--pct:76%"><b>76%</b></div>
+              <span>初稿生成<br>时间压缩</span>
+            </div>
+            <div class="ring">
+              <div class="ring-chart" style="--pct:68%"><b>68%</b></div>
+              <span>重复资料<br>复用提升</span>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel mvp">
+        <div class="panel-head"><h2>10 MVP 路线</h2><span>ROADMAP</span></div>
+        <div class="panel-body">
+          <div class="timeline">
+            <div class="phase">
+              <div class="dot"></div>
+              <h3>MVP 1：方案与指导书</h3>
+              <ul>
+                <li>输入需求、资料、模板</li>
+                <li>生成方案大纲与正文</li>
+                <li>派生作业指导书</li>
+                <li>输出引用证据包</li>
+              </ul>
+            </div>
+            <div class="phase">
+              <div class="dot"></div>
+              <h3>MVP 2：缺口与交付包</h3>
+              <ul>
+                <li>上传项目资料目录</li>
+                <li>识别文件类型和元数据</li>
+                <li>检查缺失、异常、版本冲突</li>
+                <li>生成交付包目录</li>
+              </ul>
+            </div>
+            <div class="phase">
+              <div class="dot"></div>
+              <h3>MVP 3：审查与建档</h3>
+              <ul>
+                <li>技术符合性矩阵</li>
+                <li>设备资料自动建档</li>
+                <li>变更影响分析</li>
+                <li>沉淀规则和案例</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel deliver">
+        <div class="panel-head"><h2>11 输出交付物</h2><span>DELIVERABLES</span></div>
+        <div class="panel-body">
+          <div class="deliver-grid">
+            <div class="doc-card"><div class="doc-icon">DOC</div><div><b>工程方案 / 指导书</b><span>技术路线、施工步骤、质量控制、安全环保、引用依据。</span></div></div>
+            <div class="doc-card"><div class="doc-icon">PPT</div><div><b>解决方案材料</b><span>客户场景、产品体系、参数优势、案例和推广结构。</span></div></div>
+            <div class="doc-card"><div class="doc-icon">XLS</div><div><b>审查矩阵</b><span>符合、不符合、需人工确认、风险等级和原文位置。</span></div></div>
+            <div class="doc-card"><div class="doc-icon">ZIP</div><div><b>交付包目录</b><span>缺失资料、异常资料、补件任务、完整率报告和目录结构。</span></div></div>
+          </div>
+        </div>
+      </article>
+
+      <article class="panel governance">
+        <div class="panel-head"><h2>12 运营与治理后台</h2><span>ADMIN</span></div>
+        <div class="panel-body">
+          <div class="governance-grid">
+            <div class="gov"><b>知识源配置</b><span>接入标准规范、产品资料、历史项目、企业模板和认证报告。</span></div>
+            <div class="gov"><b>规则库管理</b><span>维护审查规则、参数校验、术语、资料目录和禁用生成项。</span></div>
+            <div class="gov"><b>审计与权限</b><span>按角色控制可见知识、输出审批、引用证据和版本追踪。</span></div>
+          </div>
+        </div>
+      </article>
+    </section>
+
+    <div class="tiny-label tl1">DOCUMENT AGENT BLUEPRINT · VERSION 1.0</div>
+    <div class="tiny-label tl2">REFERENCE LAYOUT: INFOGRAPHIC / ENGINEERING HUD</div>
+  </main>
+</body>
+</html>
